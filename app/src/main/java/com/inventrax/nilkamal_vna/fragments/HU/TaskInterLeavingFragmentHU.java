@@ -2,7 +2,6 @@ package com.inventrax.nilkamal_vna.fragments.HU;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -17,12 +16,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,16 +40,11 @@ import com.inventrax.nilkamal_vna.common.Common;
 import com.inventrax.nilkamal_vna.common.constants.EndpointConstants;
 import com.inventrax.nilkamal_vna.common.constants.ErrorMessages;
 import com.inventrax.nilkamal_vna.fragments.HomeFragment;
-import com.inventrax.nilkamal_vna.fragments.PendingPutawayListFragment;
 import com.inventrax.nilkamal_vna.interfaces.ApiInterface;
-import com.inventrax.nilkamal_vna.pojos.ExecutionResponseDTO;
 import com.inventrax.nilkamal_vna.pojos.InboundDTO;
-import com.inventrax.nilkamal_vna.pojos.InventoryDTO;
 import com.inventrax.nilkamal_vna.pojos.WMSCoreMessage;
 import com.inventrax.nilkamal_vna.pojos.WMSExceptionMessage;
-import com.inventrax.nilkamal_vna.searchableSpinner.SearchableSpinner;
 import com.inventrax.nilkamal_vna.services.RestService;
-import com.inventrax.nilkamal_vna.util.DialogUtils;
 import com.inventrax.nilkamal_vna.util.ExceptionLoggerUtils;
 import com.inventrax.nilkamal_vna.util.FragmentUtils;
 import com.inventrax.nilkamal_vna.util.ProgressDialogUtils;
@@ -70,7 +62,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, BarcodeReader.TriggerListener, BarcodeReader.BarcodeListener {
-
 
     private static final String classCode = "API_FRAG_PUTAWAY";
     private View rootView;
@@ -108,6 +99,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
     boolean isPalletScanned,isFromLocationScanned,isToLocationScanned;
     boolean isPicking,isPutaway;
     TextView tvStRef;
+    public String OperationType;
 
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
         @Override
@@ -211,9 +203,8 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
         ((RadioButton)rootView.findViewById(R.id.radioAuto)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isPicking=false;
-                isPutaway=true;
-                setOperationTypeApi();
+                OperationType="1";
+                setOperationTypeApi(OperationType);
                 clearAllFileds();
             }
         });
@@ -222,31 +213,291 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
         ((RadioButton)rootView.findViewById(R.id.radioPicking)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isPicking=true;
-                isPutaway=false;
-                setOperationTypeApi();
+                OperationType="3";
+                setOperationTypeApi(OperationType);
                 clearAllFileds();
             }
         });
         ((RadioButton)rootView.findViewById(R.id.radioPutaway)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isPicking=false;
-                isPutaway=true;
-                setOperationTypeApi();
+                OperationType="2";
+                setOperationTypeApi(OperationType);
                 clearAllFileds();
             }
         });
     }
 
-    public void setOperationTypeApi(){
+    public void setOperationTypeApi(String suggestionType){
 
         // TODO call API of the method of auto or picking or putaway.
+        try {
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
+            InboundDTO inboundDTO = new InboundDTO();
+            inboundDTO.setUserId(userId);
+            inboundDTO.setSuggestionType(suggestionType);
+            message.setEntityObject(inboundDTO);
 
-        if(isPicking)
-            tvStRef.setText("Picking");
-        else
-            tvStRef.setText("Put Away");
+            Log.v("ABCDE_OpertionType",new Gson().toJson(message));
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+
+                call = apiService.VNASuggestion(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+
+                            } else {
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+                                ProgressDialogUtils.closeProgressDialog();
+                                List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                InboundDTO dto=null;
+                                for (int i = 0; i < _lInbound.size(); i++) {
+                                    dto = new InboundDTO(_lInbound.get(i).entrySet());
+                                }
+
+                                if(dto.getInout()!=null){
+                                    etFromLocation.setText(dto.getPickedLocation());
+                                    etPallet.setText(dto.getPalletNo());
+                                    etToLocation.setText(dto.getSuggestedLocation());
+                                    if(dto.getInout().equals("PUTWAY"))
+                                    {
+                                        isPicking=false;
+                                        isPutaway=true;
+                                    }else{
+                                        isPicking=true;
+                                        isPutaway=false;
+                                    }
+                                    if(isPicking)
+                                        tvStRef.setText("Picking");
+                                    else
+                                        tvStRef.setText("Put Away");
+                                }else{
+                                    clearAllFileds1();
+                                    common.showUserDefinedAlertType(errorMessages.EMC_089, getActivity(), getContext(), "Error");
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
+
+
+    }
+
+    private void UpsertBintoBinTransfer(String scannedData) {
+
+        try {
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
+            InboundDTO inboundDTO = new InboundDTO();
+            inboundDTO.setUserId(userId);
+            inboundDTO.setLocation(etFromLocation.getText().toString());
+            inboundDTO.setPalletNo(etPallet.getText().toString());
+            inboundDTO.setToLocation(etToLocation.getText().toString());
+            inboundDTO.setPutwayType("0");
+            if(isPicking)
+            inboundDTO.setInout("2");
+            else
+            inboundDTO.setInout("1");
+            message.setEntityObject(inboundDTO);
+
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+
+                call = apiService.UpsertBintoBinTransfer(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+
+                            } else {
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+                                ProgressDialogUtils.closeProgressDialog();
+                                List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+
+                                InboundDTO dto=null;
+                                for (int i = 0; i < _lInbound.size(); i++) {
+                                    dto = new InboundDTO(_lInbound.get(i).entrySet());
+                                }
+
+                                if(dto.getResult().equals("Successfully Transfer")){
+                                    cvScanToLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                    ivScanToLocation.setImageResource(R.drawable.check);
+                                    isToLocationScanned=true;
+                                    setOperationTypeApi(OperationType);
+                                    clearAllFileds();
+                                 //   Toast.makeText(getActivity(), "Successfully Transfer", Toast.LENGTH_SHORT).show();
+                                    common.showUserDefinedAlertType("Successfully Transfer", getActivity(), getContext(), "Success");
+                                }else{
+                                    common.showUserDefinedAlertType(dto.getResult(), getActivity(), getContext(), "Error");
+                                }
+
+                                ProgressDialogUtils.closeProgressDialog();
+                                //Successfully Transfer
+
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
     }
 
 
@@ -456,6 +707,23 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
         ivScanToLocation.setImageResource(R.drawable.fullscreen_img);
     }
 
+    public void clearAllFileds1(){
+        isPalletScanned=false;
+        isFromLocationScanned=false;
+        isToLocationScanned=false;
+        cvScanFromLocation.setCardBackgroundColor(getResources().getColor(R.color.locationColor));
+        ivScanFromLocation.setImageResource(R.drawable.fullscreen_img);
+        cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.palletColor));
+        ivScanPallet.setImageResource(R.drawable.fullscreen_img);
+        cvScanToLocation.setCardBackgroundColor(getResources().getColor(R.color.locationColor));
+        ivScanToLocation.setImageResource(R.drawable.fullscreen_img);
+        etToLocation.setText("");
+        etFromLocation.setText("");
+        etPallet.setText("");
+        tvStRef.setText("");
+
+    }
+
 
     //button Clicks
     @Override
@@ -613,9 +881,8 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                     }else{
                         if(isPalletScanned){
                             if(etToLocation.getText().toString().equals(scannedData)){
-                                cvScanToLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
-                                ivScanToLocation.setImageResource(R.drawable.check);
-                                isToLocationScanned=true;
+                                UpsertBintoBinTransfer(scannedData);
+
                             }else{
                                 cvScanToLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
                                 ivScanToLocation.setImageResource(R.drawable.warning_img);

@@ -84,11 +84,21 @@ public class InboundDTO {
     @SerializedName("ScannedInput")
     private String ScannedInput;
 
+
+
+    @SerializedName("PutwayType")
+    private String PutwayType;
+
     @SerializedName("InputType")
     private String InputType;
 
     @SerializedName("SuggestedLocation")
     private String SuggestedLocation;
+
+
+
+    @SerializedName("ToLocation")
+    private String ToLocation;
 
     @SerializedName("BarcodeType")
     private String barcodeType;
@@ -108,6 +118,19 @@ public class InboundDTO {
     private String receivedQty;
     @SerializedName("ItemSerialNo")
     private String itemSerialNo;
+
+
+    @SerializedName("SuggestionType")
+    private String SuggestionType;
+
+
+    @SerializedName("PickedLocation")
+    private String PickedLocation;
+
+    @SerializedName("Inout")
+    private String Inout;
+
+
     public  InboundDTO()
     {
     }
@@ -318,6 +341,11 @@ public class InboundDTO {
                     }
                     break;
 
+                case "ToLocation":
+                    if (entry.getValue() != null) {
+                        this.setToLocation(entry.getValue().toString());
+                    }
+                    break;
 
                 case "ScannedInput":
                     if (entry.getValue() != null) {
@@ -337,6 +365,11 @@ public class InboundDTO {
                     }
                     break;
 
+                case "PutwayType":
+                    if (entry.getValue() != null) {
+                        this.setPutwayType(entry.getValue().toString());
+                    }
+                    break;
                 case "BarcodeType":
                     if (entry.getValue() != null) {
                         this.setBarcodeType(entry.getValue().toString());
@@ -373,6 +406,22 @@ public class InboundDTO {
                         this.setItemSerialNo(entry.getValue().toString());
                     }
                     break;
+                case "SuggestionType":
+                    if (entry.getValue() != null) {
+                        this.setSuggestionType(entry.getValue().toString());
+                    }
+                    break;
+                case "PickedLocation":
+                    if (entry.getValue() != null) {
+                        this.setPickedLocation(entry.getValue().toString());
+                    }
+                    break;
+                case "Inout":
+                    if (entry.getValue() != null) {
+                        this.setInout(entry.getValue().toString());
+                    }
+                    break;
+
             }
         }
     }
@@ -736,4 +785,49 @@ public class InboundDTO {
     public void setPalletInfoDTO(List<PalletInfoDTO> palletInfoDTO) {
         this.palletInfoDTO = palletInfoDTO;
     }
+
+    public String getToLocation() {
+        return ToLocation;
+    }
+
+    public void setToLocation(String toLocation) {
+        ToLocation = toLocation;
+    }
+
+    public String getPutwayType() {
+        return PutwayType;
+    }
+
+    public void setPutwayType(String putwayType) {
+        PutwayType = putwayType;
+    }
+
+    public String getSuggestionType() {
+        return SuggestionType;
+    }
+
+    public void setSuggestionType(String suggestionType) {
+        SuggestionType = suggestionType;
+    }
+
+    public String getPickedLocation() {
+        return PickedLocation;
+    }
+
+    public void setPickedLocation(String pickedLocation) {
+        PickedLocation = pickedLocation;
+    }
+
+
+    public String getInout() {
+        return Inout;
+    }
+
+    public void setInout(String inout) {
+        Inout = inout;
+    }
+
+
+
+
 }

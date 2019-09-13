@@ -220,7 +220,7 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
         gson = new GsonBuilder().create();
         core = new WMSCoreMessage();
 
-         LoadInbounddetails();
+        // LoadInbounddetails();
         // LoadPalletType();
 
         // For Cipher Barcode reader
@@ -1122,11 +1122,8 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
                 if (ScanValidator.IsPalletScanned(scannedData)) {
                     if(isFromLocationScanned){
                         lblPalletConfirm.setText(scannedData);
-/*                        cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
-                        ivScanPallet.setImageResource(R.drawable.check);
-                        isPalletScanned=true;*/
-                        GetPalletValidation(scannedData);
-                        // TODO isValidPallet check palette function
+                        etPallet.setText(scannedData);
+                        CheckPalletandLocationValidation(scannedData);
                     }else{
                         common.showUserDefinedAlertType(errorMessages.EMC_083, getActivity(), getContext(), "Error");
                     }
@@ -1137,12 +1134,6 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
 
                 //Location Criteria verification
                 if (ScanValidator.IsLocationScanned(scannedData)) {
-/*                    if (scannedData.length() == 8) {
-                        etLocation.setText(scannedData.substring(0, 7));
-
-                    } else {
-                        etLocation.setText(scannedData);
-                    }*/
 
                     if(!isFromLocationScanned){
                         cvScanFromLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
@@ -1152,10 +1143,12 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
                         // TODO isFromLocation check from location function
                     }else{
                         if(isPalletScanned){
-                            cvScanToLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
-                            ivScanToLocation.setImageResource(R.drawable.check);
-                            isToLocationScanned=true;
-                            // TODO isToLocation check to location function
+                            if(txtLoction.getText().toString().equals(scannedData)){
+
+                                UpsertBintoBinTransfer(scannedData);
+                            }else{
+                                common.showUserDefinedAlertType(errorMessages.EMC_086, getActivity(), getContext(), "Error");
+                            }
                         }else{
                             common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");
                         }
@@ -1164,9 +1157,9 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
                     //ConfirmPalletPutaway();
 
                     return;
-                } else {
+                }/* else {
                     common.showUserDefinedAlertType(errorMessages.EMC_083, getActivity(), getContext(), "Error");
-                }
+                }*/
             }else {
                 if(!Common.isPopupActive())
                 {
@@ -1766,6 +1759,265 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
                                     cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanPallet.setImageResource(R.drawable.check);
                                 }
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
+    }
+
+    private void CheckPalletandLocationValidation(final String scannedData) {
+
+        try {
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
+            InboundDTO inboundDTO = new InboundDTO();
+            inboundDTO.setUserId(userId);
+            inboundDTO.setMaterialType(materialType);
+            inboundDTO.setIsSiteToSiteInward("0");
+            inboundDTO.setLocation(etLocation.getText().toString());
+            inboundDTO.setPalletNo(etPallet.getText().toString());
+            message.setEntityObject(inboundDTO);
+
+
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+
+                call = apiService.CheckPalletandLocationValidation(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+
+                            } else {
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+                                ProgressDialogUtils.closeProgressDialog();
+                                List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                InboundDTO dto = null;
+                                for (int i = 0; i < _lInbound.size(); i++) {
+                                    dto = new InboundDTO(_lInbound.get(i).entrySet());
+                                }
+
+                                //TODO Result
+                                if(dto.getResult().equals("Valid Pallet")){
+                                    txtLoction.setText(dto.getToLocation());
+                                    etPallet.setText(scannedData);
+                                    cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                    ivScanPallet.setImageResource(R.drawable.check);
+                                    isPalletScanned=true;
+                                    ProgressDialogUtils.closeProgressDialog();
+                                }else{
+                                    common.showUserDefinedAlertType(dto.getResult(), getActivity(), getContext(), "Error");
+                                }
+
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
+    }
+
+    private void UpsertBintoBinTransfer(String scannedData) {
+
+        try {
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
+            InboundDTO inboundDTO = new InboundDTO();
+            inboundDTO.setUserId(userId);
+            inboundDTO.setLocation(etLocation.getText().toString());
+            inboundDTO.setPalletNo(etPallet.getText().toString());
+            inboundDTO.setToLocation(txtLoction.getText().toString());
+            inboundDTO.setPutwayType("1");
+            inboundDTO.setInout("0");
+            message.setEntityObject(inboundDTO);
+
+            Log.v("ABCDE_BintoBin",new Gson().toJson(message));
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+
+                call = apiService.UpsertBintoBinTransfer(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+
+                            } else {
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+                                ProgressDialogUtils.closeProgressDialog();
+                                List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+
+                                InboundDTO dto=null;
+                                for (int i = 0; i < _lInbound.size(); i++) {
+                                    dto = new InboundDTO(_lInbound.get(i).entrySet());
+                                }
+
+                                if(dto.getResult().equals("Successfully Transfer")){
+                                    cvScanToLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                    ivScanToLocation.setImageResource(R.drawable.check);
+                                    isToLocationScanned=true;
+
+                                    Toast.makeText(getActivity(), "Successfully Transfer", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    common.showUserDefinedAlertType(dto.getResult(), getActivity(), getContext(), "Error");
+                                }
+
+                                ProgressDialogUtils.closeProgressDialog();
+                                //Successfully Transfer
+
                             }
 
                         } catch (Exception ex) {

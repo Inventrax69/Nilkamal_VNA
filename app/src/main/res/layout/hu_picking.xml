@@ -268,7 +268,7 @@
             <EditText
                 android:id="@+id/etFromLocation"
                 style="@style/editTextStyleSmall"
-                android:layout_width="155dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:hint="From Location"
                 android:inputType="text"
@@ -296,7 +296,7 @@
             <EditText
                 android:id="@+id/etPallet"
                 style="@style/editTextStyleSmall"
-                android:layout_width="155dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/hintPallet"
                 android:inputType="text"
@@ -321,7 +321,7 @@
             <EditText
                 android:id="@+id/etToLocation"
                 style="@style/editTextStyleSmall"
-                android:layout_width="155dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:hint="To Location"
                 android:inputType="number"
@@ -334,7 +334,7 @@
 
         <Button
             android:id="@+id/btnSkip"
-            android:layout_width="150dp"
+            android:layout_width="100dp"
             android:layout_height="35dp"
             android:layout_marginBottom="15dp"
             android:layout_marginEnd="20dp"
@@ -350,7 +350,7 @@
 
         <Button
             android:id="@+id/btnClear"
-            android:layout_width="150dp"
+            android:layout_width="100dp"
             android:layout_height="35dp"
             android:layout_marginBottom="15dp"
             android:layout_marginStart="20dp"

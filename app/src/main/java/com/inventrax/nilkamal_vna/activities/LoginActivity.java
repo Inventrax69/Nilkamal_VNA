@@ -342,7 +342,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
         loginUserDTO.setCookieIdentifier(AndroidUtils.getIMEINumber(this).toString());*/
         message.setEntityObject(loginUserDTO);
 
-        Log.v("ABCDE_L",new Gson().toJson(message));
 
 
         Call<String> call = null;

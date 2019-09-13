@@ -161,4 +161,6 @@ public class ErrorMessages {
 
     public String EMC_088 = "Please scan valid pallet";
 
+    public String EMC_089 = "No Suggestion yet";
+
 }

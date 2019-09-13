@@ -110,8 +110,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
     SoundUtils sound = null;
     private ExceptionLoggerUtils exceptionLoggerUtils;
     private ErrorMessages errorMessages;
-
-
     private boolean isMaxVolumeReached = false;
     private boolean isMaxWeightReached = false;
     private boolean IsPalletLoading = false;

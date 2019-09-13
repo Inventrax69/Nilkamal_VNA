@@ -10,7 +10,6 @@
     android:background="@color/white">
 
     <RelativeLayout
-        android:id="@+id/rlLoadPallet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
@@ -187,7 +186,7 @@
             <EditText
                 android:id="@+id/etPartNo"
                 style="@style/editTextStyleSmall"
-                android:layout_width="155dp"
+                android:layout_width="125dp"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/txtInputLayoutFromLocation"
                 android:layout_alignBottom="@+id/txtInputLayoutFromLocation"
@@ -218,7 +217,7 @@
             <EditText
                 android:id="@+id/etQuantity"
                 style="@style/editTextStyleSmall"
-                android:layout_width="155dp"
+                android:layout_width="125dp"
                 android:layout_height="wrap_content"
                 android:hint="Quantity"
                 android:inputType="text"
@@ -244,7 +243,7 @@
             <EditText
                 android:id="@+id/etToLocation"
                 style="@style/editTextStyleSmall"
-                android:layout_width="155dp"
+                android:layout_width="125dp"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/txtInputLayoutToLocation"
                 android:clickable="false"
@@ -273,7 +272,7 @@
             <EditText
                 android:id="@+id/etDockLocation"
                 style="@style/editTextStyleSmall"
-                android:layout_width="155dp"
+                android:layout_width="125dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/hintDockLocation"
                 android:inputType="text"
@@ -283,10 +282,6 @@
                 android:singleLine="true" />
 
         </android.support.design.widget.TextInputLayout>
-
-
-
-
 
 
         <Button
