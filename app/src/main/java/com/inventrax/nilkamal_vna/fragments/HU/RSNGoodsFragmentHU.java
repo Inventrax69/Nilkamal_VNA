@@ -12,6 +12,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -571,12 +572,12 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                 return;
             }
 
-            if (scannedData != null && !common.isPopupActive()) {
+            if (scannedData != null && !Common.isPopupActive()) {
 
                 // checking for location scan
                 if (etLocation.getText().toString().isEmpty()) {
 
-                    if (scanValidator.IsLocationScanned(scannedData)) {
+                    if (ScanValidator.IsLocationScanned(scannedData)) {
                         etLocation.setText(scannedData.substring(0, 7));
                         GetLocationType();
 
@@ -590,11 +591,11 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                 // Check for Pallet if in case scanned location is receiving bin zone
                 if (etPallet.isEnabled()) {
                     if (etPallet.getText().toString().isEmpty()) {
-                        if (scanValidator.IsPalletScanned(scannedData)) {
+                        if (ScanValidator.IsPalletScanned(scannedData)) {
                             etPallet.requestFocus();
                             etPallet.setText(scannedData);
                             etLocation.requestFocus();
-
+                            GetPalletValidation(scannedData);
                             return;
                         } else {
                             common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");
@@ -623,10 +624,10 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
 
                     }
-                } else {
+                } /*else {
                     common.showUserDefinedAlertType(errorMessages.EMC_0009, getActivity(), getContext(), "Error");
                     return;
-                }
+                }*/
 
             } else {
                 soundUtils.alertWarning(getActivity(), getContext());
@@ -719,6 +720,134 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
         }*/
 
+    }
+
+    private void GetPalletValidation(final String scannedData){
+        try {
+
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
+            InboundDTO inboundDTO = new InboundDTO();
+            inboundDTO.setUserId(userId);
+            inboundDTO.setMaterialType(materialType);
+            inboundDTO.setStoreRefNo(lblStoreRefNo.getText().toString());
+            inboundDTO.setPalletNo(scannedData);
+            message.setEntityObject(inboundDTO);
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+
+                call = apiService.GetPalletValidation(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetPalletValidation_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+                                if (owmsExceptionMessage.getWMSExceptionCode().equals("WMC_PUT_CNTL_006")) {
+                                }
+                            } else {
+
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                                List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                InboundDTO dto = null;
+                                for (int i = 0; i < _lInbound.size(); i++) {
+                                    dto = new InboundDTO(_lInbound.get(i).entrySet());
+                                }
+
+                                if (dto.getResult().toString().equalsIgnoreCase("1")) {
+                                    etPallet.setText(scannedData);
+                                    cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                    ivScanPallet.setImageResource(R.drawable.check);
+/*                                    isPalletScanned=true;
+                                    ProgressDialogUtils.closeProgressDialog();*/
+                                } else {
+/*                                    rlPalletType.setVisibility(View.VISIBLE);
+                                    rlPutaway.setVisibility(View.GONE);*/
+                                    cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                    ivScanPallet.setImageResource(R.drawable.warning_img);
+                                    common.showUserDefinedAlertType(errorMessages.EMC_088, getActivity(), getContext(), "Warning");
+                                }
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetPalletValidation_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "ValidatePalletOrLocation_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "ValidatePalletOrLocation_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
     }
 
   /*  public void GetPalletInfo() {
@@ -1781,6 +1910,8 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
             inboundDTO.setLocation(etLocation.getText().toString());
             inboundDTO.setInboundID(InboundId);
             message.setEntityObject(inboundDTO);
+
+            Log.v("ABCDE_GetLocationType",new Gson().toJson(message));
 
 
             Call<String> call = null;

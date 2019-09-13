@@ -8,7 +8,7 @@ android {
         abortOnError false
     }
     defaultConfig {
-        applicationId "com.inventrax.athome"
+        applicationId "com.inventrax.nilkamal_vna"
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 17

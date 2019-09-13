@@ -9,7 +9,6 @@
     android:layout_marginLeft="5dp"
     android:background="@color/white">
 
-
     <RelativeLayout
         android:id="@+id/rlLoadPallet"
         android:layout_width="match_parent"

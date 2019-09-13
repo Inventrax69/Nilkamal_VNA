@@ -87,6 +87,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="10dp"
+            android:textStyle="bold"
             android:text="St Ref. # : "
             android:layout_alignParentLeft="true">
         </TextView>
@@ -97,9 +98,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_toRightOf="@+id/labStRef"
-            android:text="W10WERSDC">
-        </TextView>
+            android:textStyle="bold"
+            android:layout_toRightOf="@+id/labStRef"/>
 
 
         <LinearLayout

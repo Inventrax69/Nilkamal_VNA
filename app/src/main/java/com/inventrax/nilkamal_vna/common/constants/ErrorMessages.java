@@ -159,4 +159,6 @@ public class ErrorMessages {
 
     public String EMC_087 = "Please scan suggested pallet";
 
+    public String EMC_088 = "Please scan valid pallet";
+
 }

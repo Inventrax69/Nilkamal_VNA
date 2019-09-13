@@ -107,10 +107,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
     public Bundle bundle;
     boolean isPalletScanned,isFromLocationScanned,isToLocationScanned;
     boolean isPicking,isPutaway;
-
-
     TextView tvStRef;
-
 
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
         @Override
@@ -120,9 +117,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
         }
     };
 
-    public TaskInterLeavingFragmentHU() {
-
-    }
+    public TaskInterLeavingFragmentHU() { }
 
     @Nullable
     @Override
@@ -136,18 +131,11 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
     // Form controls
     private void loadFormControls() {
 
-
-
-
-
         isPalletScanned=false;
         isFromLocationScanned=false;
         isToLocationScanned=false;
 
         tvStRef=(TextView)rootView.findViewById(R.id.tvStRef);
-
-
-
         cvScanFromLocation=(CardView)rootView.findViewById(R.id.cvScanFromLocation);
         cvScanPallet=(CardView)rootView.findViewById(R.id.cvScanPallet);
         cvScanToLocation=(CardView)rootView.findViewById(R.id.cvScanToLocation);
@@ -225,7 +213,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
             public void onClick(View view) {
                 isPicking=false;
                 isPutaway=true;
-                setOperationType();
+                setOperationTypeApi();
                 clearAllFileds();
             }
         });
@@ -236,7 +224,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
             public void onClick(View view) {
                 isPicking=true;
                 isPutaway=false;
-                setOperationType();
+                setOperationTypeApi();
                 clearAllFileds();
             }
         });
@@ -245,23 +233,218 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
             public void onClick(View view) {
                 isPicking=false;
                 isPutaway=true;
-                setOperationType();
+                setOperationTypeApi();
                 clearAllFileds();
             }
         });
     }
 
-    public void setOperationType(){
+    public void setOperationTypeApi(){
+
+        // TODO call API of the method of auto or picking or putaway.
+
         if(isPicking)
             tvStRef.setText("Picking");
         else
             tvStRef.setText("Put Away");
     }
 
+
+    private void CheckPalletandLocationValidation(final String scannedData) {
+        try {
+
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
+            InboundDTO inboundDTO = new InboundDTO();
+            inboundDTO.setUserId(userId);
+            inboundDTO.setMaterialType(materialType);
+            inboundDTO.setBarcodeType("PALLET");
+            inboundDTO.setScannedInput(scannedData);
+            message.setEntityObject(inboundDTO);
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+
+                call = apiService.CheckPalletandLocationValidation(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "ValidatePalletOrLocation_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+                                // TODO handle exception
+                                /* if (owmsExceptionMessage.getWMSExceptionCode().equals("WMC_PUT_CNTL_006")) {
+                                }*/
+                            } else {
+
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                                List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                InboundDTO dto = null;
+                                for (int i = 0; i < _lInbound.size(); i++) {
+                                    dto = new InboundDTO(_lInbound.get(i).entrySet());
+                                }
+
+                                if (dto.getResult().toString().equalsIgnoreCase("1")) {
+                                    // TODO handle valid pallet or location
+                                    ProgressDialogUtils.closeProgressDialog();
+                                } else {
+                                    // TODO handle not valid pallet or location
+                                }
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "ValidatePalletOrLocation_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "ValidatePalletOrLocation_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "ValidatePalletOrLocation_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
+
+    }
+
+    // sending exception to the database
+    public void logException() {
+
+        try {
+            String textFromFile = ExceptionLoggerUtils.readFromFile(getActivity());
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.Exception, getActivity());
+            WMSExceptionMessage wmsExceptionMessage = new WMSExceptionMessage();
+            wmsExceptionMessage.setWMSMessage(textFromFile);
+            message.setEntityObject(wmsExceptionMessage);
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+                call = apiService.LogException(message);
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+
+                        } catch (Exception ex) {
+
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "002", getContext());
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            logException();
+
+
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        ProgressDialogUtils.closeProgressDialog();
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
+    }
+
     public void clearAllFileds(){
-/*        etFromLocation.setText("");
-        etPallet.setText("");
-        etToLocation.setText("");*/
         isPalletScanned=false;
         isFromLocationScanned=false;
         isToLocationScanned=false;
@@ -285,26 +468,26 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                 if(isPicking){
                     if(isFromLocationScanned && !isPalletScanned && !isToLocationScanned){
                         Toast.makeText(getActivity(), "Skkiped", Toast.LENGTH_SHORT).show();
-                        //TODO after Skiping()
+                        //TODO after Skipping()
                     }else{
                         if(isToLocationScanned && isPalletScanned){
                             Toast.makeText(getActivity(), "Already Transfered", Toast.LENGTH_SHORT).show();
                         }else{
                             Toast.makeText(getActivity(), "Please scan From Location and Pallet to skip", Toast.LENGTH_SHORT).show();
                         }
-                        //TODO after Skiping()
+                        //TODO setError messages
                     }
                 }else{
                     if(isFromLocationScanned && isPalletScanned && !isToLocationScanned){
                         Toast.makeText(getActivity(), "Skkiped", Toast.LENGTH_SHORT).show();
-                        //TODO after Skiping()
+                        //TODO after Skipping()
                     }else{
                         if(isToLocationScanned){
                             Toast.makeText(getActivity(), "Already Transfered", Toast.LENGTH_SHORT).show();
                         }else{
                             Toast.makeText(getActivity(), "Please scan From Location and Pallet to skip", Toast.LENGTH_SHORT).show();
                         }
-                        //TODO after Skiping()
+                        //TODO setError messages
                     }
                 }
                 break;

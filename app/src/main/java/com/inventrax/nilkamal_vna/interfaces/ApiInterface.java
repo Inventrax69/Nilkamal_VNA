@@ -40,6 +40,9 @@ public interface ApiInterface {
     @POST("Inbound/GetRSNInfo")
     Call<String> GetRSNInfo(@Body WMSCoreMessage oRequest);
 
+    @POST("Inbound/GetPalletValidation")
+    Call<String> GetPalletValidation(@Body WMSCoreMessage oRequest);
+
     @POST("Inbound/PrintMouldedFurnitureLable")
     Call<String> PrintMouldedFurnitureLable(@Body WMSCoreMessage oRequest);
 
@@ -63,6 +66,15 @@ public interface ApiInterface {
 
     @POST("PutAway/GetPalletTypeList")
     Call<String> GetPalletTypeList(@Body WMSCoreMessage oRequest);
+
+    @POST("PutAway/CheckPalletandLocationValidation")
+    Call<String> CheckPalletandLocationValidation(@Body WMSCoreMessage oRequest);
+
+    @POST("PutAway/UpsertBintoBinTransfer")
+    Call<String> UpsertBintoBinTransfer(@Body WMSCoreMessage oRequest);
+
+    @POST("PutAway/VNASuggestion")
+    Call<String> VNASuggestion(@Body WMSCoreMessage oRequest);
 
     @POST("PutAway/GetPendingPutawyPalletList")
     Call<String> GetPendingPutawyPalletList(@Body WMSCoreMessage oRequest);
