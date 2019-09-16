@@ -95,7 +95,7 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
     //For Honey well barcode
     private static BarcodeReader barcodeReader;
     private AidcManager manager;
-
+    SoundUtils soundUtils = null;
     String clientId = null;
     ArrayList<String> sloc;
     SoundUtils sound = null;
@@ -219,7 +219,7 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
         sound = new SoundUtils();
         gson = new GsonBuilder().create();
         core = new WMSCoreMessage();
-
+        soundUtils = new SoundUtils();
         // LoadInbounddetails();
         // LoadPalletType();
 
@@ -318,7 +318,6 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
                 break;
             case R.id.btnGo:
                 CheckInboundRefNumber();
-                //TODO Check select st Ref # in spinner
                 lblStoreRefNo.setText(storeRefNo);
                 break;
 
@@ -1140,7 +1139,6 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
                         ivScanFromLocation.setImageResource(R.drawable.check);
                         isFromLocationScanned=true;
                         etLocation.setText(scannedData);
-                        // TODO isFromLocation check from location function
                     }else{
                         if(isPalletScanned){
                             if(txtLoction.getText().toString().equals(scannedData)){
@@ -1875,7 +1873,6 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
                                     dto = new InboundDTO(_lInbound.get(i).entrySet());
                                 }
 
-                                //TODO Result
                                 if(dto.getResult().equals("Valid Pallet")){
                                     txtLoction.setText(dto.getToLocation());
                                     etPallet.setText(scannedData);
@@ -2010,7 +2007,23 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
                                     ivScanToLocation.setImageResource(R.drawable.check);
                                     isToLocationScanned=true;
 
-                                    Toast.makeText(getActivity(), "Successfully Transfer", Toast.LENGTH_SHORT).show();
+                                    Common.setIsPopupActive(true);
+                                    soundUtils.alertSuccess(getActivity(), getContext());
+                                    DialogUtils.showAlertDialog(getActivity(), "Success", "Successfully Transfer", R.drawable.success,new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which)
+                                        {
+                                            switch (which) {
+                                                case DialogInterface.BUTTON_POSITIVE:
+                                                    Common.setIsPopupActive(false);
+                                                    ClearFields();
+                                                    break;
+                                            }
+                                        }
+                                    });
+                                   // common.showUserDefinedAlertType("Successfully Transfer", getActivity(), getContext(), "Success");
+
+                                    //Toast.makeText(getActivity(), "Successfully Transfer", Toast.LENGTH_SHORT).show();
                                 }else{
                                     common.showUserDefinedAlertType(dto.getResult(), getActivity(), getContext(), "Error");
                                 }

@@ -2,6 +2,7 @@ package com.inventrax.nilkamal_vna.fragments.HU;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -45,6 +46,7 @@ import com.inventrax.nilkamal_vna.pojos.InboundDTO;
 import com.inventrax.nilkamal_vna.pojos.WMSCoreMessage;
 import com.inventrax.nilkamal_vna.pojos.WMSExceptionMessage;
 import com.inventrax.nilkamal_vna.services.RestService;
+import com.inventrax.nilkamal_vna.util.DialogUtils;
 import com.inventrax.nilkamal_vna.util.ExceptionLoggerUtils;
 import com.inventrax.nilkamal_vna.util.FragmentUtils;
 import com.inventrax.nilkamal_vna.util.ProgressDialogUtils;
@@ -230,7 +232,6 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
 
     public void setOperationTypeApi(String suggestionType){
 
-        // TODO call API of the method of auto or picking or putaway.
         try {
             WMSCoreMessage message = new WMSCoreMessage();
             message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
@@ -446,10 +447,21 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                     cvScanToLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanToLocation.setImageResource(R.drawable.check);
                                     isToLocationScanned=true;
-                                    setOperationTypeApi(OperationType);
-                                    clearAllFileds();
-                                 //   Toast.makeText(getActivity(), "Successfully Transfer", Toast.LENGTH_SHORT).show();
-                                    common.showUserDefinedAlertType("Successfully Transfer", getActivity(), getContext(), "Success");
+                                    Common.setIsPopupActive(true);
+                                    soundUtils.alertSuccess(getActivity(), getContext());
+                                    DialogUtils.showAlertDialog(getActivity(), "Success", "Successfully Transfer", R.drawable.success,new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which)
+                                        {
+                                            switch (which) {
+                                                case DialogInterface.BUTTON_POSITIVE:
+                                                    Common.setIsPopupActive(false);
+                                                    setOperationTypeApi(OperationType);
+                                                    clearAllFileds();
+                                                    break;
+                                            }
+                                        }
+                                    });
                                 }else{
                                     common.showUserDefinedAlertType(dto.getResult(), getActivity(), getContext(), "Error");
                                 }
@@ -558,7 +570,6 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
                                 common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
-                                // TODO handle exception
                                 /* if (owmsExceptionMessage.getWMSExceptionCode().equals("WMC_PUT_CNTL_006")) {
                                 }*/
                             } else {
@@ -574,10 +585,8 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                 }
 
                                 if (dto.getResult().toString().equalsIgnoreCase("1")) {
-                                    // TODO handle valid pallet or location
                                     ProgressDialogUtils.closeProgressDialog();
                                 } else {
-                                    // TODO handle not valid pallet or location
                                 }
                             }
 
@@ -854,7 +863,6 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                             common.showUserDefinedAlertType(errorMessages.EMC_087, getActivity(), getContext(), "Error");
                         }
 
-                        // TODO isValidPallet check palette function
                     }else{
                         common.showUserDefinedAlertType(errorMessages.EMC_083, getActivity(), getContext(), "Error");
                     }
@@ -877,7 +885,6 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                             isFromLocationScanned=false;
                             common.showUserDefinedAlertType(errorMessages.EMC_085, getActivity(), getContext(), "Error");
                         }
-                        // TODO isFromLocation check from location function
                     }else{
                         if(isPalletScanned){
                             if(etToLocation.getText().toString().equals(scannedData)){
@@ -890,7 +897,6 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                 common.showUserDefinedAlertType(errorMessages.EMC_086, getActivity(), getContext(), "Error");
                             }
 
-                            // TODO isToLocation check to location function
                         }else{
                             common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");
                         }

@@ -248,9 +248,9 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/layoutRelayout"
             android:textColor="@color/lightblack"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:text="Inward Handover Location"
+            android:text="Suggested Location"
             android:layout_marginTop="10dp"
             android:visibility="visible"/>
 
@@ -268,8 +268,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/lightblack"
-                android:textSize="12sp"
-                android:textStyle="normal"
+                android:textSize="15sp"
+                android:textStyle="bold"
                 android:text="Location:   "
                 android:gravity="end"
                 android:layout_weight="1"
@@ -281,8 +281,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/lightblack"
-                android:textSize="12sp"
-                android:textStyle="normal"
+                android:textSize="15sp"
+                android:textStyle="bold"
                 android:layout_weight="1"
                 android:layout_marginTop="20dp"
                 android:visibility="visible"/>

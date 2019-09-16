@@ -119,7 +119,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
     double palletLoadedVolume = 0;
     int palletMaxWeight = 0;
     int palletLoadedWeight = 0;
-
     public String auditbinLocation = null;
 
     private String pallet = null, location = null, rsn = null, L = null, B = null, H = null,
@@ -196,7 +195,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
                 } else {
                     if (!etPallet.getText().toString().isEmpty()) {
-                        GetPalletinformation();
+                       // GetPalletinformation();
                     }
 
                     //GetPalletInfo();
@@ -578,7 +577,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                     if (ScanValidator.IsLocationScanned(scannedData)) {
                         etLocation.setText(scannedData.substring(0, 7));
                         GetLocationType();
-
                         return;
                     } else {
                         common.showUserDefinedAlertType(errorMessages.EMC_0015, getActivity(), getContext(), "Error");
@@ -800,6 +798,8 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                                 } else {
 /*                                    rlPalletType.setVisibility(View.VISIBLE);
                                     rlPutaway.setVisibility(View.GONE);*/
+                                    etPallet.setText("");
+
                                     cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanPallet.setImageResource(R.drawable.warning_img);
                                     common.showUserDefinedAlertType(errorMessages.EMC_088, getActivity(), getContext(), "Warning");
@@ -859,7 +859,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
         }
     }*/
 
-    public void GetPalletinformation() {
+/*    public void GetPalletinformation() {
 
         try {
 
@@ -926,11 +926,11 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                                 ProgressDialogUtils.closeProgressDialog();
                                 if (owmsExceptionMessage.getWMSExceptionCode().equals("WMC_PUT_CNTL_004")) {
                                     auditbinLocation = owmsExceptionMessage.getWMSMessage().split("[{}]")[1].toString();
-                                    /*
+                                    *//*
                                      * if Pallet Existed Logically in Some location and physically empty, confirming user to
                                      * move the Stock to Audit Bin if USer say Yes Call MoveStockToAuditBin service to Move the stock to audit bin zone so that
                                      * this pallet can be used further
-                                     */
+                                     *//*
                                     DialogUtils.showConfirmDialog(getActivity(), "Confirm Remove",
                                             "Pallet is not empty, Do you want to move stock to Audit Bin ?", new DialogInterface.OnClickListener() {
 
@@ -1034,7 +1034,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
             ProgressDialogUtils.closeProgressDialog();
             common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
         }
-    }
+    }*/
 
 
     public void ClosePallet() {
