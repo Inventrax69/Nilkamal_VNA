@@ -118,7 +118,7 @@
     <string name="title_activity_to_in_hand_location">To In-Hand Location</string>
     <string name="title_activity_putaway">Putaway</string>
     <string name="title_activity_task_inter_location">Task Inter Location</string>
-    <string name="title_activity_sorting">Sorting</string>
+    <string name="title_activity_picking_sorting">Picking &amp; Sorting</string>
     <string name="title_activity_live_stock">Live Stock</string>
     <string name="title_activity_obdpicking">OBD Picking</string>
     <string name="title_activity_vbpl_list">VLPD List</string>

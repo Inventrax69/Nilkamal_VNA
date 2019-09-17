@@ -222,12 +222,14 @@
             android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp"
             android:text="Suggested Location"
+            android:visibility="invisible"
             android:textSize="18sp"
             android:textStyle="normal" />
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/txtInputLayoutFromLocation"
             android:layout_width="wrap_content"
+            android:layout_margin="3dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/lblDesc"
@@ -235,15 +237,17 @@
             android:layout_marginStart="10dp"
             android:clickable="false"
             android:focusable="false"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp">
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentLeft="true">
 
             <EditText
                 android:id="@+id/etFromLocation"
                 style="@style/editTextStyleSmall"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="From Location"
+                android:textStyle="bold"
+                android:hint=""
+                android:background="@android:color/transparent"
                 android:inputType="text"
                 android:clickable="false"
                 android:longClickable="false"
@@ -256,12 +260,13 @@
         <android.support.design.widget.TextInputLayout
             android:id="@+id/txtInputLayoutPallet"
             android:layout_width="wrap_content"
+            android:layout_margin="3dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_marginEnd="10dp"
             android:layout_below="@+id/lblDesc"
             android:layout_marginTop="10dp"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:clickable="false"
             android:focusable="false"
             android:layout_marginRight="10dp">
@@ -269,11 +274,13 @@
             <EditText
                 android:id="@+id/etPallet"
                 style="@style/editTextStyleSmall"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/hintPallet"
+                android:hint=""
+                android:textStyle="bold"
                 android:inputType="text"
                 android:clickable="false"
+                android:background="@android:color/transparent"
                 android:longClickable="false"
                 android:focusable="false"
                 android:singleLine="true" />
@@ -283,7 +290,8 @@
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/txtInputLayoutToLocation"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_margin="3dp"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
@@ -294,9 +302,13 @@
             <EditText
                 android:id="@+id/etToLocation"
                 style="@style/editTextStyleSmall"
-                android:layout_width="100dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="To Location"
+                android:textStyle="bold"
+                android:hint=""
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
                 android:inputType="number"
                 android:clickable="false"
                 android:longClickable="false"

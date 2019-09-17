@@ -131,6 +131,11 @@ public class InboundDTO {
     private String Inout;
 
 
+
+    @SerializedName("InoutId")
+    private String InoutId;
+
+
     public  InboundDTO()
     {
     }
@@ -421,6 +426,12 @@ public class InboundDTO {
                         this.setInout(entry.getValue().toString());
                     }
                     break;
+                case "InoutId":
+                    if (entry.getValue() != null) {
+                        this.setInoutId(entry.getValue().toString());
+                    }
+                    break;
+
 
             }
         }
@@ -827,7 +838,13 @@ public class InboundDTO {
         Inout = inout;
     }
 
+    public String getInoutId() {
+        return InoutId;
+    }
 
+    public void setInoutId(String inoutId) {
+        InoutId = inoutId;
+    }
 
 
 }

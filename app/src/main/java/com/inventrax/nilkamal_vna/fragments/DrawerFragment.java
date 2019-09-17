@@ -46,7 +46,7 @@ import com.inventrax.nilkamal_vna.fragments.HU.PutawayFragmentHU;
 import com.inventrax.nilkamal_vna.fragments.HU.ReceiveFromSiteFragmentHU;
 import com.inventrax.nilkamal_vna.fragments.HU.SLocToSLocFragment;
 import com.inventrax.nilkamal_vna.fragments.HU.SkuToSkuFragment;
-import com.inventrax.nilkamal_vna.fragments.HU.SortingtHU;
+import com.inventrax.nilkamal_vna.fragments.HU.PickingSortingtHU;
 import com.inventrax.nilkamal_vna.fragments.HU.TaskInterLeavingFragmentHU;
 import com.inventrax.nilkamal_vna.fragments.HU.ToInHandLocationHU;
 import com.inventrax.nilkamal_vna.fragments.HU.VLPDLoadingFragment;
@@ -197,10 +197,10 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
 
         childModelsList = new ArrayList<>();
 
-        childModel = new MenuModel("Picking", false, false, "Picking");
-        childModelsList.add(childModel);
+/*        childModel = new MenuModel("Picking", false, false, "Picking");
+        childModelsList.add(childModel);*/
 
-        childModel = new MenuModel("Sorting", false, false, "Sorting");
+        childModel = new MenuModel("Picking & Sorting", false, false, "Picking & Sorting");
         childModelsList.add(childModel);
 
         childModel = new MenuModel("Pick", false, false, "Pick");
@@ -446,8 +446,8 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new PickingFragmentHU());
                     break;
 
-                case "Sorting":
-                    FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new SortingtHU());
+                case "Picking & Sorting":
+                    FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new PickingSortingtHU());
                     break;
 
                 case "Pick on Demand":

@@ -10,15 +10,94 @@
     android:background="@color/white">
 
     <RelativeLayout
+        android:id="@+id/rlVLPDSelect"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="2dp"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/tvSelectVLPDNo"
+            style="@style/textViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:text="Select VLDP #">
+
+        </TextView>
+
+        <com.inventrax.nilkamal_vna.searchableSpinner.SearchableSpinner
+            android:id="@+id/spinnerSelectVLPDNo"
+            style="@style/Widget.AppCompat.Spinner.Underlined"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@+id/tvSelectVLPDNo"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true">
+
+        </com.inventrax.nilkamal_vna.searchableSpinner.SearchableSpinner>
+
+        <Button
+            android:id="@+id/btnGo"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="65dp"
+            android:background="@drawable/button_shape"
+            android:text="@string/go"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/btnCloseOne"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_close_shape"
+            android:elevation="30dp"
+            android:foreground="@drawable/button_cross_close"
+            android:foregroundGravity="center"
+            android:text="@string/putaway"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlSorting"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_marginTop="5dp"
-        android:visibility="visible">
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/lblVLPDNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="10dp"
+            android:text="VLPD#"
+            android:visibility="visible"
+            android:textStyle="bold" />
 
         <LinearLayout
-            android:layout_below="@+id/labStRef"
+            android:layout_below="@+id/lblVLPDNumber"
             android:id="@+id/layoutScan"
             android:layout_marginTop="10dp"
             android:gravity="center"

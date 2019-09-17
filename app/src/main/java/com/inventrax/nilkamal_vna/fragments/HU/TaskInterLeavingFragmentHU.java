@@ -65,32 +65,23 @@ import retrofit2.Response;
 
 public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, BarcodeReader.TriggerListener, BarcodeReader.BarcodeListener {
 
-    private static final String classCode = "API_FRAG_PUTAWAY";
+    private static final String classCode = "API_FRAG_TASK_INTER_LEAVING";
     private View rootView;
     private CardView cvScanFromLocation,cvScanPallet,cvScanToLocation;
-
-    private ImageView ivScanFromLocation, ivScanPallet, ivScanToLocation;
-    private TextInputLayout txtInputLayoutSourceBin, txtInputLayoutPallet, txtInputLayoutCount, txtInputLayoutQty,
-            txtInputLayoutSourcePallet, txtInputLayoutDestPallet, txtInputLayoutCountBinMap, txtInputLayoutDestBin,
-            txtInputLayoutOldRsn, txtInputLayoutNewRsn, txtInputLayoutQtyPrint, txtInputLayoutPrinterIP;
+    private ImageView ivScanFromLocation,ivScanPallet, ivScanToLocation;
     private EditText etFromLocation,etPallet,etToLocation;
-    private Button btnClear, btnSkip,btnCloseLoadPallet;
-
+    Button btnClear, btnSkip,btnCloseLoadPallet;
     private Common common = null;
-    SoundUtils soundUtils = null;
     String scanner = null;
     String getScanner = null;
-    private IntentFilter filter;
+    IntentFilter filter;
     private ScanValidator scanValidator;
     private Gson gson;
     private WMSCoreMessage core;
-    private String _oldRSNNumber = null;
-    private double _availableSetQty = 0;
-    private double _partialDispatchQty = 0;
     private String userId = null, stRefNo = null, palletType = null, materialType = null;
     private Boolean IsFromLocationScanned = false, IsFromPalletScanned = false, IsRSNScanned = false, IsEANScanned = false, IsValidLocationorPallet = false, IsPalletScanned = false, Isscannedpalletitem = false, IsToPalletScanned = false;
 
-    //For Honey well barcode
+    // For Honey well barcode
     private static BarcodeReader barcodeReader;
     private AidcManager manager;
 
@@ -101,7 +92,8 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
     boolean isPalletScanned,isFromLocationScanned,isToLocationScanned;
     boolean isPicking,isPutaway;
     TextView tvStRef;
-    public String OperationType;
+    public String SuggestionType;
+    public String inOutId="1";
 
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
         @Override
@@ -162,7 +154,6 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
         sound = new SoundUtils();
         gson = new GsonBuilder().create();
         core = new WMSCoreMessage();
-        soundUtils = new SoundUtils();
 
         bundle = new Bundle();
 
@@ -185,15 +176,11 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                 try {
                     barcodeReader.claim();
                     HoneyWellBarcodeListeners();
-
                 } catch (ScannerUnavailableException e) {
                     e.printStackTrace();
                 }
             }
         });
-
-
-
 
         radioButtonClicks();
 
@@ -205,32 +192,48 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
         ((RadioButton)rootView.findViewById(R.id.radioAuto)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                OperationType="1";
-                setOperationTypeApi(OperationType);
-                clearAllFileds();
+                clearAllFileds1();
+                SuggestionType="1";
+                inOutId="1";
+                setSuggestionTypeApi(SuggestionType);
+
+/*                if(!inOutId.equals("1")){
+
+                    clearAllFileds1();
+                }else{
+                    isPutaway=true;
+                    isPicking=false;
+                    clearAllFileds1();
+                }*/
+
             }
         });
-        ((RadioButton)rootView.findViewById(R.id.radioAuto)).setEnabled(true);
         ((RadioButton)rootView.findViewById(R.id.radioAuto)).performClick();
         ((RadioButton)rootView.findViewById(R.id.radioPicking)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                OperationType="3";
-                setOperationTypeApi(OperationType);
-                clearAllFileds();
+                SuggestionType="3";
+                inOutId="2";
+                clearAllFileds1();
+                setSuggestionTypeApi(SuggestionType);
+
             }
         });
         ((RadioButton)rootView.findViewById(R.id.radioPutaway)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                OperationType="2";
-                setOperationTypeApi(OperationType);
-                clearAllFileds();
+                SuggestionType="2";
+                inOutId="1";
+                clearAllFileds1();
+                isPutaway=true;
+                isPicking=false;
+                tvStRef.setText("Put Away");
+
             }
         });
     }
 
-    public void setOperationTypeApi(String suggestionType){
+    public void setSuggestionTypeApi(String suggestionType){
 
         try {
             WMSCoreMessage message = new WMSCoreMessage();
@@ -238,6 +241,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
             InboundDTO inboundDTO = new InboundDTO();
             inboundDTO.setUserId(userId);
             inboundDTO.setSuggestionType(suggestionType);
+            inboundDTO.setInoutId(inOutId);
             message.setEntityObject(inboundDTO);
 
             Log.v("ABCDE_OpertionType",new Gson().toJson(message));
@@ -259,7 +263,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
 
             } catch (Exception ex) {
                 try {
-                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
                     logException();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -301,17 +305,62 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                 }
 
                                 if(dto.getInout()!=null){
-                                    etFromLocation.setText(dto.getPickedLocation());
-                                    etPallet.setText(dto.getPalletNo());
-                                    etToLocation.setText(dto.getSuggestedLocation());
-                                    if(dto.getInout().equals("PUTWAY"))
-                                    {
+
+                                    if(SuggestionType.equals("1")){
+
+                                        if(dto.getInoutId().equals("1")){
+                                            isPicking=false;
+                                            isPutaway=true;
+                                            inOutId="1";
+                                        }else{
+                                            isPicking=true;
+                                            isPutaway=false;
+                                            inOutId="2";
+                                            etFromLocation.setText(dto.getPickedLocation());
+                                            etPallet.setText(dto.getPalletNo());
+                                            etToLocation.setText(dto.getSuggestedLocation());
+                                        }
+
+                                    }else if(SuggestionType.equals("2")){
+
                                         isPicking=false;
                                         isPutaway=true;
+
                                     }else{
                                         isPicking=true;
                                         isPutaway=false;
+                                        etFromLocation.setText(dto.getPickedLocation());
+                                        etPallet.setText(dto.getPalletNo());
+                                        etToLocation.setText(dto.getSuggestedLocation());
+
+
                                     }
+
+/*                                    if(dto.getInoutId().equals("1")){
+                                        isPicking=false;
+                                        isPutaway=true;
+                                        if(inOutId.equals("2")){
+                                            etFromLocation.setText(dto.getPickedLocation());
+                                            etPallet.setText(dto.getPalletNo());
+                                            etToLocation.setText(dto.getSuggestedLocation());
+                                        }
+                                    }else{
+                                        if(inOutId.equals("2")){
+                                            etFromLocation.setText(dto.getPickedLocation());
+                                            etPallet.setText(dto.getPalletNo());
+                                            etToLocation.setText(dto.getSuggestedLocation());
+                                        }
+                                        if(dto.getInout().equals("PUTWAY"))
+                                        {
+                                            isPicking=false;
+                                            isPutaway=true;
+                                        }else{
+                                            isPicking=true;
+                                            isPutaway=false;
+                                        }
+
+                                    }*/
+
                                     if(isPicking)
                                         tvStRef.setText("Picking");
                                     else
@@ -377,6 +426,8 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
             inboundDTO.setPalletNo(etPallet.getText().toString());
             inboundDTO.setToLocation(etToLocation.getText().toString());
             inboundDTO.setPutwayType("0");
+            inboundDTO.setInoutId(inOutId);
+            inboundDTO.setSuggestionType(SuggestionType);
             if(isPicking)
             inboundDTO.setInout("2");
             else
@@ -401,7 +452,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
 
             } catch (Exception ex) {
                 try {
-                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
                     logException();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -447,8 +498,9 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                     cvScanToLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanToLocation.setImageResource(R.drawable.check);
                                     isToLocationScanned=true;
+                                    inOutId=dto.getInoutId();
                                     Common.setIsPopupActive(true);
-                                    soundUtils.alertSuccess(getActivity(), getContext());
+                                    sound.alertSuccess(getActivity(), getContext());
                                     DialogUtils.showAlertDialog(getActivity(), "Success", "Successfully Transfer", R.drawable.success,new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which)
@@ -456,7 +508,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                             switch (which) {
                                                 case DialogInterface.BUTTON_POSITIVE:
                                                     Common.setIsPopupActive(false);
-                                                    setOperationTypeApi(OperationType);
+                                                    setSuggestionTypeApi(SuggestionType);
                                                     clearAllFileds();
                                                     break;
                                             }
@@ -512,18 +564,20 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
         }
     }
 
-
     private void CheckPalletandLocationValidation(final String scannedData) {
-        try {
 
+        try {
             WMSCoreMessage message = new WMSCoreMessage();
             message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
             InboundDTO inboundDTO = new InboundDTO();
             inboundDTO.setUserId(userId);
             inboundDTO.setMaterialType(materialType);
-            inboundDTO.setBarcodeType("PALLET");
-            inboundDTO.setScannedInput(scannedData);
+            inboundDTO.setIsSiteToSiteInward("0");
+            inboundDTO.setLocation(etFromLocation.getText().toString());
+            inboundDTO.setPalletNo(etPallet.getText().toString());
             message.setEntityObject(inboundDTO);
+
+
 
             Call<String> call = null;
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
@@ -542,13 +596,14 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
 
             } catch (Exception ex) {
                 try {
-                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "ValidatePalletOrLocation_01", getActivity());
+                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
                     logException();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 ProgressDialogUtils.closeProgressDialog();
                 common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
             }
             try {
                 //Getting response from the method
@@ -557,9 +612,9 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
 
-
                         try {
                             core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
                             if ((core.getType().toString().equals("Exception"))) {
                                 List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
@@ -570,12 +625,10 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
                                 common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
-                                /* if (owmsExceptionMessage.getWMSExceptionCode().equals("WMC_PUT_CNTL_006")) {
-                                }*/
+
                             } else {
-
                                 core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
-
+                                ProgressDialogUtils.closeProgressDialog();
                                 List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
@@ -584,15 +637,22 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                     dto = new InboundDTO(_lInbound.get(i).entrySet());
                                 }
 
-                                if (dto.getResult().toString().equalsIgnoreCase("1")) {
+                                if(dto.getResult().equals("Valid Pallet")){
+                                    etToLocation.setText(dto.getToLocation());
+                                    etPallet.setText(scannedData);
+                                    cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                    ivScanPallet.setImageResource(R.drawable.check);
+                                    isPalletScanned=true;
                                     ProgressDialogUtils.closeProgressDialog();
-                                } else {
+                                }else{
+                                    common.showUserDefinedAlertType(dto.getResult(), getActivity(), getContext(), "Error");
                                 }
+
                             }
 
                         } catch (Exception ex) {
                             try {
-                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "ValidatePalletOrLocation_02", getActivity());
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_02", getActivity());
                                 logException();
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -611,7 +671,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                 });
             } catch (Exception ex) {
                 try {
-                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "ValidatePalletOrLocation_03", getActivity());
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_03", getActivity());
                     logException();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -621,7 +681,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
             }
         } catch (Exception ex) {
             try {
-                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "ValidatePalletOrLocation_04", getActivity());
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_04", getActivity());
                 logException();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -629,7 +689,6 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
             ProgressDialogUtils.closeProgressDialog();
             common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
         }
-
     }
 
     // sending exception to the database
@@ -733,13 +792,147 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
 
     }
 
+    private void GetVNAPutawaySuggestion(final String scannedData) {
 
+        try {
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
+            InboundDTO inboundDTO = new InboundDTO();
+            inboundDTO.setUserId(userId);
+            inboundDTO.setLocation(etFromLocation.getText().toString());
+            inboundDTO.setPalletNo(scannedData);
+            inboundDTO.setInoutId("1");
+            inboundDTO.setIsSiteToSiteInward("0");
+            message.setEntityObject(inboundDTO);
+
+
+            Log.v("ABCDE_R",new Gson().toJson(message));
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+
+                call = apiService.GetVNAPutawaySuggestion(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+
+                            } else {
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+                                ProgressDialogUtils.closeProgressDialog();
+                                List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                Log.v("ABCDE_R",new Gson().toJson(_lInbound));
+                                InboundDTO dto = null;
+                                for (int i = 0; i < _lInbound.size(); i++) {
+                                    dto = new InboundDTO(_lInbound.get(i).entrySet());
+                                }
+
+                                if(dto.getResult()!=null){
+                                    if(!dto.getResult().equals("-1")){
+                                        etToLocation.setText(dto.getToLocation());
+                                        etPallet.setText(scannedData);
+                                        cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                        ivScanPallet.setImageResource(R.drawable.check);
+                                        isPalletScanned=true;
+                                    }else{
+                                        common.showUserDefinedAlertType("Invaild Location or pallet", getActivity(), getContext(), "Error");
+                                    }
+                                }else{
+                                    common.showUserDefinedAlertType("Invaild Location or pallet", getActivity(), getContext(), "Error");
+                                }
+
+
+
+
+                                ProgressDialogUtils.closeProgressDialog();
+
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
+    }
     //button Clicks
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnClear:
-                clearAllFileds();
+                    clearAllFileds1();
                 break;
             case R.id.btnSkip:
                 if(isPicking){
@@ -851,61 +1044,86 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
             if (!ProgressDialogUtils.isProgressActive()) {
 
                 if (ScanValidator.IsPalletScanned(scannedData)) {
-                    if(isFromLocationScanned){
-                        if(etPallet.getText().toString().equals(scannedData)){
-                            cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
-                            ivScanPallet.setImageResource(R.drawable.check);
-                            isPalletScanned=true;
+                    if(isPicking){
+                        if(isFromLocationScanned){
+                            if(etPallet.getText().toString().equals(scannedData)){
+                                cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                ivScanPallet.setImageResource(R.drawable.check);
+                                isPalletScanned=true;
+                            }else{
+                                cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                ivScanPallet.setImageResource(R.drawable.warning_img);
+                                isPalletScanned=false;
+                                common.showUserDefinedAlertType(errorMessages.EMC_087, getActivity(), getContext(), "Error");
+                            }
                         }else{
-                            cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
-                            ivScanPallet.setImageResource(R.drawable.warning_img);
-                            isPalletScanned=false;
-                            common.showUserDefinedAlertType(errorMessages.EMC_087, getActivity(), getContext(), "Error");
+                            common.showUserDefinedAlertType(errorMessages.EMC_083, getActivity(), getContext(), "Error");
                         }
-
                     }else{
-                        common.showUserDefinedAlertType(errorMessages.EMC_083, getActivity(), getContext(), "Error");
+                        if(isFromLocationScanned){
+                            //etPallet.setText(scannedData);
+                            //CheckPalletandLocationValidation(scannedData);
+                            GetVNAPutawaySuggestion(scannedData);
+                        }else{
+                            common.showUserDefinedAlertType(errorMessages.EMC_083, getActivity(), getContext(), "Error");
+                        }
                     }
 
                     return;
                 }
-
 
                 //Location Criteria verification
                 if (ScanValidator.IsLocationScanned(scannedData)) {
-                    if(!isFromLocationScanned){
-                        if(etFromLocation.getText().toString().equals(scannedData)){
+                    if(isPicking){
+                        if(!isFromLocationScanned){
+                            if(etFromLocation.getText().toString().equals(scannedData)){
+                                cvScanFromLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                ivScanFromLocation.setImageResource(R.drawable.check);
+                                isFromLocationScanned=true;
+
+                            }else{
+                                cvScanFromLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                ivScanFromLocation.setImageResource(R.drawable.warning_img);
+                                isFromLocationScanned=false;
+                                common.showUserDefinedAlertType(errorMessages.EMC_085, getActivity(), getContext(), "Error");
+                            }
+                        }else{
+                            if(isPalletScanned){
+                                if(etToLocation.getText().toString().equals(scannedData)){
+                                    UpsertBintoBinTransfer(scannedData);
+                                }else{
+                                    cvScanToLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                    ivScanToLocation.setImageResource(R.drawable.warning_img);
+                                    isToLocationScanned=false;
+                                    common.showUserDefinedAlertType(errorMessages.EMC_086, getActivity(), getContext(), "Error");
+                                }
+
+                            }else{
+                                common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");
+                            }
+                        }
+                    }else{
+                        if(!isFromLocationScanned){
                             cvScanFromLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
                             ivScanFromLocation.setImageResource(R.drawable.check);
                             isFromLocationScanned=true;
-
+                            etFromLocation.setText(scannedData);
                         }else{
-                            cvScanFromLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
-                            ivScanFromLocation.setImageResource(R.drawable.warning_img);
-                            isFromLocationScanned=false;
-                            common.showUserDefinedAlertType(errorMessages.EMC_085, getActivity(), getContext(), "Error");
-                        }
-                    }else{
-                        if(isPalletScanned){
-                            if(etToLocation.getText().toString().equals(scannedData)){
-                                UpsertBintoBinTransfer(scannedData);
+                            if(isPalletScanned){
+                                if(etToLocation.getText().toString().equals(scannedData)){
 
+                                    UpsertBintoBinTransfer(scannedData);
+                                }else{
+                                    common.showUserDefinedAlertType(errorMessages.EMC_086, getActivity(), getContext(), "Error");
+                                }
                             }else{
-                                cvScanToLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
-                                ivScanToLocation.setImageResource(R.drawable.warning_img);
-                                isToLocationScanned=false;
-                                common.showUserDefinedAlertType(errorMessages.EMC_086, getActivity(), getContext(), "Error");
+                                common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");
                             }
-
-                        }else{
-                            common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");
                         }
                     }
+
                     return;
                 }
-/*                else {
-                    common.showUserDefinedAlertType(errorMessages.EMC_083, getActivity(), getContext(), "Error");
-                }*/
             }else {
                 if(!Common.isPopupActive())
                 {

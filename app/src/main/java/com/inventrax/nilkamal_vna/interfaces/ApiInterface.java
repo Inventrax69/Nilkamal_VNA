@@ -70,6 +70,9 @@ public interface ApiInterface {
     @POST("PutAway/CheckPalletandLocationValidation")
     Call<String> CheckPalletandLocationValidation(@Body WMSCoreMessage oRequest);
 
+    @POST("PutAway/GetVNAPutawaySuggestion")
+    Call<String> GetVNAPutawaySuggestion(@Body WMSCoreMessage oRequest);
+
     @POST("PutAway/UpsertBintoBinTransfer")
     Call<String> UpsertBintoBinTransfer(@Body WMSCoreMessage oRequest);
 

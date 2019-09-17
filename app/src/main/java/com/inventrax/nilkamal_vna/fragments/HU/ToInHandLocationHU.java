@@ -70,7 +70,7 @@ import retrofit2.Response;
 public class ToInHandLocationHU extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, BarcodeReader.TriggerListener, BarcodeReader.BarcodeListener {
 
 
-    private static final String classCode = "API_FRAG_PUTAWAY";
+    private static final String classCode = "API_FRAG_TOINHAND_LOCATION";
     private View rootView;
 
     private RelativeLayout rlStRefSelect, rlPutaway, rlPalletType;
@@ -264,7 +264,6 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
                 rlPutaway.setVisibility(View.VISIBLE);
                 rlStRefSelect.setVisibility(View.GONE);
             }
-
 
             etLocation.setText(loc);
             lblStoreRefNo.setText(strRef);
@@ -600,7 +599,6 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
         }
 
     }
-
 
     private void UpdatePalletType() {
 
@@ -1042,6 +1040,21 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
 
     }
 
+    public void ClearFields1() {
+
+        cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.palletColor));
+        ivScanPallet.setImageResource(R.drawable.fullscreen_img);
+
+        cvScanToLocation.setCardBackgroundColor(getResources().getColor(R.color.locationColor));
+        ivScanToLocation.setImageResource(R.drawable.fullscreen_img);
+
+        etPallet.setText("");
+        txtLoction.setText("");
+
+        isPalletScanned=false;
+        isToLocationScanned=false;
+
+    }
 
     @Override
     public void onBarcodeEvent(final BarcodeReadEvent barcodeReadEvent) {
@@ -1062,7 +1075,6 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
 
     @Override
     public void onTriggerEvent(TriggerStateChangeEvent triggerStateChangeEvent) { }
-
 
     public void HoneyWellBarcodeListeners() {
 
@@ -1103,7 +1115,6 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
 
     }
 
-
     //Assigning scanned value to the respective fields
     public void ProcessScannedinfo(String scannedData) {
         Log.v("ABCDE",scannedData+" "+Common.isPopupActive()+" "+ProgressDialogUtils.isProgressActive());
@@ -1142,7 +1153,6 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
                     }else{
                         if(isPalletScanned){
                             if(txtLoction.getText().toString().equals(scannedData)){
-
                                 UpsertBintoBinTransfer(scannedData);
                             }else{
                                 common.showUserDefinedAlertType(errorMessages.EMC_086, getActivity(), getContext(), "Error");
@@ -1296,7 +1306,6 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
         }
     }
 
-
     ///load putway
     public void LoadInbounddetails() {
 
@@ -1423,7 +1432,6 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
             common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
         }
     }
-
 
     // sending exception to the database
     public void logException() {
@@ -1674,7 +1682,6 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
         }*/
 
     }
-
 
     private void CheckPalletAndSuggestPutawayLocation() {
 
@@ -2016,7 +2023,7 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
                                             switch (which) {
                                                 case DialogInterface.BUTTON_POSITIVE:
                                                     Common.setIsPopupActive(false);
-                                                    ClearFields();
+                                                    ClearFields1();
                                                     break;
                                             }
                                         }
@@ -2073,7 +2080,6 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
             common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
         }
     }
-
 
     private void SampleAPI() {
 

@@ -69,23 +69,23 @@ import retrofit2.Response;
 public class PickingFragmentHU extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, BarcodeReader.TriggerListener, BarcodeReader.BarcodeListener {
 
 
-    private static final String classCode = "API_FRAG_PUTAWAY";
+    private static final String classCode = "API_FRAG_PICKING";
     private View rootView;
 
     private RelativeLayout rlStRefSelect, rlLoadPallet;
-    private TextView lblStoreRefNo, lblSuggestedLoc, lblPalletConfirm;
+    TextView lblStoreRefNo, lblSuggestedLoc, lblPalletConfirm;
     private CardView cvScanPallet, cvScanFromLocation,cvScanToLocation;
     private ImageView ivScanPallet, ivScanFromLocation,ivScanToLocation;
-    private TextInputLayout txtInputLayoutPallet, txtInputLayoutLocation;
-    private EditText etLocation;
+    TextInputLayout txtInputLayoutPallet, txtInputLayoutLocation;
+    EditText etLocation;
     private SearchableSpinner spinnerSelectStRef;
-    private Button btnGo, btnCloseOne, btnCloseTwo,btnSkip,btnClear;
+    Button btnGo, btnCloseOne, btnCloseTwo,btnSkip,btnClear;
 
     FragmentUtils fragmentUtils;
     private Common common = null;
     String scanner = null;
     String getScanner = null;
-    private IntentFilter filter;
+    IntentFilter filter;
     private ScanValidator scanValidator;
     private Gson gson;
     private WMSCoreMessage core;
@@ -98,13 +98,13 @@ public class PickingFragmentHU extends Fragment implements View.OnClickListener,
     String clientId = null;
     ArrayList<String> sloc;
     SoundUtils sound = null;
-    private ExceptionLoggerUtils exceptionLoggerUtils;
+    ExceptionLoggerUtils exceptionLoggerUtils;
     private ErrorMessages errorMessages;
-    private String materialType = null, PalletType = null, InboundId = null;
+    String materialType = null, PalletType = null, InboundId = null;
     List<InboundDTO> lstInbound = null;
     private String storeRefNo = null;
-    private String pallet = null, suggestedLoc = null, loc = null, strRef = null;
-    private Boolean isFromPendingPutway;
+    String pallet = null, suggestedLoc = null, loc = null, strRef = null;
+    Boolean isFromPendingPutway;
     public String auditbinLocation = null;
     boolean isPalletScanned,isFromLocationScanned,isToLocationScanned;
     private EditText etFromLocation,etPallet,etToLocation;
@@ -220,7 +220,7 @@ public class PickingFragmentHU extends Fragment implements View.OnClickListener,
 
 
         LoadInbounddetails();
-        //LoadPalletType();
+        // LoadPalletType();
 
 
         // For Cipher Barcode reader
@@ -393,10 +393,7 @@ public class PickingFragmentHU extends Fragment implements View.OnClickListener,
 
                                 WMSExceptionMessage owmsExceptionMessage = null;
                                 for (int i = 0; i < _lExceptions.size(); i++) {
-
                                     owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
-
-
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
                                 common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
