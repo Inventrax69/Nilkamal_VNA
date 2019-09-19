@@ -71,8 +71,34 @@
             android:layout_marginTop="10dp"
             android:layout_below="@+id/radioOperation"
             android:layout_toRightOf="@+id/labStRef"
-            android:text="Picking">
+            android:text="">
         </TextView>
+
+
+
+        <TextView
+            android:id="@+id/lblVLPDNumber"
+            style="@style/textViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_below="@+id/radioOperation"
+            android:layout_toRightOf="@+id/tvStRef"
+            android:text="VLDP#"
+            android:layout_marginLeft="10dp"/>
+
+        <TextView
+            android:id="@+id/txtVLPDNumber"
+            style="@style/textViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_below="@+id/radioOperation"
+            android:layout_toRightOf="@+id/lblVLPDNumber"
+            android:text=""
+            android:layout_marginLeft="10dp"/>
 
 
         <LinearLayout
@@ -201,13 +227,7 @@
                     android:textStyle="normal" />
 
 
-
-
             </RelativeLayout>
-
-
-
-
 
         </LinearLayout>
 
@@ -243,10 +263,10 @@
             <EditText
                 android:id="@+id/etFromLocation"
                 style="@style/editTextStyleSmall"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:hint=""
+                android:hint="From Location"
                 android:background="@android:color/transparent"
                 android:inputType="text"
                 android:clickable="false"
@@ -274,9 +294,9 @@
             <EditText
                 android:id="@+id/etPallet"
                 style="@style/editTextStyleSmall"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:hint=""
+                android:hint="Pallet No"
                 android:textStyle="bold"
                 android:inputType="text"
                 android:clickable="false"
@@ -302,10 +322,10 @@
             <EditText
                 android:id="@+id/etToLocation"
                 style="@style/editTextStyleSmall"
-                android:layout_width="match_parent"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:hint=""
+                android:hint="To Location"
                 android:gravity="center"
                 android:layout_gravity="center"
                 android:background="@android:color/transparent"

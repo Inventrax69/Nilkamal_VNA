@@ -130,10 +130,15 @@ public class InboundDTO {
     @SerializedName("Inout")
     private String Inout;
 
-
-
     @SerializedName("InoutId")
     private String InoutId;
+
+    @SerializedName("VLPDNumber")
+    private String VLPDNumber;
+
+
+    @SerializedName("SkipReason")
+    private String SkipReason;
 
 
     public  InboundDTO()
@@ -429,6 +434,17 @@ public class InboundDTO {
                 case "InoutId":
                     if (entry.getValue() != null) {
                         this.setInoutId(entry.getValue().toString());
+                    }
+                    break;
+                case "VLPDNumber":
+                    if (entry.getValue() != null) {
+                        this.setVLPDNumber(entry.getValue().toString());
+                    }
+                    break;
+
+               case "SkipReason":
+                    if (entry.getValue() != null) {
+                        this.setSkipReason(entry.getValue().toString());
                     }
                     break;
 
@@ -846,5 +862,20 @@ public class InboundDTO {
         InoutId = inoutId;
     }
 
+    public String getVLPDNumber() {
+        return VLPDNumber;
+    }
 
+    public void setVLPDNumber(String VLPDNumber) {
+        this.VLPDNumber = VLPDNumber;
+    }
+
+
+    public String getSkipReason() {
+        return SkipReason;
+    }
+
+    public void setSkipReason(String skipReason) {
+        SkipReason = skipReason;
+    }
 }

@@ -163,4 +163,6 @@ public class ErrorMessages {
 
     public String EMC_089 = "No Suggestion yet";
 
+    public String EMC_090 = "Please scan 'from location' and pallet to skip";
+
 }

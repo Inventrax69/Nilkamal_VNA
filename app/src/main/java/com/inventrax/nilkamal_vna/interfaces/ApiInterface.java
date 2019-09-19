@@ -67,6 +67,9 @@ public interface ApiInterface {
     @POST("PutAway/GetPalletTypeList")
     Call<String> GetPalletTypeList(@Body WMSCoreMessage oRequest);
 
+    @POST("PutAway/PutawayandpickingSkip")
+    Call<String> PutawayandpickingSkip(@Body WMSCoreMessage oRequest);
+
     @POST("PutAway/CheckPalletandLocationValidation")
     Call<String> CheckPalletandLocationValidation(@Body WMSCoreMessage oRequest);
 
@@ -127,6 +130,9 @@ public interface ApiInterface {
     @POST("VLPD/GetItemtoPick")
     Call<String> GetItemtoPick(@Body WMSCoreMessage oRequest);
 
+    @POST("VLPD/GetVNAPickingandShortingList")
+    Call<String> GetVNAPickingandShortingList(@Body WMSCoreMessage oRequest);
+
     //Prasanna
     @POST("VLPD/ValidateBarcodeAndConfirmPicking")
     Call<String> ValidateBarcodeAndConfirmPicking(@Body WMSCoreMessage oRequest);
@@ -139,6 +145,9 @@ public interface ApiInterface {
 
     @POST("VLPD/GetOpenVLPDListByPriority")
     Call<String> GetOpenVLPDListByPriority(@Body WMSCoreMessage oRequest);
+
+    @POST("VLPD/GetOpenVLPDList")
+    Call<String> GetOpenVLPDList(@Body WMSCoreMessage oRequest);
 
     //Prasanna
     @POST("VLPD/GetHHLoadingInfo")

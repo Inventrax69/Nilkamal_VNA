@@ -191,8 +191,7 @@ public class UnloadingFragment extends Fragment implements View.OnClickListener,
 
 
 
-    public  void LoadInbounddetails()
-    {
+    public  void LoadInbounddetails() {
 
         try {
 

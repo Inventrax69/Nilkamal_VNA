@@ -84,7 +84,7 @@
         android:visibility="gone">
 
         <TextView
-            android:id="@+id/lblVLPDNumber"
+            android:id="@+id/txtVLPDNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -92,12 +92,12 @@
             android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="10dp"
-            android:text="VLPD#"
+            android:text="VLDP#"
             android:visibility="visible"
             android:textStyle="bold" />
 
         <LinearLayout
-            android:layout_below="@+id/lblVLPDNumber"
+            android:layout_below="@+id/txtVLPDNumber"
             android:id="@+id/layoutScan"
             android:layout_marginTop="10dp"
             android:gravity="center"
@@ -272,6 +272,8 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:hint="RSN"
+                android:textStyle="bold"
+                android:background="@android:color/transparent"
                 android:inputType="text"
                 android:longClickable="false"
                 android:singleLine="true"
@@ -300,7 +302,9 @@
                 android:layout_height="wrap_content"
                 android:hint="Quantity"
                 android:inputType="text"
+                android:textStyle="bold"
                 android:clickable="false"
+                android:background="@android:color/transparent"
                 android:longClickable="false"
                 android:focusable="false"
                 android:singleLine="true" />
@@ -324,10 +328,12 @@
                 style="@style/editTextStyleSmall"
                 android:layout_width="125dp"
                 android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
                 android:layout_alignStart="@+id/txtInputLayoutToLocation"
                 android:clickable="false"
                 android:focusable="false"
                 android:hint="OBD Number"
+                android:textStyle="bold"
                 android:inputType="number"
                 android:longClickable="false"
                 android:singleLine="true"
@@ -355,7 +361,9 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/hintDockLocation"
                 android:inputType="text"
+                android:textStyle="bold"
                 android:clickable="false"
+                android:background="@android:color/transparent"
                 android:longClickable="false"
                 android:focusable="false"
                 android:singleLine="true" />
@@ -365,37 +373,54 @@
 
         <Button
             android:id="@+id/btnClear"
-            android:layout_width="150dp"
+            android:layout_width="100dp"
             android:layout_height="35dp"
             android:layout_marginBottom="15dp"
-            android:layout_marginStart="20dp"
-            android:layout_above="@+id/btnCloseLoadPallet"
+            android:layout_marginStart="40dp"
+            android:layout_above="@+id/btnSkip"
             android:background="@drawable/button_shape"
             android:text="@string/clear"
+            android:layout_alignParentStart="true"
             android:gravity="center"
-            android:layout_centerHorizontal="true"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:layout_marginLeft="20dp" />
+            android:layout_marginLeft="40dp"
+            android:layout_alignParentLeft="true" />
+
+        <Button
+            android:id="@+id/btnExport"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginEnd="40dp"
+            android:layout_above="@+id/btnSkip"
+            android:background="@drawable/button_shape"
+            android:text="@string/export"
+            android:layout_alignParentEnd="true"
+            android:gravity="center"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:layout_marginLeft="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="40dp" />
 
         <Button
             android:id="@+id/btnSkip"
-            android:layout_width="150dp"
+            android:layout_width="100dp"
             android:layout_height="35dp"
             android:layout_marginBottom="15dp"
             android:layout_marginEnd="20dp"
+            android:layout_centerInParent="true"
             android:layout_above="@+id/btnCloseLoadPallet"
             android:background="@drawable/button_shape"
             android:text="Skip"
-            android:visibility="gone"
+            android:visibility="visible"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
             android:layout_marginRight="20dp" />
 
         <Button
-            android:layout_width="150dp"
+            android:layout_width="100dp"
             android:layout_height="35dp"
             android:layout_marginBottom="15dp"
             android:layout_centerHorizontal="true"
@@ -424,6 +449,40 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/rlExport"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="5dp"
+        android:visibility="gone">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvPickingSortingList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:layout_marginBottom="60dp"
+            android:layout_marginTop="10dp">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <Button
+            android:id="@+id/btnCloseExport"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_close_shape"
+            android:foreground="@drawable/button_cross_close"
+            android:foregroundGravity="center"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+
+
+    </RelativeLayout>
 
 </RelativeLayout>

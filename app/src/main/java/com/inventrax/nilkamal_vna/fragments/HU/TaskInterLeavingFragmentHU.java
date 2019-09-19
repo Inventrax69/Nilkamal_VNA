@@ -1,5 +1,6 @@
 package com.inventrax.nilkamal_vna.fragments.HU;
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,7 +17,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -45,6 +48,7 @@ import com.inventrax.nilkamal_vna.interfaces.ApiInterface;
 import com.inventrax.nilkamal_vna.pojos.InboundDTO;
 import com.inventrax.nilkamal_vna.pojos.WMSCoreMessage;
 import com.inventrax.nilkamal_vna.pojos.WMSExceptionMessage;
+import com.inventrax.nilkamal_vna.searchableSpinner.SearchableSpinner;
 import com.inventrax.nilkamal_vna.services.RestService;
 import com.inventrax.nilkamal_vna.util.DialogUtils;
 import com.inventrax.nilkamal_vna.util.ExceptionLoggerUtils;
@@ -79,8 +83,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
     private Gson gson;
     private WMSCoreMessage core;
     private String userId = null, stRefNo = null, palletType = null, materialType = null;
-    private Boolean IsFromLocationScanned = false, IsFromPalletScanned = false, IsRSNScanned = false, IsEANScanned = false, IsValidLocationorPallet = false, IsPalletScanned = false, Isscannedpalletitem = false, IsToPalletScanned = false;
-
+    private SearchableSpinner spinnerSelectReason;
     // For Honey well barcode
     private static BarcodeReader barcodeReader;
     private AidcManager manager;
@@ -94,6 +97,8 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
     TextView tvStRef;
     public String SuggestionType;
     public String inOutId="1";
+    String skipReason;
+    TextView lblVLPDNumber,txtVLPDNumber;
 
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
         @Override
@@ -122,6 +127,8 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
         isToLocationScanned=false;
 
         tvStRef=(TextView)rootView.findViewById(R.id.tvStRef);
+        lblVLPDNumber=(TextView)rootView.findViewById(R.id.lblVLPDNumber);
+        txtVLPDNumber=(TextView)rootView.findViewById(R.id.txtVLPDNumber);
         cvScanFromLocation=(CardView)rootView.findViewById(R.id.cvScanFromLocation);
         cvScanPallet=(CardView)rootView.findViewById(R.id.cvScanPallet);
         cvScanToLocation=(CardView)rootView.findViewById(R.id.cvScanToLocation);
@@ -137,6 +144,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
         btnClear=(Button)rootView.findViewById(R.id.btnClear);
         btnSkip=(Button)rootView.findViewById(R.id.btnSkip);
         btnCloseLoadPallet=(Button)rootView.findViewById(R.id.btnCloseLoadPallet);
+
 
         btnClear.setOnClickListener(this);
         btnSkip.setOnClickListener(this);
@@ -228,6 +236,8 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                 isPutaway=true;
                 isPicking=false;
                 tvStRef.setText("Put Away");
+                lblVLPDNumber.setVisibility(View.INVISIBLE);
+                txtVLPDNumber.setVisibility(View.INVISIBLE);
 
             }
         });
@@ -312,6 +322,8 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                             isPicking=false;
                                             isPutaway=true;
                                             inOutId="1";
+                                            lblVLPDNumber.setVisibility(View.INVISIBLE);
+                                            txtVLPDNumber.setVisibility(View.INVISIBLE);
                                         }else{
                                             isPicking=true;
                                             isPutaway=false;
@@ -319,21 +331,26 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                             etFromLocation.setText(dto.getPickedLocation());
                                             etPallet.setText(dto.getPalletNo());
                                             etToLocation.setText(dto.getSuggestedLocation());
+                                            txtVLPDNumber.setText(dto.getVLPDNumber());
+                                            lblVLPDNumber.setVisibility(View.VISIBLE);
+                                            txtVLPDNumber.setVisibility(View.VISIBLE);
                                         }
 
                                     }else if(SuggestionType.equals("2")){
 
                                         isPicking=false;
                                         isPutaway=true;
-
+                                        lblVLPDNumber.setVisibility(View.INVISIBLE);
+                                        txtVLPDNumber.setVisibility(View.INVISIBLE);
                                     }else{
                                         isPicking=true;
                                         isPutaway=false;
                                         etFromLocation.setText(dto.getPickedLocation());
                                         etPallet.setText(dto.getPalletNo());
                                         etToLocation.setText(dto.getSuggestedLocation());
-
-
+                                        txtVLPDNumber.setText(dto.getVLPDNumber());
+                                        lblVLPDNumber.setVisibility(View.VISIBLE);
+                                        txtVLPDNumber.setVisibility(View.VISIBLE);
                                     }
 
 /*                                    if(dto.getInoutId().equals("1")){
@@ -779,6 +796,8 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
         isPalletScanned=false;
         isFromLocationScanned=false;
         isToLocationScanned=false;
+        lblVLPDNumber.setVisibility(View.INVISIBLE);
+        txtVLPDNumber.setVisibility(View.INVISIBLE);
         cvScanFromLocation.setCardBackgroundColor(getResources().getColor(R.color.locationColor));
         ivScanFromLocation.setImageResource(R.drawable.fullscreen_img);
         cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.palletColor));
@@ -927,6 +946,8 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
             common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
         }
     }
+
+
     //button Clicks
     @Override
     public void onClick(View v) {
@@ -935,15 +956,58 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                     clearAllFileds1();
                 break;
             case R.id.btnSkip:
+
                 if(isPicking){
                     if(isFromLocationScanned && !isPalletScanned && !isToLocationScanned){
-                        Toast.makeText(getActivity(), "Skkiped", Toast.LENGTH_SHORT).show();
+
+
+                        final Dialog pickingSkipdialog = new Dialog(getActivity());
+                        pickingSkipdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        pickingSkipdialog.setCancelable(false);
+                        pickingSkipdialog.setContentView(R.layout.skip_dialog);
+
+                        TextView btnOk = (TextView) pickingSkipdialog.findViewById(R.id.btnOk);
+                        btnOk.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                PutawayandpickingSkip();
+                                pickingSkipdialog.dismiss();
+                            }
+                        });
+
+                        TextView btnCancel = (TextView) pickingSkipdialog.findViewById(R.id.btnCancel);
+                        btnCancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                pickingSkipdialog.dismiss();
+                            }
+                        });
+                        final List<String> lstSkipReason = new ArrayList<>();
+                        lstSkipReason.add("Damage");
+                        lstSkipReason.add("Not Found");
+                        spinnerSelectReason=(SearchableSpinner) pickingSkipdialog.findViewById(R.id.spinnerSelectReason);
+                        ArrayAdapter arrayAdapterSelectReason = new ArrayAdapter(getActivity(), R.layout.support_simple_spinner_dropdown_item, lstSkipReason);
+                        spinnerSelectReason.setAdapter(arrayAdapterSelectReason);
+                        spinnerSelectReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                skipReason=spinnerSelectReason.getSelectedItem().toString();
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> adapterView) {
+                                skipReason=lstSkipReason.get(0);
+                            }
+                        });
+                        pickingSkipdialog.show();
+
                         //TODO after Skipping()
                     }else{
                         if(isToLocationScanned && isPalletScanned){
                             Toast.makeText(getActivity(), "Already Transfered", Toast.LENGTH_SHORT).show();
                         }else{
-                            Toast.makeText(getActivity(), "Please scan From Location and Pallet to skip", Toast.LENGTH_SHORT).show();
+                            common.showUserDefinedAlertType(errorMessages.EMC_090, getActivity(), getContext(), "Error");
+                          //  Toast.makeText(getActivity(), "Please scan 'from location' and pallet to skip", Toast.LENGTH_SHORT).show();
                         }
                         //TODO setError messages
                     }
@@ -1196,6 +1260,116 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    private void PutawayandpickingSkip() {
+
+        try {
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
+            InboundDTO inboundDTO = new InboundDTO();
+            inboundDTO.setUserId(userId);
+            inboundDTO.setLocation(etFromLocation.getText().toString());
+            inboundDTO.setVLPDNumber(txtVLPDNumber.getText().toString());
+            inboundDTO.setSkipReason(skipReason);
+            message.setEntityObject(inboundDTO);
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+
+                call = apiService.PutawayandpickingSkip(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+
+                            } else {
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+                                ProgressDialogUtils.closeProgressDialog();
+                                List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                //TODO -- set next sugeested location;funtion
+
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
     }
 
 }

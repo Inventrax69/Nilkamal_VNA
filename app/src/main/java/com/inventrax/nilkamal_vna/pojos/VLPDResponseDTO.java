@@ -20,6 +20,8 @@ public class VLPDResponseDTO {
     private Boolean isSuggested;
     @SerializedName("VlpdID")
     private String VlpdID ;
+    @SerializedName("VLPDNumber")
+    private String VLPDNumber ;
 
 
     public VLPDResponseDTO(){
@@ -72,6 +74,12 @@ public class VLPDResponseDTO {
                         this.setSuggested(Boolean.parseBoolean(entry.getValue().toString()));
                     }
                     break;
+                 case "VLPDNumber":
+                    if (entry.getValue() != null) {
+                        this.setVLPDNumber(entry.getValue().toString());
+                    }
+                    break;
+
                /* case "PreviousPickedItemResponce":
                     if(entry.getValue()!=null) {
 
@@ -114,4 +122,13 @@ public class VLPDResponseDTO {
     public void setVlpdID(String vlpdID) {
         VlpdID = vlpdID;
     }
+
+    public String getVLPDNumber() {
+        return VLPDNumber;
+    }
+
+    public void setVLPDNumber(String VLPDNumber) {
+        this.VLPDNumber = VLPDNumber;
+    }
+
 }
