@@ -97,6 +97,9 @@ public interface ApiInterface {
     @POST("VLPD/GetVLPDID")
     Call<String> GetVLPDID(@Body WMSCoreMessage oRequest);
 
+    @POST("VLPD/PrintNewRSN")
+    Call<String> PrintNewRSN(@Body WMSCoreMessage oRequest);
+
     @POST("Outbound/GetPendingOBDItemsForManualPicking")
     Call<String> GetPendingOBDItemsForManualPicking(@Body WMSCoreMessage oRequest);
 
@@ -108,6 +111,9 @@ public interface ApiInterface {
 
     @POST("VLPD/GetPendigRSNToLoad")
     Call<String> GetPendigRSNToLoad(@Body WMSCoreMessage oRequest);
+
+    @POST("VLPD/PickandCheck")
+    Call<String> PickandCheck(@Body WMSCoreMessage oRequest);
 
     @POST("Outbound/GetBoxNumberForOBD")
     Call<String> GetBoxNumberForOBD(@Body WMSCoreMessage oRequest);

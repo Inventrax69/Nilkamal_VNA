@@ -165,4 +165,10 @@ public class ErrorMessages {
 
     public String EMC_090 = "Please scan 'from location' and pallet to skip";
 
+    public String EMC_091 = "Please scan valid dock location";
+
+    public String EMC_092 = "Error : While pciking";
+
+    public String EMC_093 = "No more items to pick for this pallet";
+
 }
