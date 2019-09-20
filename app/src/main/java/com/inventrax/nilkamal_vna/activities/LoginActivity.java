@@ -140,14 +140,14 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
 
             listDivision = new ArrayList<>();
             listDivision.add("Select");
-            listDivision.add("HH");
+         //   listDivision.add("HH");
             listDivision.add("HU");
             listDivision.add("Stock take");
 
             ArrayAdapter listDivisionAdapter = new ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, listDivision);
             spinnerSelectDivision.setAdapter(listDivisionAdapter);
 
-            spinnerSelectDivision.setSelection(2);
+            spinnerSelectDivision.setSelection(1);
 
             SharedPreferences sp = this.getSharedPreferences("SettingsActivity", Context.MODE_PRIVATE);
             serviceUrlString = sp.getString("url", "");

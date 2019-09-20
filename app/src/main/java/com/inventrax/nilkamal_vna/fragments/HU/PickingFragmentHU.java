@@ -301,7 +301,6 @@ public class PickingFragmentHU extends Fragment implements View.OnClickListener,
                 //ConfirmBinPosting();
                 if(isPalletScanned && isFromLocationScanned && isToLocationScanned){
                     Toast.makeText(getActivity(), "You can Complete putaway", Toast.LENGTH_SHORT).show();
-                    // TODO putaway completed ()
                 }else{
                     if(!isFromLocationScanned){
                         common.showUserDefinedAlertType(errorMessages.EMC_083, getActivity(), getContext(), "Error");
@@ -324,14 +323,12 @@ public class PickingFragmentHU extends Fragment implements View.OnClickListener,
             case R.id.btnSkip:
                 if(isFromLocationScanned && !isPalletScanned && !isToLocationScanned){
                     Toast.makeText(getActivity(), "Skkiped", Toast.LENGTH_SHORT).show();
-                    //TODO after Skiping()
                 }else{
                     if(isToLocationScanned && isPalletScanned){
                         Toast.makeText(getActivity(), "Already Transfered", Toast.LENGTH_SHORT).show();
                     }else{
                         Toast.makeText(getActivity(), "Please scan From Location and Pallet to skip", Toast.LENGTH_SHORT).show();
                     }
-                    //TODO after Skiping()
                 }
                 break;
 
@@ -741,7 +738,6 @@ public class PickingFragmentHU extends Fragment implements View.OnClickListener,
                             common.showUserDefinedAlertType(errorMessages.EMC_087, getActivity(), getContext(), "Error");
                         }
 
-                        // TODO isValidPallet check palette function
                     }else{
                         common.showUserDefinedAlertType(errorMessages.EMC_083, getActivity(), getContext(), "Error");
                     }
@@ -764,7 +760,6 @@ public class PickingFragmentHU extends Fragment implements View.OnClickListener,
                             isFromLocationScanned=false;
                             common.showUserDefinedAlertType(errorMessages.EMC_085, getActivity(), getContext(), "Error");
                         }
-                        // TODO isFromLocation check from location function
                     }else{
                         if(isPalletScanned){
                             if(etToLocation.getText().toString().equals(scannedData)){
@@ -778,7 +773,6 @@ public class PickingFragmentHU extends Fragment implements View.OnClickListener,
                                 common.showUserDefinedAlertType(errorMessages.EMC_086, getActivity(), getContext(), "Error");
                             }
 
-                            // TODO isToLocation check to location function
                         }else{
                             common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");
                         }

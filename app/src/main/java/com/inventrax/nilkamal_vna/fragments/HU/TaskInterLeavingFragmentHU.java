@@ -784,6 +784,9 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
         isPalletScanned=false;
         isFromLocationScanned=false;
         isToLocationScanned=false;
+        etFromLocation.setText("");
+        etPallet.setText("");
+        etToLocation.setText("");
         cvScanFromLocation.setCardBackgroundColor(getResources().getColor(R.color.locationColor));
         ivScanFromLocation.setImageResource(R.drawable.fullscreen_img);
         cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.palletColor));
@@ -1291,7 +1294,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
 
             } catch (Exception ex) {
                 try {
-                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
                     logException();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -1328,7 +1331,19 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                 _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
                                 //TODO -- set next sugeested location;funtion
+                                Log.v("ABCDE_R",new Gson().toJson(_lInbound));
+                                InboundDTO dto = null;
+                                for (int i = 0; i < _lInbound.size(); i++) {
+                                    dto = new InboundDTO(_lInbound.get(i).entrySet());
+                                }
 
+                                if(dto.getResult().equals("1") && dto.getResult()!=null){
+                                    inOutId="2";
+                                    setSuggestionTypeApi(SuggestionType);
+                                }else{
+                                    common.showUserDefinedAlertType("Cannot Skip", getActivity(), getContext(),"Error");
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
                             }
 
                         } catch (Exception ex) {

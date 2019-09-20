@@ -216,14 +216,12 @@ public class PutAwayFragment extends Fragment implements View.OnClickListener, B
             case R.id.btnSkip:
                 if(isFromLocationScanned && isPalletScanned && !isToLocationScanned){
                     Toast.makeText(getActivity(), "Skkiped", Toast.LENGTH_SHORT).show();
-                    //TODO after Skiping()
                 }else{
                     if(isToLocationScanned){
                         Toast.makeText(getActivity(), "Already Transfered", Toast.LENGTH_SHORT).show();
                     }else{
                         Toast.makeText(getActivity(), "Please scan From Location and Pallet to skip", Toast.LENGTH_SHORT).show();
                     }
-                    //TODO after Skiping()
                 }
                 break;
             case R.id.btnTranfer:
@@ -331,7 +329,6 @@ public class PutAwayFragment extends Fragment implements View.OnClickListener, B
                             common.showUserDefinedAlertType(errorMessages.EMC_087, getActivity(), getContext(), "Error");
                         }
 
-                        // TODO isValidPallet check palette function
                     }else{
                         common.showUserDefinedAlertType(errorMessages.EMC_083, getActivity(), getContext(), "Error");
                     }
@@ -354,7 +351,6 @@ public class PutAwayFragment extends Fragment implements View.OnClickListener, B
                             isFromLocationScanned=false;
                             common.showUserDefinedAlertType(errorMessages.EMC_085, getActivity(), getContext(), "Error");
                         }
-                        // TODO isFromLocation check from location function
                     }else{
                         if(isPalletScanned){
                             if(etToLocation.getText().toString().equals(scannedData)){
@@ -367,8 +363,6 @@ public class PutAwayFragment extends Fragment implements View.OnClickListener, B
                                 isToLocationScanned=false;
                                 common.showUserDefinedAlertType(errorMessages.EMC_086, getActivity(), getContext(), "Error");
                             }
-
-                            // TODO isToLocation check to location function
                         }else{
                             common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");
                         }

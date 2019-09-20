@@ -6,11 +6,12 @@ public class ScanValidator {
 
 
 
-
     public static boolean IsRSNScanned(String scannedData)
     {
         if ((scannedData.split("[/]").length==4 &&scannedData.split("[/]", 2)[0].length()==10)
-                || (scannedData.length() == 17 && scannedData.substring(0, 1).equals("A") && isNumeric(scannedData.substring(1, 10))) || (scannedData.length() == 17 && scannedData.substring(0, 1).equals("D") && isNumeric(scannedData.substring(1, 10)))
+                || (scannedData.length() == 17 && scannedData.substring(0, 1).equals("A") && isNumeric(scannedData.substring(1, 10)))
+                || (scannedData.length() == 17 && scannedData.substring(0, 1).equals("D") && isNumeric(scannedData.substring(1, 10)))
+                || (scannedData.length() == 17 && scannedData.substring(0, 1).equals("H") && isNumeric(scannedData.substring(1, 10)))
                 )
         {
             return true;

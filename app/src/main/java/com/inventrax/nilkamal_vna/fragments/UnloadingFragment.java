@@ -178,11 +178,9 @@ public class UnloadingFragment extends Fragment implements View.OnClickListener,
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, rsnGoodsFragmentHU);
 
                 }else {
-
                     GoodsInFragmentHH goodsInFragmentHH = new GoodsInFragmentHH();
                     goodsInFragmentHH.setArguments(bundle);
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, goodsInFragmentHH);
-
                 }
 
             }
@@ -284,7 +282,7 @@ public class UnloadingFragment extends Fragment implements View.OnClickListener,
 
                         } catch(Exception ex){
                             try {
-                                exceptionLoggerUtils.createExceptionLog(ex.toString(),classCode,"GetOpenInboundList",getActivity());
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(),classCode,"GetOpenInboundList",getActivity());
                                 logException();
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -305,7 +303,7 @@ public class UnloadingFragment extends Fragment implements View.OnClickListener,
                 });
             } catch (Exception ex) {
                 try {
-                    exceptionLoggerUtils.createExceptionLog(ex.toString(),classCode,"GetOpenInboundList",getActivity());
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(),classCode,"GetOpenInboundList",getActivity());
                     logException();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -316,7 +314,7 @@ public class UnloadingFragment extends Fragment implements View.OnClickListener,
         }catch (Exception ex)
         {
             try {
-                exceptionLoggerUtils.createExceptionLog(ex.toString(),classCode,"GetOpenInboundList",getActivity());
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(),classCode,"GetOpenInboundList",getActivity());
                 logException();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -329,7 +327,7 @@ public class UnloadingFragment extends Fragment implements View.OnClickListener,
     public void logException() {
         try {
 
-            String textFromFile = exceptionLoggerUtils.readFromFile(getActivity());
+            String textFromFile = ExceptionLoggerUtils.readFromFile(getActivity());
 
             WMSCoreMessage message = new WMSCoreMessage();
             message = common.SetAuthentication(EndpointConstants.Exception, getActivity());

@@ -1888,7 +1888,9 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
                                     isPalletScanned=true;
                                     ProgressDialogUtils.closeProgressDialog();
                                 }else{
+                                    ClearFields1();
                                     common.showUserDefinedAlertType(dto.getResult(), getActivity(), getContext(), "Error");
+                                    ProgressDialogUtils.closeProgressDialog();
                                 }
 
                             }
