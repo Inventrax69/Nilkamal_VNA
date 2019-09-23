@@ -95,9 +95,54 @@
             android:visibility="visible"
             android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/txtDockName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="2dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="DockNme"
+            android:visibility="visible"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/txtMcode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="2dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/txtVLPDNumber"
+            android:text="Mcode"
+            android:visibility="visible"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/txtPendingQty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/txtVLPDNumber"
+            android:text="PendingQty"
+            android:visibility="visible"
+            android:textStyle="bold"/>
+
 
         <LinearLayout
-            android:layout_below="@+id/txtVLPDNumber"
+            android:layout_below="@+id/txtMcode"
             android:id="@+id/layoutScan"
             android:layout_marginTop="10dp"
             android:gravity="center"
@@ -235,8 +280,10 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/txtMcode"
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/txtInputBatchNo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -247,60 +294,61 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/layoutScan"
-            android:text="Mcode"
-            android:visibility="visible"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/txtDockName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="2dp"
-            android:layout_marginTop="10dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/layoutScan"
-            android:text="DockNme"
-            android:visibility="visible"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/txtBatchNo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="2dp"
-            android:layout_marginTop="2dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/txtMcode"
             android:text="BatchNo"
             android:visibility="visible"
-            android:textStyle="bold"/>
+            android:textStyle="bold">
 
-        <TextView
-            android:id="@+id/txtPendingQty"
+            <EditText
+                android:id="@+id/txtBatchNo"
+                style="@style/editTextStyleSmall"
+                android:layout_width="125dp"
+                android:layout_height="wrap_content"
+                android:hint="Batch No"
+                android:text=""
+                android:inputType="text"
+                android:textStyle="bold"
+                android:clickable="false"
+                android:background="@android:color/transparent"
+                android:longClickable="false"
+                android:focusable="false"
+                android:singleLine="true" />
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/txtInputPallet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="2dp"
-            android:layout_marginTop="2dp"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/txtMcode"
-            android:text="PendingQty"
-            android:visibility="visible"
-            android:textStyle="bold"/>
+            android:layout_marginEnd="10dp"
+            android:layout_below="@+id/layoutScan"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentEnd="true"
+            android:clickable="false"
+            android:focusable="false"
+            android:layout_marginRight="10dp">
 
-        <TextView
-            android:id="@+id/txtHuNo"
+            <EditText
+                android:id="@+id/etPallet"
+                style="@style/editTextStyleSmall"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:hint="Pallet No"
+                android:text=""
+                android:inputType="text"
+                android:textStyle="bold"
+                android:clickable="false"
+                android:background="@android:color/transparent"
+                android:longClickable="false"
+                android:focusable="false"
+                android:singleLine="true" />
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/txtInputHuno"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -310,13 +358,30 @@
             android:layout_marginTop="2dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/txtBatchNo"
+            android:layout_below="@+id/txtInputPallet"
             android:text="HUno"
             android:visibility="visible"
-            android:textStyle="bold"/>
+            android:textStyle="bold">
 
-        <TextView
-            android:id="@+id/txtHuSize"
+            <EditText
+                android:id="@+id/txtHuNo"
+                style="@style/editTextStyleSmall"
+                android:layout_width="125dp"
+                android:layout_height="wrap_content"
+                android:hint="Hu No"
+                android:text=""
+                android:inputType="text"
+                android:textStyle="bold"
+                android:clickable="false"
+                android:background="@android:color/transparent"
+                android:longClickable="false"
+                android:focusable="false"
+                android:singleLine="true" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/txtInputuSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -326,10 +391,29 @@
             android:layout_marginTop="2dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/txtBatchNo"
+            android:layout_below="@+id/txtInputPallet"
             android:text="HuSize"
             android:visibility="visible"
-            android:textStyle="bold"/>
+            android:textStyle="bold">
+
+            <EditText
+                android:id="@+id/txtHuSize"
+                style="@style/editTextStyleSmall"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:hint="Hu Size"
+                android:text=""
+                android:inputType="text"
+                android:textStyle="bold"
+                android:clickable="false"
+                android:background="@android:color/transparent"
+                android:longClickable="false"
+                android:focusable="false"
+                android:singleLine="true" />
+
+        </android.support.design.widget.TextInputLayout>
+
+
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/txtInputDocklocation"
@@ -337,8 +421,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginStart="10dp"
-            android:layout_below="@+id/txtHuSize"
-            android:layout_marginTop="10dp"
+            android:layout_below="@+id/txtInputuSize"
+            android:layout_marginTop="2dp"
             android:layout_alignParentStart="true"
             android:clickable="false"
             android:focusable="false"
@@ -349,7 +433,8 @@
                 style="@style/editTextStyleSmall"
                 android:layout_width="125dp"
                 android:layout_height="wrap_content"
-                android:hint=""
+                android:hint="Dock location"
+                android:text=""
                 android:inputType="text"
                 android:textStyle="bold"
                 android:clickable="false"
@@ -366,8 +451,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/txtHuSize"
-            android:layout_marginTop="10dp"
+            android:layout_below="@+id/txtInputuSize"
+            android:layout_marginTop="2dp"
             android:layout_marginEnd="10dp"
             android:clickable="false"
             android:focusable="false"
@@ -377,14 +462,14 @@
             <EditText
                 android:id="@+id/etPartNo"
                 style="@style/editTextStyleSmall"
-                android:layout_width="125dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/txtInputLayoutFromLocation"
                 android:layout_alignBottom="@+id/txtInputLayoutFromLocation"
                 android:clickable="false"
                 android:focusable="false"
-                android:hint=""
-                android:gravity="end"
+                android:hint="Part no"
+                android:text=""
                 android:textStyle="bold"
                 android:background="@android:color/transparent"
                 android:inputType="text"
@@ -444,12 +529,11 @@
 
             <RelativeLayout
                 android:layout_weight="1"
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <android.support.design.widget.TextInputLayout
-                    android:id="@+id/txtInputLayoutNewQty"
+                    android:id="@+id/txtInputLayoutNewRSN"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -469,7 +553,7 @@
                         android:layout_alignBottom="@+id/txtInputLayoutFromLocation"
                         android:clickable="false"
                         android:focusable="false"
-                        android:hint="NewQty"
+                        android:hint="New RSN No."
                         android:gravity="start"
                         android:textStyle="bold"
                         android:background="@android:color/transparent"

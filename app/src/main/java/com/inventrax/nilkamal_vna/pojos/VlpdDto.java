@@ -95,6 +95,12 @@ public class VlpdDto {
     private String UniqueRSN;
 
 
+
+
+    @SerializedName("RSN")
+    private String RSN;
+
+
     @SerializedName("PalletNo")
     private String palletNo;
 
@@ -106,6 +112,12 @@ public class VlpdDto {
 
     @SerializedName("Message")
     private String Message;
+
+    @SerializedName("LoadRSN")
+    private String LoadRSN;
+
+    @SerializedName("PickRSN")
+    private String PickRSN;
 
 
     public VlpdDto() { }
@@ -253,6 +265,21 @@ public class VlpdDto {
                  case "PickedQty":
                     if (entry.getValue() != null) {
                         this.setPickedQty(entry.getValue().toString());
+                    }
+                    break;
+                 case "RSN":
+                    if (entry.getValue() != null) {
+                        this.setRSN(entry.getValue().toString());
+                    }
+                    break;
+                 case "LoadRSN":
+                    if (entry.getValue() != null) {
+                        this.setLoadRSN(entry.getValue().toString());
+                    }
+                    break;
+                 case "PickRSN":
+                    if (entry.getValue() != null) {
+                        this.setPickRSN(entry.getValue().toString());
                     }
                     break;
             }
@@ -507,6 +534,31 @@ public class VlpdDto {
 
     public void setPickedQty(String pickedQty) {
         PickedQty = pickedQty;
+    }
+
+
+    public String getRSN() {
+        return RSN;
+    }
+
+    public void setRSN(String RSN) {
+        this.RSN = RSN;
+    }
+
+    public String getLoadRSN() {
+        return LoadRSN;
+    }
+
+    public void setLoadRSN(String loadRSN) {
+        LoadRSN = loadRSN;
+    }
+
+    public String getPickRSN() {
+        return PickRSN;
+    }
+
+    public void setPickRSN(String pickRSN) {
+        PickRSN = pickRSN;
     }
 
 }

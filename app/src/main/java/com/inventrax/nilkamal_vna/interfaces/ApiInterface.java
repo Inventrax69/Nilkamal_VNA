@@ -136,6 +136,15 @@ public interface ApiInterface {
     @POST("VLPD/GetItemtoPick")
     Call<String> GetItemtoPick(@Body WMSCoreMessage oRequest);
 
+    @POST("VLPD/GetOpenVNALOADLIST")
+    Call<String> GetOpenVNALOADLIST(@Body WMSCoreMessage oRequest);
+
+    @POST("VLPD/getVNAPendingLoadingCount")
+    Call<String> getVNAPendingLoadingCount(@Body WMSCoreMessage oRequest);
+
+    @POST("VLPD/VNAuniqueRSNLoading")
+    Call<String> VNAuniqueRSNLoading(@Body WMSCoreMessage oRequest);
+
     @POST("VLPD/GetVNAPickingandShortingList")
     Call<String> GetVNAPickingandShortingList(@Body WMSCoreMessage oRequest);
 

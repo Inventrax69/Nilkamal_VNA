@@ -1820,8 +1820,6 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
             inboundDTO.setPalletNo(etPallet.getText().toString());
             message.setEntityObject(inboundDTO);
 
-
-
             Call<String> call = null;
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
 
@@ -1839,7 +1837,7 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
 
             } catch (Exception ex) {
                 try {
-                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
                     logException();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -1886,13 +1884,12 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
                                     cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanPallet.setImageResource(R.drawable.check);
                                     isPalletScanned=true;
-                                    ProgressDialogUtils.closeProgressDialog();
+
                                 }else{
                                     ClearFields1();
                                     common.showUserDefinedAlertType(dto.getResult(), getActivity(), getContext(), "Error");
-                                    ProgressDialogUtils.closeProgressDialog();
                                 }
-
+                                ProgressDialogUtils.closeProgressDialog();
                             }
 
                         } catch (Exception ex) {

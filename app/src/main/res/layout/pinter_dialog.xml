@@ -37,7 +37,7 @@
         android:layout_below="@+id/spinnerSelectReason"
         android:background="@android:color/transparent"
         android:layout_alignParentEnd="true"
-        android:text="Print"
+        android:text="print"
         android:gravity="center"
         android:textStyle="bold"
         android:textAllCaps="false"

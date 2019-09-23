@@ -149,13 +149,13 @@ public class ErrorMessages {
 
     public String EMC_082 = "Cannot Exceed Master barcode Qty.";
 
-    public String EMC_083 = "Please scan 'from location'";
+    public String EMC_083 = "Please scan 'Actual location'";
 
-    public String EMC_084 = "Please scan 'to Location'";
+    public String EMC_084 = "Please scan 'Suggested Location'";
 
-    public String EMC_085 = "Please scan suggested 'from location'";
+    public String EMC_085 = "Please scan suggested 'Actual location'";
 
-    public String EMC_086 = "Please scan suggested 'to location'";
+    public String EMC_086 = "Please scan suggested 'Suggested location'";
 
     public String EMC_087 = "Please scan suggested pallet";
 
@@ -163,11 +163,11 @@ public class ErrorMessages {
 
     public String EMC_089 = "No Suggestion yet";
 
-    public String EMC_090 = "Please scan 'from location' and pallet to skip";
+    public String EMC_090 = "Please scan 'Actual location' and pallet to skip";
 
     public String EMC_091 = "Please scan valid dock location";
 
-    public String EMC_092 = "Error : While pciking";
+    public String EMC_092 = "Error : While picking";
 
     public String EMC_093 = "No more items to pick for this pallet";
 

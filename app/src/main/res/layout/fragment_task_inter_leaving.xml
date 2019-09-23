@@ -71,10 +71,7 @@
             android:layout_marginTop="10dp"
             android:layout_below="@+id/radioOperation"
             android:layout_toRightOf="@+id/labStRef"
-            android:text="">
-        </TextView>
-
-
+            android:text=""/>
 
         <TextView
             android:id="@+id/lblVLPDNumber"
@@ -139,7 +136,7 @@
                     android:id="@+id/tvScanFromLocation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="From Location"
+                    android:text="Acutal Loc"
                     android:layout_marginTop="5dp"
                     android:layout_centerHorizontal="true"
                     android:layout_below="@+id/cvScanFromLocation"
@@ -218,7 +215,7 @@
                     android:id="@+id/tvScanToLocation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="To Location"
+                    android:text="Suggested loc"
                     android:layout_marginTop="5dp"
                     android:layout_centerHorizontal="true"
                     android:layout_below="@+id/cvScanToLocation"
@@ -226,11 +223,9 @@
                     android:textSize="12sp"
                     android:textStyle="normal" />
 
-
             </RelativeLayout>
 
         </LinearLayout>
-
 
         <TextView
             android:id="@+id/lblDesc"
@@ -266,7 +261,7 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:hint="From Location"
+                android:hint="Actual Location"
                 android:background="@android:color/transparent"
                 android:inputType="text"
                 android:clickable="false"
@@ -325,7 +320,7 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:hint="To Location"
+                android:hint="Sugg. Location"
                 android:gravity="center"
                 android:layout_gravity="center"
                 android:background="@android:color/transparent"

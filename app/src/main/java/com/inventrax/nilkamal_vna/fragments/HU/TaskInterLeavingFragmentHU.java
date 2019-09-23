@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -254,7 +253,6 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
             inboundDTO.setInoutId(inOutId);
             message.setEntityObject(inboundDTO);
 
-            Log.v("ABCDE_OpertionType",new Gson().toJson(message));
 
             Call<String> call = null;
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
@@ -516,7 +514,9 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                     ivScanToLocation.setImageResource(R.drawable.check);
                                     isToLocationScanned=true;
                                     inOutId=dto.getInoutId();
-                                    Common.setIsPopupActive(true);
+                                    setSuggestionTypeApi(SuggestionType);
+                                    clearAllFileds();
+/*                                    Common.setIsPopupActive(true);
                                     sound.alertSuccess(getActivity(), getContext());
                                     DialogUtils.showAlertDialog(getActivity(), "Success", "Successfully Transfer", R.drawable.success,new DialogInterface.OnClickListener() {
                                         @Override
@@ -525,18 +525,16 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                             switch (which) {
                                                 case DialogInterface.BUTTON_POSITIVE:
                                                     Common.setIsPopupActive(false);
-                                                    setSuggestionTypeApi(SuggestionType);
-                                                    clearAllFileds();
+
                                                     break;
                                             }
                                         }
-                                    });
+                                    });*/
                                 }else{
                                     common.showUserDefinedAlertType(dto.getResult(), getActivity(), getContext(), "Error");
                                 }
 
                                 ProgressDialogUtils.closeProgressDialog();
-                                //Successfully Transfer
 
                             }
 
@@ -660,11 +658,11 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                     cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanPallet.setImageResource(R.drawable.check);
                                     isPalletScanned=true;
-                                    ProgressDialogUtils.closeProgressDialog();
+
                                 }else{
                                     common.showUserDefinedAlertType(dto.getResult(), getActivity(), getContext(), "Error");
                                 }
-
+                                ProgressDialogUtils.closeProgressDialog();
                             }
 
                         } catch (Exception ex) {
@@ -882,7 +880,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                 List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
-                                Log.v("ABCDE_R",new Gson().toJson(_lInbound));
+
                                 InboundDTO dto = null;
                                 for (int i = 0; i < _lInbound.size(); i++) {
                                     dto = new InboundDTO(_lInbound.get(i).entrySet());
@@ -1231,7 +1229,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                 // Toast.makeText(this, "Scanner unavailable", Toast.LENGTH_SHORT).show();
             }
         }
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.title_activity_task_inter_location));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.title_activity_task_inter_leaving));
     }
 
     //Barcode scanner API
@@ -1330,8 +1328,6 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                 List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
-                                //TODO -- set next sugeested location;funtion
-                                Log.v("ABCDE_R",new Gson().toJson(_lInbound));
                                 InboundDTO dto = null;
                                 for (int i = 0; i < _lInbound.size(); i++) {
                                     dto = new InboundDTO(_lInbound.get(i).entrySet());

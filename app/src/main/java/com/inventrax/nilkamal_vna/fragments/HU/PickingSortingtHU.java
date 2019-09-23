@@ -80,7 +80,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     private CardView cvScanPartNo,cvScanPallet,cvScanDockLocation,cvScanNewRSN;
     private ImageView ivScanPartNo, ivScanPallet, ivScanDockLocation,ivScanNewRSN;
     private EditText etPartNo,etDockLocation;
-    Button btnClear, btnSkip,btnCloseLoadPallet,btnGo,btnExport,btnCloseExport;
+    Button btnClear, btnSkip,btnCloseLoadPallet,btnGo,btnExport,btnCloseExport,btnCloseOne;
     private Common common = null;
     SoundUtils soundUtils = null;
     String scanner = null,vlpdId = null;
@@ -101,15 +101,13 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     boolean isPalletScanned,isPartNoScanned,isDockLocationScanned,isNewRsn;
     RelativeLayout rlVLPDSelect,rlSorting,rlExport;
     private SearchableSpinner spinnerSelectVLPDNo;
-    ItemInfoDTO vlpdItem = null;
     String storageVLPDNo;
-    boolean IsSkipItem = false;
-    TextView txtVLPDNumber,txtMcode,txtBatchNo,txtDockName,txtPendingQty,txtHuNo,txtHuSize;
+    TextView txtVLPDNumber,txtMcode,txtDockName,txtPendingQty;
+    EditText txtBatchNo,txtHuNo,txtHuSize;
     public VlpdDto mVlpdDto;
 
     public  String sNewUniqueRSN="",sPalletNo="",ipAdress="",sUniqueRSN="",sPendingQty="";
     LinearLayout layoutnewRsn;
-    int iPendingQty=0;
     Dialog pickingSkipdialog;
 
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
@@ -152,14 +150,16 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
         etPartNo=(EditText) rootView.findViewById(R.id.etPartNo);
         etDockLocation=(EditText) rootView.findViewById(R.id.etDockLocation);
+        txtBatchNo=(EditText) rootView.findViewById(R.id.txtBatchNo);
+        txtHuNo=(EditText) rootView.findViewById(R.id.txtHuNo);
+        txtHuSize=(EditText) rootView.findViewById(R.id.txtHuSize);
 
         txtVLPDNumber=(TextView) rootView.findViewById(R.id.txtVLPDNumber);
         txtMcode=(TextView) rootView.findViewById(R.id.txtMcode);
-        txtBatchNo=(TextView) rootView.findViewById(R.id.txtBatchNo);
+
         txtDockName=(TextView) rootView.findViewById(R.id.txtDockName);
         txtPendingQty=(TextView) rootView.findViewById(R.id.txtPendingQty);
-        txtHuNo=(TextView) rootView.findViewById(R.id.txtHuNo);
-        txtHuSize=(TextView) rootView.findViewById(R.id.txtHuSize);
+
 
         rlVLPDSelect=(RelativeLayout) rootView.findViewById(R.id.rlVLPDSelect);
         rlSorting=(RelativeLayout) rootView.findViewById(R.id.rlSorting);
@@ -177,6 +177,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         btnGo=(Button)rootView.findViewById(R.id.btnGo);
         btnExport=(Button)rootView.findViewById(R.id.btnExport);
         btnCloseExport=(Button)rootView.findViewById(R.id.btnCloseExport);
+        btnCloseOne=(Button)rootView.findViewById(R.id.btnCloseOne);
 
 
 
@@ -186,6 +187,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
         btnClear.setOnClickListener(this);
         btnSkip.setOnClickListener(this);
+        btnCloseOne.setOnClickListener(this);
         btnCloseLoadPallet.setOnClickListener(this);
         btnGo.setOnClickListener(this);
         btnExport.setOnClickListener(this);
@@ -276,7 +278,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
             VLPDRequestDTO vlpdRequestDTO = new VLPDRequestDTO();
             vlpdRequestDTO.setUserID(userId);
             message.setEntityObject(vlpdRequestDTO);
-            Log.v("QWERTY",new Gson().toJson(message));
+
 
             Call<String> call = null;
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
@@ -328,7 +330,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
                                 List<LinkedTreeMap<?, ?>> _lVLPD = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lVLPD = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
-                                Log.v("QWERTY",new Gson().toJson(_lVLPD));
+
                                 if (_lVLPD.size() > 0) {
                                     List<VLPDResponseDTO> lstDto = new ArrayList<VLPDResponseDTO>();
                                     List<String> lstVLPD = new ArrayList<>();
@@ -409,7 +411,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                 rlExport.setVisibility(View.GONE);
                 break;
             case R.id.btnExport:
-                // Todo check VLDP# List
+                // TODO check VLDP# List
                 rlVLPDSelect.setVisibility(View.GONE);
                 rlSorting.setVisibility(View.GONE);
                 rlExport.setVisibility(View.VISIBLE);
@@ -517,7 +519,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                     }else{
                             common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");
                     }
-                    // TODO isValidDockLocation Check DockLocation Function
                     return;
                 }
 
@@ -530,7 +531,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                         else
                             common.showUserDefinedAlertType(errorMessages.EMC_0015, getActivity(), getContext(), "Error");
                     }
-                    // TODO isValidRSN Check RSN Function
                     return;
                 }
 
@@ -693,7 +693,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
             inboundDTO.setVLPDNumber(txtVLPDNumber.getText().toString());
             inboundDTO.setPalletNo(scannedData);
             message.setEntityObject(inboundDTO);
-            Log.v("QWERTY_VNA",new Gson().toJson(message));
+
             Call<String> call = null;
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
 
@@ -747,12 +747,12 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                 List<LinkedTreeMap<?, ?>> _lVlpd = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lVlpd= (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
-                                Log.v("QWERTY_VNA",new Gson().toJson(_lVlpd));
 
                                 VlpdDto vlpdDto=null;
                                 for(int i=0;i<_lVlpd.size();i++){
                                     vlpdDto=new VlpdDto(_lVlpd.get(i).entrySet());
                                 }
+
                                 mVlpdDto=vlpdDto;
 
                                 if(vlpdDto.getResult().equals("1") && vlpdDto.getResult()!=null){
@@ -760,8 +760,8 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                         txtMcode.setText(vlpdDto.getMcode());
                                         txtBatchNo.setText(vlpdDto.getBatchNo());
                                         txtDockName.setText(vlpdDto.getDockName());
-                                        txtHuNo.setText("HUNo: "+vlpdDto.getHUNo());
-                                        txtHuSize.setText("HUSize: "+vlpdDto.getHUSize());
+                                        txtHuNo.setText(vlpdDto.getHUNo());
+                                        txtHuSize.setText(vlpdDto.getHUSize());
                                         txtPendingQty.setText("Qty: "+vlpdDto.getPendingQty());
                                         sPalletNo=scannedData;
                                         cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
@@ -848,10 +848,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
             vlpdDto.setUserId(userId);
             vlpdDto.setPalletNo(sPalletNo);
             vlpdDto.setStorageLocation(mVlpdDto.getStorageLocation());
-
             message.setEntityObject(vlpdDto);
-
-            Log.v("QWERTY_Pick",new Gson().toJson(message));
 
             Call<String> call = null;
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
@@ -902,11 +899,9 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
                             } else {
                                 core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
-                                ProgressDialogUtils.closeProgressDialog();
                                 List<LinkedTreeMap<?, ?>> _lVlpd = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lVlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
-                                Log.v("QWERTY_Pick",new Gson().toJson(_lVlpd));
                                 VlpdDto vlpdDto1=null;
 
                                 for(int i=0;i<_lVlpd.size();i++){
@@ -948,36 +943,22 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                             ivScanPartNo.setImageResource(R.drawable.check);
                                             isPartNoScanned=true;
                                         }
-                                        Common.setIsPopupActive(true);
-                                        sound.alertSuccess(getActivity(), getContext());
-                                        DialogUtils.showAlertDialog(getActivity(), "Success", "Successfully Picked", R.drawable.success,new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which)
-                                            {
-                                                switch (which) {
-                                                    case DialogInterface.BUTTON_POSITIVE:
-                                                        Common.setIsPopupActive(false);
-                                                        isNewRsn=false;
-                                                        isPartNoScanned=false;
-                                                        etPartNo.setText("");
-                                                        layoutnewRsn.setVisibility(View.INVISIBLE);
-                                                        cvScanNewRSN.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
-                                                        ivScanNewRSN.setImageResource(R.drawable.fullscreen_img);
-                                                        cvScanPartNo.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
-                                                        ivScanPartNo.setImageResource(R.drawable.fullscreen_img);
-                                                        GetVNAPickingandShortingList(sPalletNo);
-                                                        break;
-                                                }
-                                            }
-                                        });
+                                        isNewRsn=false;
+                                        isPartNoScanned=false;
+                                        etPartNo.setText("");
+                                        layoutnewRsn.setVisibility(View.INVISIBLE);
+                                        cvScanNewRSN.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
+                                        ivScanNewRSN.setImageResource(R.drawable.fullscreen_img);
+                                        cvScanPartNo.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
+                                        ivScanPartNo.setImageResource(R.drawable.fullscreen_img);
+                                        GetVNAPickingandShortingList(sPalletNo);
                                     }
                                 }else{
                                     // TODO Alret No more items to pick for this pallet
                                     common.showUserDefinedAlertType(errorMessages.EMC_093, getActivity(), getContext(), "Error");
                                 }
-
+                                ProgressDialogUtils.closeProgressDialog();
                             }
-                            ProgressDialogUtils.closeProgressDialog();
 
                         } catch (Exception ex) {
                             try {
@@ -1051,7 +1032,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
             } catch (Exception ex) {
                 try {
-                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
                     logException();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -1083,7 +1064,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
                             } else {
                                 core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
-                                ProgressDialogUtils.closeProgressDialog();
                                 List<LinkedTreeMap<?, ?>> _lVlpd = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lVlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
@@ -1107,6 +1087,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                     //TODO NO Message
                                 }
                                          pickingSkipdialog.dismiss();
+                                ProgressDialogUtils.closeProgressDialog();
                             }
 
                         } catch (Exception ex) {
@@ -1159,8 +1140,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
             oLoginDTO.setMailID("1");
             message.setEntityObject(oLoginDTO);
 
-
-            Log.v("ABCDE_P",new Gson().toJson(message));
 
             Call<String> call = null;
             ApiInterface apiService =

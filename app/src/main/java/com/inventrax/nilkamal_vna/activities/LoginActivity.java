@@ -140,14 +140,14 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
 
             listDivision = new ArrayList<>();
             listDivision.add("Select");
-         //   listDivision.add("HH");
+            listDivision.add("HH");
             listDivision.add("HU");
             listDivision.add("Stock take");
 
             ArrayAdapter listDivisionAdapter = new ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, listDivision);
             spinnerSelectDivision.setAdapter(listDivisionAdapter);
 
-            spinnerSelectDivision.setSelection(1);
+            spinnerSelectDivision.setSelection(2);
 
             SharedPreferences sp = this.getSharedPreferences("SettingsActivity", Context.MODE_PRIVATE);
             serviceUrlString = sp.getString("url", "");
@@ -344,8 +344,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
         loginUserDTO.setCookieIdentifier(AndroidUtils.getIMEINumber(this).toString());*/
         message.setEntityObject(loginUserDTO);
 
-
-
         Call<String> call = null;
         ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
 
@@ -370,7 +368,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
         } catch (Exception ex) {
 
             try {
-                exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", LoginActivity.this);
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", LoginActivity.this);
                 logException();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -428,7 +426,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
 
                                 } catch (Exception ex) {
                                     try {
-                                        exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001", LoginActivity.this);
+                                        ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001", LoginActivity.this);
                                         logException();
                                     } catch (IOException e) {
                                         e.printStackTrace();
@@ -463,7 +461,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
         } catch (Exception ex) {
 
             try {
-                exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001", LoginActivity.this);
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001", LoginActivity.this);
                 logException();
             } catch (IOException e) {
                 e.printStackTrace();

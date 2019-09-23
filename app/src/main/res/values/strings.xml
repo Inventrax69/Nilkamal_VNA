@@ -117,7 +117,7 @@
     <string name="title_activity_goodsIn">Goods In</string>
     <string name="title_activity_to_in_hand_location">To In-Hand Location</string>
     <string name="title_activity_putaway">Putaway</string>
-    <string name="title_activity_task_inter_location">Task Inter Location</string>
+    <string name="title_activity_task_inter_leaving">Task Inter Leaving</string>
     <string name="title_activity_picking_sorting">Picking &amp; Sorting</string>
     <string name="title_activity_live_stock">Live Stock</string>
     <string name="title_activity_obdpicking">OBD Picking</string>
@@ -136,6 +136,7 @@
     <string name="title_activity_rsn_tracking">RSN Tracking</string>
     <string name="title_activity_box_loading_hh">Box Loading</string>
     <string name="title_activity_vlpd_loading">VLPD Loading</string>
+    <string name="title_activity_vna_loading">VNA Loading</string>
     <string name="title_activity_vlpd_list">VLPD List</string>
     <string name="title_activity_map_pallet_dock">Map Pallet Dock Loc.</string>
     <string name="title_activity_palletputaway">Pallet Putaway</string>

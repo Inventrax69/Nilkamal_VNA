@@ -50,6 +50,7 @@ import com.inventrax.nilkamal_vna.fragments.HU.PickingSortingtHU;
 import com.inventrax.nilkamal_vna.fragments.HU.TaskInterLeavingFragmentHU;
 import com.inventrax.nilkamal_vna.fragments.HU.ToInHandLocationHU;
 import com.inventrax.nilkamal_vna.fragments.HU.VLPDLoadingFragment;
+import com.inventrax.nilkamal_vna.fragments.HU.VNALoadingFragment;
 import com.inventrax.nilkamal_vna.fragments.StockTake.StockTakeFragment;
 import com.inventrax.nilkamal_vna.model.MenuModel;
 import com.inventrax.nilkamal_vna.model.NavDrawerItem;
@@ -216,6 +217,9 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
         childModelsList.add(childModel);
 
         childModel = new MenuModel("VLPD Loading", false, false, "VLPD Loading");
+        childModelsList.add(childModel);
+
+        childModel = new MenuModel("VNA Loading", false, false, "VNA Loading");
         childModelsList.add(childModel);
 
 
@@ -462,6 +466,10 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new VLPDLoadingFragment());
                     break;
 
+                case "VNA Loading":
+                    FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new VNALoadingFragment());
+                    break;
+
                 case "Bin to Bin":
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new BintoBinFragment());
                     break;
@@ -469,7 +477,6 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
                 case "Put Away":
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new PutAwayFragment());
                     break;
-
 
                 case "SKU to SKU":
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new SkuToSkuFragment());
