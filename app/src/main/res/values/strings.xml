@@ -115,7 +115,7 @@
     <string name="title_activity_navigation_bar">NavigationBar</string>
     <string name="title_activity_receive">Receive</string>
     <string name="title_activity_goodsIn">Goods In</string>
-    <string name="title_activity_to_in_hand_location">To In-Hand Location</string>
+    <string name="title_activity_to_in_drop_location">To In-Drop Location</string>
     <string name="title_activity_putaway">Putaway</string>
     <string name="title_activity_task_inter_leaving">Task Inter Leaving</string>
     <string name="title_activity_picking_sorting">Picking &amp; Sorting</string>

@@ -34,6 +34,9 @@ public interface ApiInterface {
     @POST("Inbound/UpdateLBH")
     Call<String> UpdateLBH(@Body WMSCoreMessage oRequest);
 
+    @POST("Inbound/PalletCreation")
+    Call<String> PalletCreation(@Body WMSCoreMessage oRequest);
+
     @POST("Inbound/GetPalletCurrentLocation")
     Call<String> GetPalletCurrentLocation(@Body WMSCoreMessage oRequest);
 

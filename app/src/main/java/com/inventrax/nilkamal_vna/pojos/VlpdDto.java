@@ -17,7 +17,7 @@ public class VlpdDto {
     private String vLPDNumber;
 
     @SerializedName("Result")
-    private String result;
+    private String Result;
 
     @SerializedName("PickedPalletNumber")
     private String pickedPalletNumber;
@@ -89,12 +89,8 @@ public class VlpdDto {
     @SerializedName("NewUniqueRSN")
     private String NewUniqueRSN;
 
-
-
     @SerializedName("UniqueRSN")
     private String UniqueRSN;
-
-
 
 
     @SerializedName("RSN")
@@ -105,19 +101,21 @@ public class VlpdDto {
     private String palletNo;
 
 
-
-
     @SerializedName("IpAddress")
     private String IpAddress;
 
     @SerializedName("Message")
     private String Message;
 
-    @SerializedName("LoadRSN")
-    private String LoadRSN;
+    @SerializedName("LoadRSNCount")
+    private String LoadRSNCount;
 
-    @SerializedName("PickRSN")
-    private String PickRSN;
+    @SerializedName("PickRSNCount")
+    private String PickRSNCount;
+
+
+    @SerializedName("MDescreiption")
+    private String MDescreiption;
 
 
     public VlpdDto() { }
@@ -272,14 +270,19 @@ public class VlpdDto {
                         this.setRSN(entry.getValue().toString());
                     }
                     break;
-                 case "LoadRSN":
+                 case "LoadRSNCount":
                     if (entry.getValue() != null) {
-                        this.setLoadRSN(entry.getValue().toString());
+                        this.setLoadRSNCount(entry.getValue().toString());
                     }
                     break;
-                 case "PickRSN":
+                 case "PickRSNCount":
                     if (entry.getValue() != null) {
-                        this.setPickRSN(entry.getValue().toString());
+                        this.setPickRSNCount(entry.getValue().toString());
+                    }
+                    break;
+                case "MDescreiption":
+                    if (entry.getValue() != null) {
+                        this.setMDescreiption(entry.getValue().toString());
                     }
                     break;
             }
@@ -327,11 +330,11 @@ public class VlpdDto {
     }
 
     public String getResult() {
-        return result;
+        return Result;
     }
 
     public void setResult(String result) {
-        this.result = result;
+        this.Result = result;
     }
 
     public String getPickedPalletNumber() {
@@ -545,20 +548,29 @@ public class VlpdDto {
         this.RSN = RSN;
     }
 
-    public String getLoadRSN() {
-        return LoadRSN;
+    public String getLoadRSNCount() {
+        return LoadRSNCount;
     }
 
-    public void setLoadRSN(String loadRSN) {
-        LoadRSN = loadRSN;
+    public void setLoadRSNCount(String loadRSNCount) {
+        LoadRSNCount = loadRSNCount;
     }
 
-    public String getPickRSN() {
-        return PickRSN;
+    public String getPickRSNCount() {
+        return PickRSNCount;
     }
 
-    public void setPickRSN(String pickRSN) {
-        PickRSN = pickRSN;
+    public void setPickRSNCount(String pickRSNCount) {
+        PickRSNCount = pickRSNCount;
     }
+
+    public String getMDescreiption() {
+        return MDescreiption;
+    }
+
+    public void setMDescreiption(String MDescreiption) {
+        this.MDescreiption = MDescreiption;
+    }
+
 
 }

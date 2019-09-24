@@ -89,8 +89,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
     RestService restService;
     private String division = "";
     private ArrayList<String> listDivision;
-
-
     public static final int MULTIPLE_PERMISSIONS = 10;
 
     // if the android mobile version is greater than 6.0 we are giving the following permissions
@@ -105,7 +103,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         requestforpermissions(permissions);
-        //versioncontrol();
         loadFormControls();
 
         loginPresenter = new LoginPresenterImpl(this);
@@ -147,7 +144,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
             ArrayAdapter listDivisionAdapter = new ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, listDivision);
             spinnerSelectDivision.setAdapter(listDivisionAdapter);
 
-            spinnerSelectDivision.setSelection(2);
 
             SharedPreferences sp = this.getSharedPreferences("SettingsActivity", Context.MODE_PRIVATE);
             serviceUrlString = sp.getString("url", "");
@@ -181,7 +177,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
                                 // Checking Internet Connection
 
                                 if (serviceUrlString != null && serviceUrlString != "") {
-
                                     validateUserSession();
                                 } else {
                                     DialogUtils.showAlertDialog(LoginActivity.this, "Configure Url");
@@ -314,10 +309,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
         return true;
     }
 
-    //
 
-
-    //Validating the User credentials and Calling the API method
     //Validating the User credentials and Calling the API method
     public void validateUserSession() {
         if (NetworkUtils.isInternetAvailable(this)) {

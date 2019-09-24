@@ -1,5 +1,6 @@
 package com.inventrax.nilkamal_vna.fragments.HU;
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -120,6 +122,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
     int palletMaxWeight = 0;
     int palletLoadedWeight = 0;
     public String auditbinLocation = null;
+    Dialog validPalletDialog;
 
     private String pallet = null, location = null, rsn = null, L = null, B = null, H = null,
             W = null, box = null, qty = null, vol = null, twt = null, caseString = null, sku = null, desc = null, count = null, ipAddress = null, printerIPAddress = null;
@@ -203,6 +206,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
             }
         });
+
         etLocation = (CustomEditText) rootView.findViewById(R.id.etLocation);
         etRSN = (CustomEditText) rootView.findViewById(R.id.etRSN);
         etLength = (CustomEditText) rootView.findViewById(R.id.etLength);
@@ -717,7 +721,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
         }*/
 
     }
-
+    String sColor;
     private void GetPalletValidation(final String scannedData){
         try {
 
@@ -775,8 +779,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
                                 common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
-                                if (owmsExceptionMessage.getWMSExceptionCode().equals("WMC_PUT_CNTL_006")) {
-                                }
+                                if (owmsExceptionMessage.getWMSExceptionCode().equals("WMC_PUT_CNTL_006")) { }
                             } else {
 
                                 core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
@@ -789,17 +792,74 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                                     dto = new InboundDTO(_lInbound.get(i).entrySet());
                                 }
 
+                                Log.v("ABCDE",new Gson().toJson(_lInbound));
+
                                 if (dto.getResult().toString().equalsIgnoreCase("1")) {
                                     etPallet.setText(scannedData);
                                     cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanPallet.setImageResource(R.drawable.check);
-/*                                    isPalletScanned=true;
-                                    ProgressDialogUtils.closeProgressDialog();*/
-                                } else {
-/*                                    rlPalletType.setVisibility(View.VISIBLE);
-                                    rlPutaway.setVisibility(View.GONE);*/
-                                    etPallet.setText("");
+                                }
+                                else if (dto.getResult().toString().equalsIgnoreCase("-2")) {
 
+                                    validPalletDialog = new Dialog(getActivity());
+                                    validPalletDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                    validPalletDialog.setCancelable(false);
+                                    validPalletDialog.setContentView(R.layout.pallet_valid);
+                                    final EditText dialogetLength=(EditText)validPalletDialog.findViewById(R.id.etLength);
+                                    final EditText dialogetBreadth=(EditText)validPalletDialog.findViewById(R.id.etBreadth);
+                                    final EditText dialogetHeight=(EditText)validPalletDialog.findViewById(R.id.etHeight);
+                                    final EditText dialogetWeight=(EditText)validPalletDialog.findViewById(R.id.etWeight);
+                                    final SearchableSpinner spinnerSelectPrinter=(SearchableSpinner) validPalletDialog.findViewById(R.id.spinnerSelectReason);
+
+                                    TextView btnOk = (TextView) validPalletDialog.findViewById(R.id.btnOk);
+                                    btnOk.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if(dialogetLength.getText().toString().isEmpty() &&
+                                               dialogetBreadth.getText().toString().isEmpty() &&
+                                               dialogetHeight.getText().toString().isEmpty() &&
+                                               dialogetWeight.getText().toString().isEmpty() &&
+                                               sColor.isEmpty() && !sColor.equals("SELECT COLOR")){
+                                                common.showUserDefinedAlertType("Enter all fields", getActivity(), getContext(), "Warning");
+                                            }else{
+                                                //TODO call service
+                                                PalletCreation(sColor,
+                                                        dialogetLength.getText().toString(),
+                                                        dialogetBreadth.getText().toString(),
+                                                        dialogetHeight.getText().toString(),
+                                                        dialogetWeight.getText().toString(),scannedData);
+                                            }
+                                        }
+                                    });
+
+                                    List<String> lstcoloers=new ArrayList<>();
+                                    lstcoloers.add("SELECT COLOR");
+                                    lstcoloers.add("GREEN");
+                                    lstcoloers.add("MATTRESS / METAL FRAME");
+                                    lstcoloers.add("RED");
+                                    lstcoloers.add("BLACK");
+                                    lstcoloers.add("YELLOW");
+                                    lstcoloers.add("BLUE - BIG");
+                                    sColor="";
+
+                                    ArrayAdapter arrayAdapterSelectPrinter = new ArrayAdapter(getActivity(), R.layout.support_simple_spinner_dropdown_item, lstcoloers);
+                                    spinnerSelectPrinter.setAdapter(arrayAdapterSelectPrinter);
+                                    spinnerSelectPrinter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                        @Override
+                                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                            sColor=spinnerSelectPrinter.getSelectedItem().toString();
+                                        }
+
+                                        @Override
+                                        public void onNothingSelected(AdapterView<?> adapterView) {
+
+                                        }
+                                    });
+                                    validPalletDialog.show();
+
+                                }else {
+
+                                    etPallet.setText("");
                                     cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanPallet.setImageResource(R.drawable.warning_img);
                                     common.showUserDefinedAlertType(errorMessages.EMC_088, getActivity(), getContext(), "Warning");
@@ -1514,7 +1574,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
                         } catch (Exception ex) {
                             try {
-                                exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "UpdateLBH_02", getActivity());
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "UpdateLBH_02", getActivity());
                                 logException();
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -2342,6 +2402,134 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+
+    private void PalletCreation(String sColor, String l, String b, String h, String w, final String scannedData) {
+
+        try {
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
+            InboundDTO inboundDTO = new InboundDTO();
+            inboundDTO.setUserId(userId);
+            inboundDTO.setPalletNo(scannedData);
+            inboundDTO.setPalletType(sColor);
+            inboundDTO.setLenght(l);
+            inboundDTO.setBredth(b);
+            inboundDTO.setHeight(h);
+            inboundDTO.setWeight(w);
+            message.setEntityObject(inboundDTO);
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+
+                call = apiService.PalletCreation(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+
+                            } else {
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+                                ProgressDialogUtils.closeProgressDialog();
+                                List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+                                Log.v("ABCDE",new Gson().toJson(_lInbound));
+                                InboundDTO inboundDTO1=null;
+                                for(int i=0;i<_lInbound.size();i++){
+                                    inboundDTO1=new InboundDTO(_lInbound.get(i).entrySet());
+                                }
+
+                                if(inboundDTO1.getResult().equals("1")){
+                                    etPallet.setText(scannedData);
+                                    cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                    ivScanPallet.setImageResource(R.drawable.check);
+                                    validPalletDialog.dismiss();
+                                }else if(inboundDTO1.getResult().equals("-2")){
+                                    common.showUserDefinedAlertType("Invalid Pallet Color", getActivity(), getContext(), "Error");
+                                }else{
+                                    common.showUserDefinedAlertType("Pallet already created", getActivity(), getContext(), "Error");
+                                }
+
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
     }
 
 }

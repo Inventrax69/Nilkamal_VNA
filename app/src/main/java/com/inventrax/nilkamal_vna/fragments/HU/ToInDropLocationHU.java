@@ -67,7 +67,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ToInHandLocationHU extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, BarcodeReader.TriggerListener, BarcodeReader.BarcodeListener {
+public class ToInDropLocationHU extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, BarcodeReader.TriggerListener, BarcodeReader.BarcodeListener {
 
 
     private static final String classCode = "API_FRAG_TOINHAND_LOCATION";
@@ -117,7 +117,7 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
         }
     };
 
-    public ToInHandLocationHU() { }
+    public ToInDropLocationHU() { }
 
     @Nullable
     @Override
@@ -1533,7 +1533,7 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
                 // Toast.makeText(this, "Scanner unavailable", Toast.LENGTH_SHORT).show();
             }
         }
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.title_activity_to_in_hand_location));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.title_activity_to_in_drop_location));
     }
 
     //Barcode scanner API
@@ -1885,8 +1885,18 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
                                     ivScanPallet.setImageResource(R.drawable.check);
                                     isPalletScanned=true;
 
+                                }else if(dto.getResult().equals("Location are not avaiable for this Pallet")){
+                                   // ClearFields1();
+                                    txtLoction.setText("01P00A0");
+                                    cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                    ivScanPallet.setImageResource(R.drawable.check);
+                                    isPalletScanned=true;
+                                    common.showUserDefinedAlertType("Location are not avaiable for this Pallet", getActivity(), getContext(), "Warning");
                                 }else{
-                                    ClearFields1();
+                                    etPallet.setText("");
+                                    cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                    ivScanPallet.setImageResource(R.drawable.warning_img);
+                                    isPalletScanned=false;
                                     common.showUserDefinedAlertType(dto.getResult(), getActivity(), getContext(), "Error");
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
@@ -1947,7 +1957,7 @@ public class ToInHandLocationHU extends Fragment implements View.OnClickListener
             inboundDTO.setInout("0");
             message.setEntityObject(inboundDTO);
 
-            Log.v("ABCDE_BintoBin",new Gson().toJson(message));
+
 
             Call<String> call = null;
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);

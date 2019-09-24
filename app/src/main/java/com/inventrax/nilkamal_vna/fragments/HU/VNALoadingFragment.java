@@ -100,7 +100,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
     TextView txtOBDNumber,txtPenQty;
     String ID=null;
 
-    EditText etmCode,etBatchNo,etHuSize,etHuNo;
+    EditText etmCode,etBatchNo,etHuSize,etHuNo,etMDesc,etRSN;
 
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
         @Override
@@ -139,9 +139,11 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
         etBatchNo = (EditText) rootView.findViewById(R.id.etBatchNo);
         etHuSize = (EditText) rootView.findViewById(R.id.etHuSize);
         etHuNo = (EditText) rootView.findViewById(R.id.etHuNo);
+        etMDesc = (EditText) rootView.findViewById(R.id.etMDesc);
+        etRSN = (EditText) rootView.findViewById(R.id.etRSN);
 
-        cvScanRSN = (CardView) rootView.findViewById(R.id.cvScanRSN);
-        ivScanRSN = (ImageView) rootView.findViewById(R.id.ivScanRSN);
+        cvScanRSN = (CardView) rootView.findViewById(R.id.cvScanPartNo);
+        ivScanRSN = (ImageView) rootView.findViewById(R.id.ivScanPartNo);
 
         spinnerSelectOBDNo = (SearchableSpinner) rootView.findViewById(R.id.spinnerSelectOBDNo);
         spinnerSelectOBDNo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -302,7 +304,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
             if(!ProgressDialogUtils.isProgressActive()) {
 
                 if(ScanValidator.IsRSNScanned(scannedData)){
-                    if(txtOBDNumber.getText().toString().isEmpty())
+                    if(!txtOBDNumber.getText().toString().isEmpty())
                         VNAuniqueRSNLoading(scannedData);
                 }
 
@@ -638,7 +640,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
 
                             } else {
                                 core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
-                                ProgressDialogUtils.closeProgressDialog();
+
                                 List<LinkedTreeMap<?, ?>> _lRsnList = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lRsnList = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
@@ -656,7 +658,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                                 }else{
                                     common.showUserDefinedAlertType("NO more items", getActivity(), getContext(), "Error");
                                 }
-
+                                ProgressDialogUtils.closeProgressDialog();
                             }
 
                         } catch (Exception ex) {
@@ -708,7 +710,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
             VLPDRequestDTO vlpdRequestDTO=new VLPDRequestDTO();
             vlpdRequestDTO.setID(ID);
             vlpdRequestDTO.setUserID(userId);
-            vlpdRequestDTO.setRSN(scannedData);
+            vlpdRequestDTO.setRSNNumber(scannedData);
             message.setEntityObject(vlpdRequestDTO);
 
             Log.v("ABCDE_L",new Gson().toJson(message));
@@ -766,27 +768,59 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                                 List<LinkedTreeMap<?, ?>> _lVLPD = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lVLPD = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
-                                Log.v("ABCDE_R",new Gson().toJson(_lVLPD));
+
                                 VlpdDto vlpdDto=null;
                                 for(int i=0;i<_lVLPD.size();i++){
                                     vlpdDto=new VlpdDto(_lVLPD.get(i).entrySet());
                                 }
 
 
-                                if(vlpdDto.getResult().equals("1")){
 
+                                if(vlpdDto.getResult().equals("1")){
                                     cvScanRSN.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanRSN.setImageResource(R.drawable.check);
                                     etmCode.setText(vlpdDto.getMcode());
                                     etBatchNo.setText(vlpdDto.getBatchNo());
                                     etHuSize.setText(vlpdDto.getHUSize());
                                     etHuNo.setText(vlpdDto.getHUNo());
-                                    txtPenQty.setText(vlpdDto.getLoadRSN()+" / "+vlpdDto.getPickRSN());
+                                    etMDesc.setText(vlpdDto.getMDescreiption());
+                                    etRSN.setText(scannedData);
+                                    txtPenQty.setText(vlpdDto.getLoadRSNCount()+" / "+vlpdDto.getPickRSNCount());
+                                    if(vlpdDto.getLoadRSNCount().equals(vlpdDto.getPickRSNCount())){
+                                        cvScanRSN.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
+                                        ivScanRSN.setImageResource(R.drawable.fullscreen_img);
+                                        etmCode.setText("");
+                                        etBatchNo.setText("");
+                                        etHuSize.setText("");
+                                        etHuNo.setText("");
+                                        etMDesc.setText("");
+                                        etRSN.setText("");
+                                        common.showUserDefinedAlertType("No more pending qty", getActivity(), getContext(), "Error");
+                                    }
+                                } else if(vlpdDto.getResult().equals("-2")){
+
+                                    cvScanRSN.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                    ivScanRSN.setImageResource(R.drawable.warning_img);
+                                    etmCode.setText("");
+                                    etBatchNo.setText("");
+                                    etHuSize.setText("");
+                                    etHuNo.setText("");
+                                    etMDesc.setText("");
+                                    etRSN.setText(scannedData);
+                                    common.showUserDefinedAlertType("Invalid RSN", getActivity(), getContext(), "Warning");
                                 }else{
-                                    common.showUserDefinedAlertType("No more items to pick", getActivity(), getContext(), "Error");
+                                    cvScanRSN.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
+                                    ivScanRSN.setImageResource(R.drawable.fullscreen_img);
+                                    etmCode.setText("");
+                                    etBatchNo.setText("");
+                                    etHuSize.setText("");
+                                    etHuNo.setText("");
+                                    etMDesc.setText("");
+                                    etRSN.setText("");
+                                    common.showUserDefinedAlertType("Item already loaded", getActivity(), getContext(), "Error");
                                 }
 
-
+                                ProgressDialogUtils.closeProgressDialog();
 
                             }
 

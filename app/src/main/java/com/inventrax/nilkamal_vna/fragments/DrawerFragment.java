@@ -48,7 +48,7 @@ import com.inventrax.nilkamal_vna.fragments.HU.SLocToSLocFragment;
 import com.inventrax.nilkamal_vna.fragments.HU.SkuToSkuFragment;
 import com.inventrax.nilkamal_vna.fragments.HU.PickingSortingtHU;
 import com.inventrax.nilkamal_vna.fragments.HU.TaskInterLeavingFragmentHU;
-import com.inventrax.nilkamal_vna.fragments.HU.ToInHandLocationHU;
+import com.inventrax.nilkamal_vna.fragments.HU.ToInDropLocationHU;
 import com.inventrax.nilkamal_vna.fragments.HU.VLPDLoadingFragment;
 import com.inventrax.nilkamal_vna.fragments.HU.VNALoadingFragment;
 import com.inventrax.nilkamal_vna.fragments.StockTake.StockTakeFragment;
@@ -176,7 +176,7 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
         childModel = new MenuModel("Receive from Site", false, false, "Receive from Site");
         childModelsList.add(childModel);
 
-        childModel = new MenuModel("To In-Hand Location", false, false, "To In-Hand Location");
+        childModel = new MenuModel("To In-Drop Location", false, false, "To In-Drop Location");
         childModelsList.add(childModel);
 
 /*        childModel = new MenuModel("Putaway", false, false, "Putaway");
@@ -426,8 +426,8 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new ReceiveFromSiteFragmentHU());
                     break;
 
-                case "To In-Hand Location":
-                    FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new ToInHandLocationHU());
+                case "To In-Drop Location":
+                    FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new ToInDropLocationHU());
                     break;
 
                 case "Putaway":

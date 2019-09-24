@@ -79,7 +79,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     private View rootView;
     private CardView cvScanPartNo,cvScanPallet,cvScanDockLocation,cvScanNewRSN;
     private ImageView ivScanPartNo, ivScanPallet, ivScanDockLocation,ivScanNewRSN;
-    private EditText etPartNo,etDockLocation;
+    private EditText etPartNo,etDockLocation,etPallet,etNewQty;
     Button btnClear, btnSkip,btnCloseLoadPallet,btnGo,btnExport,btnCloseExport,btnCloseOne;
     private Common common = null;
     SoundUtils soundUtils = null;
@@ -105,8 +105,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     TextView txtVLPDNumber,txtMcode,txtDockName,txtPendingQty;
     EditText txtBatchNo,txtHuNo,txtHuSize;
     public VlpdDto mVlpdDto;
-
-    public  String sNewUniqueRSN="",sPalletNo="",ipAdress="",sUniqueRSN="",sPendingQty="";
+    public  String sNewUniqueRSN="",sPalletNo="",ipAdress="",sUniqueRSN="",sPendingQty="",sDockName="";
     LinearLayout layoutnewRsn;
     Dialog pickingSkipdialog;
 
@@ -149,6 +148,8 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         ivScanNewRSN=(ImageView)rootView.findViewById(R.id.ivScanNewRSN);
 
         etPartNo=(EditText) rootView.findViewById(R.id.etPartNo);
+        etNewQty=(EditText) rootView.findViewById(R.id.etNewQty);
+        etPallet=(EditText) rootView.findViewById(R.id.etPallet);
         etDockLocation=(EditText) rootView.findViewById(R.id.etDockLocation);
         txtBatchNo=(EditText) rootView.findViewById(R.id.txtBatchNo);
         txtHuNo=(EditText) rootView.findViewById(R.id.txtHuNo);
@@ -242,7 +243,10 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     }
 
     public void clearAllFileds(){
+
         etPartNo.setText("");
+        etPallet.setText("");
+        etNewQty.setText("");
         etDockLocation.setText("");
         txtMcode.setText("");
         txtBatchNo.setText("");
@@ -259,6 +263,28 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         ivScanPartNo.setImageResource(R.drawable.fullscreen_img);
         cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.palletColor));
         ivScanPallet.setImageResource(R.drawable.fullscreen_img);
+        cvScanDockLocation.setCardBackgroundColor(getResources().getColor(R.color.locationColor));
+        ivScanDockLocation.setImageResource(R.drawable.fullscreen_img);
+        cvScanNewRSN.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
+        ivScanNewRSN.setImageResource(R.drawable.fullscreen_img);
+
+    }
+
+    public void clearAllFileds1(){
+        etPartNo.setText("");
+        etNewQty.setText("");
+        txtMcode.setText("");
+        txtBatchNo.setText("");
+        txtDockName.setText("");
+        txtHuNo.setText("");
+        txtHuSize.setText("");
+        txtPendingQty.setText("");
+        isPartNoScanned=false;
+        isDockLocationScanned=false;
+        isNewRsn=false;
+        sNewUniqueRSN="";sPalletNo="";ipAdress="";sUniqueRSN="";
+        cvScanPartNo.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
+        ivScanPartNo.setImageResource(R.drawable.fullscreen_img);
         cvScanDockLocation.setCardBackgroundColor(getResources().getColor(R.color.locationColor));
         ivScanDockLocation.setImageResource(R.drawable.fullscreen_img);
         cvScanNewRSN.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
@@ -386,7 +412,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
             }
         } catch (Exception ex) {
             try {
-                exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetOpenVLPDListByPriority_04", getActivity());
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetOpenVLPDListByPriority_04", getActivity());
                 logException();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -763,10 +789,18 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                         txtHuNo.setText(vlpdDto.getHUNo());
                                         txtHuSize.setText(vlpdDto.getHUSize());
                                         txtPendingQty.setText("Qty: "+vlpdDto.getPendingQty());
+                                        etPallet.setText(scannedData);
                                         sPalletNo=scannedData;
                                         cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                         ivScanPallet.setImageResource(R.drawable.check);
                                         isPalletScanned=true;
+                                        if(!sDockName.equals(vlpdDto.getDockName())){
+                                            cvScanDockLocation.setCardBackgroundColor(getResources().getColor(R.color.locationColor));
+                                            ivScanDockLocation.setImageResource(R.drawable.fullscreen_img);
+                                            etDockLocation.setText("");
+                                            isDockLocationScanned=false;
+                                            sDockName=vlpdDto.getDockName();
+                                        }
                                     }else{
                                         common.showUserDefinedAlertType("Qty limit exceeded", getActivity(), getContext(), "Error");
                                     }
@@ -920,19 +954,15 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                         getPrinters();
                                     }
                                     if(vlpdDto1.getMessage().equals("-2")){
-                                        // TODO 'Invalid RSN'
                                         common.showUserDefinedAlertType(errorMessages.EMC_0009, getActivity(), getContext(), "Error");
                                     }
                                     if(vlpdDto1.getMessage().equals("-3")){
-                                        // TODO 'Invalid Dock '
                                         common.showUserDefinedAlertType(errorMessages.EMC_091, getActivity(), getContext(), "Error");
                                     }
                                     if(vlpdDto1.getMessage().equals("-4")){
-                                        // TODO 'Error : While picking'
                                         common.showUserDefinedAlertType(errorMessages.EMC_092, getActivity(), getContext(), "Error");
                                     }
                                     if(vlpdDto1.getMessage().equals("1")){
-                                        // TODO Have to GetVNAPickingandShortingList again
                                         if(isNewRsn){
                                             cvScanNewRSN.setCardBackgroundColor(getResources().getColor(R.color.white));
                                             ivScanNewRSN.setImageResource(R.drawable.check);
@@ -944,13 +974,13 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                             isPartNoScanned=true;
                                         }
                                         isNewRsn=false;
-                                        isPartNoScanned=false;
-                                        etPartNo.setText("");
+                                       // isPartNoScanned=false;
+                                       // etPartNo.setText("");
                                         layoutnewRsn.setVisibility(View.INVISIBLE);
                                         cvScanNewRSN.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
                                         ivScanNewRSN.setImageResource(R.drawable.fullscreen_img);
-                                        cvScanPartNo.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
-                                        ivScanPartNo.setImageResource(R.drawable.fullscreen_img);
+                                       // cvScanPartNo.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
+                                     //   ivScanPartNo.setImageResource(R.drawable.fullscreen_img);
                                         GetVNAPickingandShortingList(sPalletNo);
                                     }
                                 }else{

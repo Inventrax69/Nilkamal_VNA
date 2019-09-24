@@ -503,7 +503,6 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                 List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
-
                                 InboundDTO dto=null;
                                 for (int i = 0; i < _lInbound.size(); i++) {
                                     dto = new InboundDTO(_lInbound.get(i).entrySet());
@@ -1107,6 +1106,11 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
         if (scannedData != null && !Common.isPopupActive()) {
 
             if (!ProgressDialogUtils.isProgressActive()) {
+
+                if(tvStRef.getText().toString().isEmpty()){
+                    common.showUserDefinedAlertType("No suggestion type defined", getActivity(), getContext(), "Error");
+                    return;
+                }
 
                 if (ScanValidator.IsPalletScanned(scannedData)) {
                     if(isPicking){

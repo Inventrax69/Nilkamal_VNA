@@ -141,6 +141,20 @@ public class InboundDTO {
     private String SkipReason;
 
 
+    @SerializedName("lenght")
+    private String lenght;
+
+    @SerializedName("Bredth")
+    private String Bredth;
+
+    @SerializedName("height")
+    private String height;
+
+    @SerializedName("Weight")
+    private String Weight;
+
+
+
     public  InboundDTO()
     {
     }
@@ -447,6 +461,27 @@ public class InboundDTO {
                         this.setSkipReason(entry.getValue().toString());
                     }
                     break;
+               case "lenght":
+                    if (entry.getValue() != null) {
+                        this.setSkipReason(entry.getValue().toString());
+                    }
+                    break;
+               case "Bredth":
+                    if (entry.getValue() != null) {
+                        this.setSkipReason(entry.getValue().toString());
+                    }
+                    break;
+               case "height":
+                    if (entry.getValue() != null) {
+                        this.setSkipReason(entry.getValue().toString());
+                    }
+                    break;
+               case "Weight":
+                    if (entry.getValue() != null) {
+                        this.setSkipReason(entry.getValue().toString());
+                    }
+                    break;
+
 
 
             }
@@ -877,5 +912,38 @@ public class InboundDTO {
 
     public void setSkipReason(String skipReason) {
         SkipReason = skipReason;
+    }
+
+
+    public String getLenght() {
+        return lenght;
+    }
+
+    public void setLenght(String lenght) {
+        this.lenght = lenght;
+    }
+
+    public String getBredth() {
+        return Bredth;
+    }
+
+    public void setBredth(String bredth) {
+        Bredth = bredth;
+    }
+
+    public String getHeight() {
+        return height;
+    }
+
+    public void setHeight(String height) {
+        this.height = height;
+    }
+
+    public String getWeight() {
+        return Weight;
+    }
+
+    public void setWeight(String weight) {
+        Weight = weight;
     }
 }
