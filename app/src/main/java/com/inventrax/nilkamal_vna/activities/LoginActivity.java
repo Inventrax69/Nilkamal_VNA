@@ -2,6 +2,7 @@ package com.inventrax.nilkamal_vna.activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -24,6 +25,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -159,6 +161,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
             inputPassword.addTextChangedListener(new LoginViewTextWatcher(inputPassword));
             gson = new GsonBuilder().create();
             core = new WMSCoreMessage();
+
 
             ServiceURL.setServiceUrl(serviceUrlString);
 

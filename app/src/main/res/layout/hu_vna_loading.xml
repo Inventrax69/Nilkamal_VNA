@@ -183,10 +183,10 @@
             <EditText
                 android:id="@+id/etmCode"
                 style="@style/editTextStyleSmall"
-                android:layout_width="125dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:hint="MCode"
-                android:inputType="text"
+                android:inputType="text|textNoSuggestions"
                 android:textStyle="bold"
                 android:clickable="false"
                 android:background="@android:color/transparent"
@@ -215,13 +215,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="Description"
-                android:inputType="text"
+                android:inputType="text|textNoSuggestions"
                 android:textStyle="bold"
                 android:clickable="false"
                 android:background="@android:color/transparent"
                 android:longClickable="false"
-                android:focusable="false"
-                android:singleLine="true" />
+                android:maxLines="2"
+                android:focusable="false" />
 
         </android.support.design.widget.TextInputLayout>
 

@@ -169,6 +169,6 @@ public class ErrorMessages {
 
     public String EMC_092 = "Error : While picking";
 
-    public String EMC_093 = "No more items to pick for this pallet";
+    public String EMC_093 = "No more items to be picked from this pallet";
 
 }

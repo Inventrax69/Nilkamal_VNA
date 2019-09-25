@@ -162,6 +162,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
         });
 
         btnCloseOne = (Button) rootView.findViewById(R.id.btnCloseOne);
+        btnCloseTwo = (Button) rootView.findViewById(R.id.btnCloseTwo);
         btnGo = (Button) rootView.findViewById(R.id.btnGo);
 
         SharedPreferences sp = getActivity().getSharedPreferences("LoginActivity", Context.MODE_PRIVATE);
@@ -169,6 +170,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
         materialType = sp.getString("division", "");
 
         btnCloseOne.setOnClickListener(this);
+        btnCloseTwo.setOnClickListener(this);
         btnGo.setOnClickListener(this);
 
 
@@ -571,7 +573,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
             }
         } catch (Exception ex) {
             try {
-                exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetOpenVLPDListByPriority_04", getActivity());
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetOpenVLPDListByPriority_04", getActivity());
                 logException();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -656,7 +658,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                                 else if(vlpdResponseDTO.getResult().equals("-2")){
                                     common.showUserDefinedAlertType(vlpdResponseDTO.getErrorMessage(), getActivity(), getContext(), "Error");
                                 }else{
-                                    common.showUserDefinedAlertType("NO more items", getActivity(), getContext(), "Error");
+                                    common.showUserDefinedAlertType("No more items", getActivity(), getContext(), "Error");
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
                             }
@@ -808,7 +810,9 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                                     etMDesc.setText("");
                                     etRSN.setText(scannedData);
                                     common.showUserDefinedAlertType("Invalid RSN", getActivity(), getContext(), "Warning");
+
                                 }else{
+
                                     cvScanRSN.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
                                     ivScanRSN.setImageResource(R.drawable.fullscreen_img);
                                     etmCode.setText("");
@@ -818,6 +822,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                                     etMDesc.setText("");
                                     etRSN.setText("");
                                     common.showUserDefinedAlertType("Item already loaded", getActivity(), getContext(), "Error");
+
                                 }
 
                                 ProgressDialogUtils.closeProgressDialog();

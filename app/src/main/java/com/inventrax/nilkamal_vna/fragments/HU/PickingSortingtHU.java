@@ -40,11 +40,9 @@ import com.honeywell.aidc.TriggerStateChangeEvent;
 import com.honeywell.aidc.UnsupportedPropertyException;
 import com.inventrax.nilkamal_vna.R;
 import com.inventrax.nilkamal_vna.activities.MainActivity;
-import com.inventrax.nilkamal_vna.activities.SettingsActivity;
 import com.inventrax.nilkamal_vna.common.Common;
 import com.inventrax.nilkamal_vna.common.constants.EndpointConstants;
 import com.inventrax.nilkamal_vna.common.constants.ErrorMessages;
-import com.inventrax.nilkamal_vna.common.constants.ServiceURL;
 import com.inventrax.nilkamal_vna.fragments.HomeFragment;
 import com.inventrax.nilkamal_vna.interfaces.ApiInterface;
 import com.inventrax.nilkamal_vna.pojos.InboundDTO;
@@ -108,6 +106,8 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     public  String sNewUniqueRSN="",sPalletNo="",ipAdress="",sUniqueRSN="",sPendingQty="",sDockName="";
     LinearLayout layoutnewRsn;
     Dialog pickingSkipdialog;
+    String VLPDNumber="",Pallet="",ActualLoc="",SuggestedLoc="";
+
 
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
         @Override
@@ -182,9 +182,10 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
 
 
-        rlVLPDSelect.setVisibility(View.VISIBLE);
-        rlSorting.setVisibility(View.GONE);
-        rlExport.setVisibility(View.GONE);
+
+
+
+
 
         btnClear.setOnClickListener(this);
         btnSkip.setOnClickListener(this);
@@ -199,6 +200,28 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         userId = sp.getString("RefUserId", "");
         materialType = sp.getString("division", "");
         SharedPreferences spPrinterIP = getActivity().getSharedPreferences("SettingsActivity", Context.MODE_PRIVATE);
+
+        try{
+            if(getArguments().getString("VLPDNumber")!=null){
+                VLPDNumber=getArguments().getString("VLPDNumber");
+                Pallet=getArguments().getString("Pallet");
+                ActualLoc=getArguments().getString("ActualLoc");
+                SuggestedLoc=getArguments().getString("SuggestedLoc");
+                clearAllFileds();
+                txtVLPDNumber.setText(VLPDNumber);
+                rlVLPDSelect.setVisibility(View.GONE);
+                rlSorting.setVisibility(View.VISIBLE);
+                rlExport.setVisibility(View.GONE);
+            }else{
+                rlVLPDSelect.setVisibility(View.VISIBLE);
+                rlSorting.setVisibility(View.GONE);
+                rlExport.setVisibility(View.GONE);
+            }
+        }catch (NullPointerException e){
+            rlVLPDSelect.setVisibility(View.VISIBLE);
+            rlSorting.setVisibility(View.GONE);
+            rlExport.setVisibility(View.GONE);
+        }
 
 
         common = new Common();
@@ -527,6 +550,8 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
     //Assigning scanned value to the respective fields
     public void ProcessScannedinfo(String scannedData) {
+
+        Log.v("scannedData",scannedData+" "+ Common.isPopupActive()+" "+ProgressDialogUtils.isProgressActive() );
         if (scannedData != null && !Common.isPopupActive()) {
 
             if (!ProgressDialogUtils.isProgressActive()) {
@@ -805,8 +830,22 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                         common.showUserDefinedAlertType("Qty limit exceeded", getActivity(), getContext(), "Error");
                                     }
                                 }else{
-                                    clearAllFileds();
-                                    common.showUserDefinedAlertType("No items to be picked from this pallet", getActivity(), getContext(), "Error");
+                                    Common.setIsPopupActive(true);
+                                    sPalletNo=scannedData;
+                                    soundUtils.alertError(getActivity(), getContext());
+                                    DialogUtils.showAlertDialog(getActivity(), "Warning", errorMessages.EMC_093, R.drawable.warning_img, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which)
+                                        {
+                                            switch (which) {
+                                                case DialogInterface.BUTTON_POSITIVE:
+                                                    Common.setIsPopupActive(false);
+                                                    GetVLPDPendingPalletCheck();
+                                                    break;
+                                            }
+                                        }
+                                    });
+
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
 
@@ -944,9 +983,8 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
                                 sUniqueRSN=scannedData;
 
-                                if(vlpdDto1.getMessage().toString()!=null){
+                                if(vlpdDto1.getMessage()!=null){
                                     if(vlpdDto1.getMessage().equals("-1")){
-                                        // TODO 'Scan New RSN'
                                         etPartNo.setText(scannedData);
                                         cvScanPartNo.setCardBackgroundColor(getResources().getColor(R.color.white));
                                         ivScanPartNo.setImageResource(R.drawable.check);
@@ -974,18 +1012,30 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                             isPartNoScanned=true;
                                         }
                                         isNewRsn=false;
-                                       // isPartNoScanned=false;
-                                       // etPartNo.setText("");
+                                        // isPartNoScanned=false;
+                                        // etPartNo.setText("");
                                         layoutnewRsn.setVisibility(View.INVISIBLE);
                                         cvScanNewRSN.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
                                         ivScanNewRSN.setImageResource(R.drawable.fullscreen_img);
-                                       // cvScanPartNo.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
-                                     //   ivScanPartNo.setImageResource(R.drawable.fullscreen_img);
+                                        // cvScanPartNo.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
+                                        // ivScanPartNo.setImageResource(R.drawable.fullscreen_img);
                                         GetVNAPickingandShortingList(sPalletNo);
                                     }
                                 }else{
-                                    // TODO Alret No more items to pick for this pallet
-                                    common.showUserDefinedAlertType(errorMessages.EMC_093, getActivity(), getContext(), "Error");
+                                    Common.setIsPopupActive(true);
+                                    soundUtils.alertError(getActivity(), getContext());
+                                    DialogUtils.showAlertDialog(getActivity(), "Warning", errorMessages.EMC_093, R.drawable.warning_img, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which)
+                                        {
+                                            switch (which) {
+                                                case DialogInterface.BUTTON_POSITIVE:
+                                                    Common.setIsPopupActive(false);
+                                                    GetVLPDPendingPalletCheck();
+                                                    break;
+                                            }
+                                        }
+                                    });
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
                             }
@@ -1207,7 +1257,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
                             core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
 
-
                             if ((core.getType().toString().equals("Exception"))) {
                                 List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
@@ -1318,6 +1367,321 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
             }
             ProgressDialogUtils.closeProgressDialog();
             common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+        }
+    }
+
+
+    private void GetVLPDPendingPalletCheck() {
+
+        try {
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.VLPDDTO, getContext());
+            VlpdDto vlpdDto = new VlpdDto();
+            vlpdDto.setUserId(userId);
+            vlpdDto.setvLPDNumber(txtVLPDNumber.getText().toString());
+            message.setEntityObject(vlpdDto);
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+
+                call = apiService.GetVLPDPendingPalletCheck(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+
+                            } else {
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+                                ProgressDialogUtils.closeProgressDialog();
+                                List<LinkedTreeMap<?, ?>> _lVlpd = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lVlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                VlpdDto vlpdDto1=null;
+                                for(int i=0;i<_lVlpd.size();i++){
+                                            vlpdDto1=new VlpdDto(_lVlpd.get(i).entrySet());
+                                }
+
+                                if(vlpdDto1.getResult().equals("-1")){
+                                    Common.setIsPopupActive(true);
+                                    soundUtils.alertError(getActivity(), getContext());
+                                    DialogUtils.showAlertDialog(getActivity(), "Warning", "pending pallets available for this vlpd# "+txtVLPDNumber.getText().toString(), R.drawable.warning_img, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which)
+                                        {
+                                            switch (which) {
+                                                case DialogInterface.BUTTON_POSITIVE:
+                                                    Common.setIsPopupActive(false);
+
+                                                     Common.setIsPopupActive(true);
+                                                    soundUtils.alertError(getActivity(), getContext());
+                                                    Common.setIsPopupActive(true);
+                                                    DialogUtils.showConfirmDialog(getActivity(), "Alert", "Do you want to move this pallet to priority bin zone?", "Yes", "No" , new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                                            if(i==-1){
+                                                                GetPalletValidationandSuggestion("1");
+                                                                // Toast.makeText(LoginActivity.this, "Yes", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                            if(i==-2){
+                                                                GetPalletValidationandSuggestion("2");
+                                                                //  Toast.makeText(LoginActivity.this, "No", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                            Common.setIsPopupActive(false);
+                                                        }
+                                                    });
+
+                                                    break;
+                                            }
+                                        }
+                                    });
+                                }else{
+                                    Common.setIsPopupActive(true);
+                                    soundUtils.alertError(getActivity(), getContext());
+                                    DialogUtils.showAlertDialog(getActivity(), "Warning", "There is no pending pallets for this vlpd# "+txtVLPDNumber.getText().toString(), R.drawable.warning_img, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which)
+                                        {
+                                            switch (which) {
+                                                case DialogInterface.BUTTON_POSITIVE:
+                                                    Common.setIsPopupActive(false);
+                                                     Common.setIsPopupActive(true);
+                                                    soundUtils.alertError(getActivity(), getContext());
+                                                    Common.setIsPopupActive(true);
+                                                    DialogUtils.showConfirmDialog(getActivity(), "Alert", "Do you want to move this pallet to priority bin zone?", "Yes", "No" , new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                                            if(i==-1){
+                                                                GetPalletValidationandSuggestion("1");
+                                                                // Toast.makeText(LoginActivity.this, "Yes", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                            if(i==-2){
+                                                                GetPalletValidationandSuggestion("2");
+                                                                //  Toast.makeText(LoginActivity.this, "No", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                            Common.setIsPopupActive(false);
+                                                        }
+                                                    });
+
+                                                    break;
+                                            }
+                                        }
+                                    });
+                                }
+
+
+
+
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
+    }
+
+
+    private void GetPalletValidationandSuggestion(String Type) {
+
+        try {
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.VLPDDTO, getContext());
+            VlpdDto vlpdDto = new VlpdDto();
+            vlpdDto.setUserId(userId);
+            vlpdDto.setType(Type);
+            vlpdDto.setvLPDNumber(txtVLPDNumber.getText().toString());
+            vlpdDto.setPickedPalletNumber(sPalletNo);
+            message.setEntityObject(vlpdDto);
+
+            Log.v("ABCDE",new Gson().toJson(message));
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+
+                call = apiService.GetPalletValidationandSuggestion(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+
+                            } else {
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                                List<LinkedTreeMap<?, ?>> _lVlpd = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lVlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                VlpdDto vlpdDto1=null;
+                                for(int i=0;i<_lVlpd.size();i++){
+                                    vlpdDto1=new VlpdDto(_lVlpd.get(i).entrySet());
+                                }
+
+
+                                if(vlpdDto1.getResult().equals("1") || vlpdDto1.getResult().equals("-1") ){
+
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("VLPDNumber",txtVLPDNumber.getText().toString());
+                                    bundle.putString("Pallet",sPalletNo);
+                                    bundle.putString("ActualLoc",vlpdDto1.getActvalLocation());
+                                    bundle.putString("SuggestedLoc",vlpdDto1.getSuggestedLoc());
+
+                                    PriorityBinZoneFragment priorityBinZoneFragment = new PriorityBinZoneFragment();
+                                    priorityBinZoneFragment.setArguments(bundle);
+                                    FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, priorityBinZoneFragment);
+
+                                }else{
+                                    common.showUserDefinedAlertType("No items available on this pallet.", getActivity(), getContext(), "Error");
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
         }
     }
 

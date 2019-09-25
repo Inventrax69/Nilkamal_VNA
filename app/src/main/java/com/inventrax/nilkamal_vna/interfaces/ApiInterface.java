@@ -103,6 +103,9 @@ public interface ApiInterface {
     @POST("VLPD/PrintNewRSN")
     Call<String> PrintNewRSN(@Body WMSCoreMessage oRequest);
 
+    @POST("VLPD/GetVLPDPendingPalletCheck")
+    Call<String> GetVLPDPendingPalletCheck(@Body WMSCoreMessage oRequest);
+
     @POST("Outbound/GetPendingOBDItemsForManualPicking")
     Call<String> GetPendingOBDItemsForManualPicking(@Body WMSCoreMessage oRequest);
 
@@ -117,6 +120,10 @@ public interface ApiInterface {
 
     @POST("VLPD/PickandCheck")
     Call<String> PickandCheck(@Body WMSCoreMessage oRequest);
+
+
+    @POST("VLPD/GetPalletValidationandSuggestion")
+    Call<String> GetPalletValidationandSuggestion(@Body WMSCoreMessage oRequest);
 
     @POST("Outbound/GetBoxNumberForOBD")
     Call<String> GetBoxNumberForOBD(@Body WMSCoreMessage oRequest);

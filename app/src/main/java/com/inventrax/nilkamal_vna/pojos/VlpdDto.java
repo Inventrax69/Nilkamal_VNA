@@ -117,6 +117,14 @@ public class VlpdDto {
     @SerializedName("MDescreiption")
     private String MDescreiption;
 
+    @SerializedName("SuggestedLoc")
+    private String SuggestedLoc;
+
+
+
+    @SerializedName("ActvalLocation")
+    private String ActvalLocation;
+
 
     public VlpdDto() { }
 
@@ -283,6 +291,17 @@ public class VlpdDto {
                 case "MDescreiption":
                     if (entry.getValue() != null) {
                         this.setMDescreiption(entry.getValue().toString());
+                    }
+                    break;
+                case "SuggestedLoc":
+                    if (entry.getValue() != null) {
+                        this.setSuggestedLoc(entry.getValue().toString());
+                    }
+                    break;
+
+                case "ActvalLocation":
+                    if (entry.getValue() != null) {
+                        this.setActvalLocation(entry.getValue().toString());
                     }
                     break;
             }
@@ -572,5 +591,19 @@ public class VlpdDto {
         this.MDescreiption = MDescreiption;
     }
 
+    public String getSuggestedLoc() {
+        return SuggestedLoc;
+    }
 
+    public void setSuggestedLoc(String suggestedLoc) {
+        SuggestedLoc = suggestedLoc;
+    }
+
+    public String getActvalLocation() {
+        return ActvalLocation;
+    }
+
+    public void setActvalLocation(String actvalLocation) {
+        ActvalLocation = actvalLocation;
+    }
 }
