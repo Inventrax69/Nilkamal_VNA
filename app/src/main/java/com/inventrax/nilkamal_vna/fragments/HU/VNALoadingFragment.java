@@ -172,8 +172,6 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
         btnCloseOne.setOnClickListener(this);
         btnCloseTwo.setOnClickListener(this);
         btnGo.setOnClickListener(this);
-
-
         
         common = new Common();
         errorMessages = new ErrorMessages();
@@ -182,7 +180,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
         gson = new GsonBuilder().create();
         core = new WMSCoreMessage();
 
-        // For Cipher Barcode reader
+        // For Cipher Barcode readert
         Intent RTintent = new Intent("sw.reader.decode.require");
         RTintent.putExtra("Enable", true);
         getActivity().sendBroadcast(RTintent);
@@ -361,10 +359,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                     public void onResponse(Call<String> call, Response<String> response) {
 
                         try {
-
                             core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
-
-
                         } catch (Exception ex) {
 
                             try {
@@ -374,8 +369,6 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                                 e.printStackTrace();
                             }
                             logException();
-
-
                             ProgressDialogUtils.closeProgressDialog();
                         }
                     }
@@ -536,7 +529,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                                 } else {
                                     ProgressDialogUtils.closeProgressDialog();
                                     common.showUserDefinedAlertType(errorMessages.EMC_039, getActivity(), getContext(), "Error");
-                                    //clearAllFileds(); TODO clear all feilds
+                                   // clearAllFileds(); TODO clear all feilds
                                     return;
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
@@ -597,6 +590,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
 
             try {
+
                 //Checking for Internet Connectivity
                 // if (NetworkUtils.isInternetAvailable()) {
                 // Calling the Interface method
@@ -610,7 +604,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
 
             } catch (Exception ex) {
                 try {
-                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
                     logException();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -715,8 +709,6 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
             vlpdRequestDTO.setRSNNumber(scannedData);
             message.setEntityObject(vlpdRequestDTO);
 
-            Log.v("ABCDE_L",new Gson().toJson(message));
-
             Call<String> call = null;
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
 
@@ -724,7 +716,6 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                 //Checking for Internet Connectivity
                 // if (NetworkUtils.isInternetAvailable()) {
                 // Calling the Interface method
-
                 call = apiService.VNAuniqueRSNLoading(message);
                 ProgressDialogUtils.showProgressDialog("Please Wait");
                 // } else {
@@ -741,7 +732,6 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                 }
                 ProgressDialogUtils.closeProgressDialog();
                 common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
-
             }
             try {
                 //Getting response from the method
@@ -770,13 +760,10 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                                 List<LinkedTreeMap<?, ?>> _lVLPD = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lVLPD = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
-
                                 VlpdDto vlpdDto=null;
                                 for(int i=0;i<_lVLPD.size();i++){
                                     vlpdDto=new VlpdDto(_lVLPD.get(i).entrySet());
                                 }
-
-
 
                                 if(vlpdDto.getResult().equals("1")){
                                     cvScanRSN.setCardBackgroundColor(getResources().getColor(R.color.white));
@@ -797,7 +784,8 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                                         etHuNo.setText("");
                                         etMDesc.setText("");
                                         etRSN.setText("");
-                                        common.showUserDefinedAlertType("No more pending qty", getActivity(), getContext(), "Error");
+                                        txtPenQty.setText("");
+                                        common.showUserDefinedAlertType("Loading Completed", getActivity(), getContext(), "Success");
                                     }
                                 } else if(vlpdDto.getResult().equals("-2")){
 

@@ -109,6 +109,7 @@
 
             <RelativeLayout
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -241,6 +242,15 @@
             android:textSize="18sp"
             android:textStyle="normal" />
 
+        <LinearLayout
+            android:layout_below="@+id/layoutScan"
+            android:id="@+id/layoutScan1"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
         <android.support.design.widget.TextInputLayout
             android:id="@+id/txtInputLayoutFromLocation"
             android:layout_width="wrap_content"
@@ -249,6 +259,7 @@
             android:layout_alignParentStart="true"
             android:layout_below="@+id/lblDesc"
             android:layout_marginTop="10dp"
+            android:layout_weight="1"
             android:layout_marginStart="10dp"
             android:clickable="false"
             android:focusable="false"
@@ -264,13 +275,16 @@
                 android:hint="Actual Location"
                 android:background="@android:color/transparent"
                 android:inputType="text"
+                android:gravity="center"
+                android:layout_gravity="center"
                 android:clickable="false"
                 android:longClickable="false"
                 android:focusable="false"
                 android:singleLine="true" />
 
-        </android.support.design.widget.TextInputLayout>
 
+
+        </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/txtInputLayoutPallet"
@@ -280,6 +294,7 @@
             android:layout_marginEnd="10dp"
             android:layout_below="@+id/lblDesc"
             android:layout_marginTop="10dp"
+            android:layout_weight="1"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:clickable="false"
@@ -295,6 +310,8 @@
                 android:textStyle="bold"
                 android:inputType="text"
                 android:clickable="false"
+                android:gravity="center"
+                android:layout_gravity="center"
                 android:background="@android:color/transparent"
                 android:longClickable="false"
                 android:focusable="false"
@@ -303,16 +320,20 @@
         </android.support.design.widget.TextInputLayout>
 
 
+
+        </LinearLayout>
+
         <android.support.design.widget.TextInputLayout
             android:id="@+id/txtInputLayoutToLocation"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_margin="3dp"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
+            android:layout_weight="1"
             android:clickable="false"
             android:focusable="false"
-            android:layout_below="@+id/txtInputLayoutPallet">
+            android:layout_below="@+id/layoutScan1">
 
             <EditText
                 android:id="@+id/etToLocation"

@@ -146,7 +146,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
             ArrayAdapter listDivisionAdapter = new ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, listDivision);
             spinnerSelectDivision.setAdapter(listDivisionAdapter);
 
-
             SharedPreferences sp = this.getSharedPreferences("SettingsActivity", Context.MODE_PRIVATE);
             serviceUrlString = sp.getString("url", "");
 

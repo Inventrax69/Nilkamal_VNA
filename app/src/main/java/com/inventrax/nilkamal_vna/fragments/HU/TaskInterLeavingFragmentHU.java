@@ -122,7 +122,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
     private void loadFormControls() {
 
         isPalletScanned=false;
-        isFromLocationScanned=false;
+        isFromLocationScanned=true;
         isToLocationScanned=false;
 
         tvStRef=(TextView)rootView.findViewById(R.id.tvStRef);
@@ -215,7 +215,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
 
             }
         });
-        ((RadioButton)rootView.findViewById(R.id.radioAuto)).performClick();
+       // ((RadioButton)rootView.findViewById(R.id.radioAuto)).performClick();
         ((RadioButton)rootView.findViewById(R.id.radioPicking)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -382,7 +382,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                         tvStRef.setText("Put Away");
                                 }else{
                                     clearAllFileds1();
-                                    common.showUserDefinedAlertType(errorMessages.EMC_089, getActivity(), getContext(), "Error");
+                                    common.showUserDefinedAlertType(errorMessages.EMC_089, getActivity(), getContext(), "Warning");
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
                             }
@@ -779,7 +779,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
 
     public void clearAllFileds(){
         isPalletScanned=false;
-        isFromLocationScanned=false;
+        isFromLocationScanned=true;
         isToLocationScanned=false;
         etFromLocation.setText("");
         etPallet.setText("");
@@ -794,7 +794,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
 
     public void clearAllFileds1(){
         isPalletScanned=false;
-        isFromLocationScanned=false;
+        isFromLocationScanned=true;
         isToLocationScanned=false;
         lblVLPDNumber.setVisibility(View.INVISIBLE);
         txtVLPDNumber.setVisibility(View.INVISIBLE);
@@ -808,7 +808,6 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
         etFromLocation.setText("");
         etPallet.setText("");
         tvStRef.setText("");
-
     }
 
     private void GetVNAPutawaySuggestion(final String scannedData) {
@@ -824,8 +823,6 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
             inboundDTO.setIsSiteToSiteInward("0");
             message.setEntityObject(inboundDTO);
 
-
-            Log.v("ABCDE_R",new Gson().toJson(message));
             Call<String> call = null;
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
 
@@ -888,6 +885,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                 if(dto.getResult()!=null){
                                     if(!dto.getResult().equals("-1")){
                                         etToLocation.setText(dto.getToLocation());
+                                        etFromLocation.setText(dto.getLocation());
                                         etPallet.setText(scannedData);
                                         cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                         ivScanPallet.setImageResource(R.drawable.check);
@@ -898,9 +896,6 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                 }else{
                                     common.showUserDefinedAlertType("Invaild Location or pallet", getActivity(), getContext(), "Error");
                                 }
-
-
-
 
                                 ProgressDialogUtils.closeProgressDialog();
 
@@ -1153,7 +1148,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                             }else{
                                 cvScanFromLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
                                 ivScanFromLocation.setImageResource(R.drawable.warning_img);
-                                isFromLocationScanned=false;
+                                isFromLocationScanned=true;
                                 common.showUserDefinedAlertType(errorMessages.EMC_085, getActivity(), getContext(), "Error");
                             }
                         }else{
@@ -1166,7 +1161,6 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                     isToLocationScanned=false;
                                     common.showUserDefinedAlertType(errorMessages.EMC_086, getActivity(), getContext(), "Error");
                                 }
-
                             }else{
                                 common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");
                             }

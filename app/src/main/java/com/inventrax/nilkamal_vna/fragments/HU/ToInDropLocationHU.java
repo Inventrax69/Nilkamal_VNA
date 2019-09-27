@@ -132,7 +132,7 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
     private void loadFormControls() {
 
         isPalletScanned=false;
-        isFromLocationScanned=false;
+        isFromLocationScanned=true;
         isToLocationScanned=false;
 
         rlStRefSelect = (RelativeLayout) rootView.findViewById(R.id.rlStRefSelect);
@@ -743,7 +743,7 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
         etPallet.setText("");
         txtLoction.setText("");
 
-        isFromLocationScanned=false;
+        isFromLocationScanned=true;
         isPalletScanned=false;
         isToLocationScanned=false;
 
@@ -1588,6 +1588,7 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
 
                                 if(dto.getResult().equals("Valid Pallet")){
                                     txtLoction.setText(dto.getToLocation());
+                                    etLocation.setText(dto.getLocation());
                                     etPallet.setText(scannedData);
                                     cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanPallet.setImageResource(R.drawable.check);
@@ -1597,7 +1598,7 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
                                    // ClearFields1();
                                     txtLoction.setText("01P00A0");
                                     cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
-                                    ivScanPallet.setImageResource(R.drawable.check);
+                                    ivScanPallet.setImageResource(R.drawable.warning_img);
                                     isPalletScanned=true;
                                     common.showUserDefinedAlertType("Location are not avaiable for this Pallet", getActivity(), getContext(), "Warning");
                                 }else{

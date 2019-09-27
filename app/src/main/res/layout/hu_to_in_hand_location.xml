@@ -118,6 +118,7 @@
 
             <RelativeLayout
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -228,6 +229,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/hintPallet"
                         android:textStyle="bold"
+                        android:gravity="center"
                         android:background="@android:color/transparent"
                         android:clickable="false"
                         android:focusable="false"

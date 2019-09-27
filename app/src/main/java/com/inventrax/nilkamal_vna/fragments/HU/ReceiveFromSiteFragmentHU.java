@@ -629,7 +629,7 @@ public class ReceiveFromSiteFragmentHU extends Fragment implements AdapterView.O
                     }
                 }
             } else {
-                if (!common.isPopupActive()) {
+                if (!Common.isPopupActive()) {
                     common.showUserDefinedAlertType(errorMessages.EMC_081, getActivity(), getContext(), "Error");
 
                 }
@@ -671,7 +671,7 @@ public class ReceiveFromSiteFragmentHU extends Fragment implements AdapterView.O
 
             } catch (Exception ex) {
                 try {
-                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "ConfirmReceiptForSiteToSiteRSN_01", getActivity());
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "ConfirmReceiptForSiteToSiteRSN_01", getActivity());
                     logException();
                 } catch (IOException e) {
                     e.printStackTrace();

@@ -119,12 +119,6 @@
             </RelativeLayout>
 
 
-
-
-
-
-
-
         </LinearLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -148,6 +142,7 @@
                 android:focusable="false"
                 android:hint="Suggested Loc"
                 android:textStyle="bold"
+                android:gravity="center"
                 android:background="@android:color/transparent"
                 android:inputType="text"
                 android:longClickable="false"

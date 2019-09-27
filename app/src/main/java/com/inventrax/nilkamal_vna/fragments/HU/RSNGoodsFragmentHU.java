@@ -442,8 +442,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
         bundle.putString("StoreRefNo", lblStoreRefNo.getText().toString());
         bundle.putString("ClientId", clientId);
         bundle.putString("InboundId", InboundId);
-
-
         bundle.putString("pallet", etPallet.getText().toString());
         bundle.putString("location", etLocation.getText().toString());
         bundle.putString("rsn", etRSN.getText().toString());
@@ -471,6 +469,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
 
     public void ClearFields() {
+
         cvScanLocation.setCardBackgroundColor(getResources().getColor(R.color.locationColor));
         ivScanLocation.setImageResource(R.drawable.fullscreen_img);
 
@@ -558,7 +557,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
         }
 
     }
-
 
     //Assigning scanned value to the respective fields
     public void ProcessScannedinfo(String scannedData) {
@@ -1595,7 +1593,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                 });
             } catch (Exception ex) {
                 try {
-                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "UpdateLBH_03", getActivity());
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "UpdateLBH_03", getActivity());
                     logException();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -1605,7 +1603,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
             }
         } catch (Exception ex) {
             try {
-                exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "UpdateLBH_04", getActivity());
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "UpdateLBH_04", getActivity());
                 logException();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -2065,8 +2063,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                                     IsPalletLoading = false;
                                     etPallet.setEnabled(false);
                                     IsReceivingBin = false;
-
-
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
                             }

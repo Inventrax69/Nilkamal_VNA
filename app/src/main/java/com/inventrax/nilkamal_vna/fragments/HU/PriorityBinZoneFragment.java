@@ -11,18 +11,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
 import com.cipherlab.barcode.GeneralString;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -42,15 +36,9 @@ import com.inventrax.nilkamal_vna.common.constants.ErrorMessages;
 import com.inventrax.nilkamal_vna.fragments.HomeFragment;
 import com.inventrax.nilkamal_vna.interfaces.ApiInterface;
 import com.inventrax.nilkamal_vna.pojos.InboundDTO;
-import com.inventrax.nilkamal_vna.pojos.ItemInfoDTO;
-import com.inventrax.nilkamal_vna.pojos.VLPDRequestDTO;
-import com.inventrax.nilkamal_vna.pojos.VLPDResponseDTO;
-import com.inventrax.nilkamal_vna.pojos.VlpdDto;
 import com.inventrax.nilkamal_vna.pojos.WMSCoreMessage;
 import com.inventrax.nilkamal_vna.pojos.WMSExceptionMessage;
-import com.inventrax.nilkamal_vna.searchableSpinner.SearchableSpinner;
 import com.inventrax.nilkamal_vna.services.RestService;
-import com.inventrax.nilkamal_vna.util.DialogUtils;
 import com.inventrax.nilkamal_vna.util.ExceptionLoggerUtils;
 import com.inventrax.nilkamal_vna.util.FragmentUtils;
 import com.inventrax.nilkamal_vna.util.ProgressDialogUtils;
@@ -69,14 +57,12 @@ import retrofit2.Response;
 
 public class PriorityBinZoneFragment extends Fragment implements View.OnClickListener, BarcodeReader.TriggerListener, BarcodeReader.BarcodeListener {
 
-    private static final String classCode = "API_FRAG_VNA_LOADING";
+    private static final String classCode = "API_FRAG_PRIORITY_BIN_ZONE";
     private View rootView;
 
-    private RelativeLayout rlOBDSelect, rlOBDLoading;
-    private CardView cvScanPallet,cvScanSuggestedLoc;
-    private ImageView ivScanPallet,ivScanSuggestedLoc;
-    private SearchableSpinner spinnerSelectOBDNo;
-    private Button btnSubmit, btnExport, btnGo, btnCloseOne, btnCloseTwo;
+    CardView cvScanPallet,cvScanSuggestedLoc;
+    ImageView ivScanPallet,ivScanSuggestedLoc;
+    private Button btnCloseTwo;
 
     private Common common = null;
     String scanner = null;
@@ -91,16 +77,13 @@ public class PriorityBinZoneFragment extends Fragment implements View.OnClickLis
     private static BarcodeReader barcodeReader;
     private AidcManager manager;
     SoundUtils sound;
-    private ExceptionLoggerUtils exceptionLoggerUtils;
-    private String materialType = null;
+    ExceptionLoggerUtils exceptionLoggerUtils;
+    String materialType = null;
     private ErrorMessages errorMessages;
 
-    TextView txtOBDNumber,txtPenQty;
-    String ID=null;
+    EditText etSuggestedLoc;
 
-    EditText etSuggestedLoc,etBatchNo,etHuSize,etHuNo,etMDesc,etRSN;
-
-    String VLPDNumber="",Pallet="",ActualLoc="",SuggestedLoc="";
+    String VLPDNumber="",Pallet="",ActualLoc="",SuggestedLoc="",Type="";
 
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
         @Override
@@ -133,6 +116,7 @@ public class PriorityBinZoneFragment extends Fragment implements View.OnClickLis
 
         cvScanPallet=(CardView)rootView.findViewById(R.id.cvScanPallet);
         cvScanSuggestedLoc=(CardView)rootView.findViewById(R.id.cvScanSuggestedLoc);
+
         ivScanPallet=(ImageView)rootView.findViewById(R.id.ivScanPallet);
         ivScanSuggestedLoc=(ImageView)rootView.findViewById(R.id.ivScanSuggestedLoc);
 
@@ -140,17 +124,15 @@ public class PriorityBinZoneFragment extends Fragment implements View.OnClickLis
         userId = sp.getString("RefUserId", "");
         materialType = sp.getString("division", "");
 
-
         btnCloseTwo.setOnClickListener(this);
-
 
         VLPDNumber=getArguments().getString("VLPDNumber");
         Pallet=getArguments().getString("Pallet");
         ActualLoc=getArguments().getString("ActualLoc");
         SuggestedLoc=getArguments().getString("SuggestedLoc");
+        Type=getArguments().getString("Type");
 
         etSuggestedLoc.setText(SuggestedLoc);
-
 
         cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
         ivScanPallet.setImageResource(R.drawable.check);
@@ -343,13 +325,10 @@ public class PriorityBinZoneFragment extends Fragment implements View.OnClickLis
 
                             try {
                                 ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "002", getContext());
-
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                             logException();
-
-
                             ProgressDialogUtils.closeProgressDialog();
                         }
                     }
@@ -438,8 +417,6 @@ public class PriorityBinZoneFragment extends Fragment implements View.OnClickLis
             inboundDTO.setInout("0");
             message.setEntityObject(inboundDTO);
 
-
-
             Call<String> call = null;
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
 
@@ -457,7 +434,7 @@ public class PriorityBinZoneFragment extends Fragment implements View.OnClickLis
 
             } catch (Exception ex) {
                 try {
-                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
                     logException();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -506,6 +483,7 @@ public class PriorityBinZoneFragment extends Fragment implements View.OnClickLis
                                     bundle.putString("Pallet",Pallet);
                                     bundle.putString("ActualLoc",ActualLoc);
                                     bundle.putString("SuggestedLoc",SuggestedLoc);
+                                    bundle.putString("Type",Type);
 
                                     PickingSortingtHU pickingSortingtHU = new PickingSortingtHU();
                                     pickingSortingtHU.setArguments(bundle);

@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.cipherlab.barcode.GeneralString;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -93,20 +91,20 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     private static BarcodeReader barcodeReader;
     private AidcManager manager;
     SoundUtils sound = null;
-    private ExceptionLoggerUtils exceptionLoggerUtils;
+    ExceptionLoggerUtils exceptionLoggerUtils;
     private ErrorMessages errorMessages;
     public Bundle bundle;
     boolean isPalletScanned,isPartNoScanned,isDockLocationScanned,isNewRsn;
     RelativeLayout rlVLPDSelect,rlSorting,rlExport;
     private SearchableSpinner spinnerSelectVLPDNo;
-    String storageVLPDNo;
-    TextView txtVLPDNumber,txtMcode,txtDockName,txtPendingQty;
+    String storageVLPDNo="";
+    TextView txtVLPDNumber,txtMcode,txtDockName,txtPendingQty,txtDesc;
     EditText txtBatchNo,txtHuNo,txtHuSize;
     public VlpdDto mVlpdDto;
     public  String sNewUniqueRSN="",sPalletNo="",ipAdress="",sUniqueRSN="",sPendingQty="",sDockName="";
     LinearLayout layoutnewRsn;
     Dialog pickingSkipdialog;
-    String VLPDNumber="",Pallet="",ActualLoc="",SuggestedLoc="";
+    String VLPDNumber="",Pallet="",ActualLoc="",SuggestedLoc="",Type="";
 
 
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
@@ -157,7 +155,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
         txtVLPDNumber=(TextView) rootView.findViewById(R.id.txtVLPDNumber);
         txtMcode=(TextView) rootView.findViewById(R.id.txtMcode);
-
+        txtDesc=(TextView) rootView.findViewById(R.id.txtDesc);
         txtDockName=(TextView) rootView.findViewById(R.id.txtDockName);
         txtPendingQty=(TextView) rootView.findViewById(R.id.txtPendingQty);
 
@@ -181,12 +179,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         btnCloseOne=(Button)rootView.findViewById(R.id.btnCloseOne);
 
 
-
-
-
-
-
-
         btnClear.setOnClickListener(this);
         btnSkip.setOnClickListener(this);
         btnCloseOne.setOnClickListener(this);
@@ -203,15 +195,17 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
         try{
             if(getArguments().getString("VLPDNumber")!=null){
+                clearAllFileds();
                 VLPDNumber=getArguments().getString("VLPDNumber");
                 Pallet=getArguments().getString("Pallet");
                 ActualLoc=getArguments().getString("ActualLoc");
                 SuggestedLoc=getArguments().getString("SuggestedLoc");
-                clearAllFileds();
+                Type=getArguments().getString("Type");
                 txtVLPDNumber.setText(VLPDNumber);
                 rlVLPDSelect.setVisibility(View.GONE);
                 rlSorting.setVisibility(View.VISIBLE);
                 rlExport.setVisibility(View.GONE);
+               // GetVNAPickingandShortingList(Pallet);
             }else{
                 rlVLPDSelect.setVisibility(View.VISIBLE);
                 rlSorting.setVisibility(View.GONE);
@@ -274,6 +268,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         txtMcode.setText("");
         txtBatchNo.setText("");
         txtDockName.setText("");
+        txtDesc.setText("");
         txtHuNo.setText("");
         txtHuSize.setText("");
         txtPendingQty.setText("");
@@ -312,7 +307,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         ivScanDockLocation.setImageResource(R.drawable.fullscreen_img);
         cvScanNewRSN.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
         ivScanNewRSN.setImageResource(R.drawable.fullscreen_img);
-
     }
 
     // To get VLPD Id
@@ -466,11 +460,15 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                 rlExport.setVisibility(View.VISIBLE);
                 break;
             case R.id.btnGo:
-                // TODO select VLDP#
-                txtVLPDNumber.setText(storageVLPDNo);
-                rlVLPDSelect.setVisibility(View.GONE);
-                rlSorting.setVisibility(View.VISIBLE);
-                rlExport.setVisibility(View.GONE);
+                if(!txtVLPDNumber.getText().toString().isEmpty()){
+                    txtVLPDNumber.setText(storageVLPDNo);
+                    rlVLPDSelect.setVisibility(View.GONE);
+                    rlSorting.setVisibility(View.VISIBLE);
+                    rlExport.setVisibility(View.GONE);
+                }else{
+                    common.showUserDefinedAlertType("Please select VLPD#", getActivity(), getContext(), "Warning");
+                }
+
                 break;
             case R.id.btnCloseOne:
                 FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new HomeFragment());
@@ -550,8 +548,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
     //Assigning scanned value to the respective fields
     public void ProcessScannedinfo(String scannedData) {
-
-        Log.v("scannedData",scannedData+" "+ Common.isPopupActive()+" "+ProgressDialogUtils.isProgressActive() );
         if (scannedData != null && !Common.isPopupActive()) {
 
             if (!ProgressDialogUtils.isProgressActive()) {
@@ -568,7 +564,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                         ivScanDockLocation.setImageResource(R.drawable.check);
                         isDockLocationScanned=true;
                     }else{
-                            common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");
+                       common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");
                     }
                     return;
                 }
@@ -584,9 +580,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                     }
                     return;
                 }
-
-
-
 
             }else {
                 if(!Common.isPopupActive())
@@ -813,6 +806,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                         txtDockName.setText(vlpdDto.getDockName());
                                         txtHuNo.setText(vlpdDto.getHUNo());
                                         txtHuSize.setText(vlpdDto.getHUSize());
+                                        txtDesc.setText(vlpdDto.getDescription());
                                         txtPendingQty.setText("Qty: "+vlpdDto.getPendingQty());
                                         etPallet.setText(scannedData);
                                         sPalletNo=scannedData;
@@ -827,10 +821,12 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                             sDockName=vlpdDto.getDockName();
                                         }
                                     }else{
+                                        clearAllFileds();
                                         common.showUserDefinedAlertType("Qty limit exceeded", getActivity(), getContext(), "Error");
                                     }
                                 }else{
                                     Common.setIsPopupActive(true);
+                                    clearAllFileds();
                                     sPalletNo=scannedData;
                                     soundUtils.alertError(getActivity(), getContext());
                                     DialogUtils.showAlertDialog(getActivity(), "Warning", errorMessages.EMC_093, R.drawable.warning_img, new DialogInterface.OnClickListener() {
@@ -1012,13 +1008,9 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                             isPartNoScanned=true;
                                         }
                                         isNewRsn=false;
-                                        // isPartNoScanned=false;
-                                        // etPartNo.setText("");
                                         layoutnewRsn.setVisibility(View.INVISIBLE);
                                         cvScanNewRSN.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
                                         ivScanNewRSN.setImageResource(R.drawable.fullscreen_img);
-                                        // cvScanPartNo.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
-                                        // ivScanPartNo.setImageResource(R.drawable.fullscreen_img);
                                         GetVNAPickingandShortingList(sPalletNo);
                                     }
                                 }else{
@@ -1031,7 +1023,8 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                             switch (which) {
                                                 case DialogInterface.BUTTON_POSITIVE:
                                                     Common.setIsPopupActive(false);
-                                                    GetVLPDPendingPalletCheck();
+                                                  //  GetVLPDPendingPalletCheck();
+                                                    clearAllFileds();
                                                     break;
                                             }
                                         }
@@ -1164,9 +1157,10 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                     }
 
                                 }else{
-                                    //TODO NO Message
+                                    pickingSkipdialog.dismiss();
+                                    common.showUserDefinedAlertType("Unable to print RSN Check network or printer configuration", getActivity(), getContext(), "Error");
                                 }
-                                         pickingSkipdialog.dismiss();
+
                                 ProgressDialogUtils.closeProgressDialog();
                             }
 
@@ -1212,14 +1206,13 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     }
 
     public void getPrinters() {
-        try {
 
+        try {
             WMSCoreMessage message = new WMSCoreMessage();
             message = common.SetAuthentication(EndpointConstants.LoginUserDTO,  getContext());
             LoginUserDTO oLoginDTO = new LoginUserDTO();
             oLoginDTO.setMailID("1");
             message.setEntityObject(oLoginDTO);
-
 
             Call<String> call = null;
             ApiInterface apiService =
@@ -1440,7 +1433,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                 }
 
                                 if(vlpdDto1.getResult().equals("-1")){
-                                    Common.setIsPopupActive(true);
+/*                                    Common.setIsPopupActive(true);
                                     soundUtils.alertError(getActivity(), getContext());
                                     DialogUtils.showAlertDialog(getActivity(), "Warning", "pending pallets available for this vlpd# "+txtVLPDNumber.getText().toString(), R.drawable.warning_img, new DialogInterface.OnClickListener() {
                                         @Override
@@ -1448,9 +1441,8 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                         {
                                             switch (which) {
                                                 case DialogInterface.BUTTON_POSITIVE:
-                                                    Common.setIsPopupActive(false);
+                                                    Common.setIsPopupActive(false);*/
 
-                                                     Common.setIsPopupActive(true);
                                                     soundUtils.alertError(getActivity(), getContext());
                                                     Common.setIsPopupActive(true);
                                                     DialogUtils.showConfirmDialog(getActivity(), "Alert", "Do you want to move this pallet to priority bin zone?", "Yes", "No" , new DialogInterface.OnClickListener() {
@@ -1468,12 +1460,12 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                                         }
                                                     });
 
-                                                    break;
+/*                                                    break;
                                             }
                                         }
-                                    });
+                                    });*/
                                 }else{
-                                    Common.setIsPopupActive(true);
+/*                                    Common.setIsPopupActive(true);
                                     soundUtils.alertError(getActivity(), getContext());
                                     DialogUtils.showAlertDialog(getActivity(), "Warning", "There is no pending pallets for this vlpd# "+txtVLPDNumber.getText().toString(), R.drawable.warning_img, new DialogInterface.OnClickListener() {
                                         @Override
@@ -1481,10 +1473,9 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                         {
                                             switch (which) {
                                                 case DialogInterface.BUTTON_POSITIVE:
-                                                    Common.setIsPopupActive(false);
-                                                     Common.setIsPopupActive(true);
-                                                    soundUtils.alertError(getActivity(), getContext());
+                                                    Common.setIsPopupActive(false);*/
                                                     Common.setIsPopupActive(true);
+                                                    soundUtils.alertError(getActivity(), getContext());
                                                     DialogUtils.showConfirmDialog(getActivity(), "Alert", "Do you want to move this pallet to priority bin zone?", "Yes", "No" , new DialogInterface.OnClickListener() {
                                                         @Override
                                                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -1500,10 +1491,10 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                                         }
                                                     });
 
-                                                    break;
-                                            }
+/*                                                     break;
+                                           }
                                         }
-                                    });
+                                    });*/
                                 }
 
 
@@ -1553,7 +1544,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     }
 
 
-    private void GetPalletValidationandSuggestion(String Type) {
+    private void GetPalletValidationandSuggestion(final String Type) {
 
         try {
             WMSCoreMessage message = new WMSCoreMessage();
@@ -1565,7 +1556,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
             vlpdDto.setPickedPalletNumber(sPalletNo);
             message.setEntityObject(vlpdDto);
 
-            Log.v("ABCDE",new Gson().toJson(message));
 
             Call<String> call = null;
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
@@ -1625,7 +1615,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                     vlpdDto1=new VlpdDto(_lVlpd.get(i).entrySet());
                                 }
 
-
                                 if(vlpdDto1.getResult().equals("1") || vlpdDto1.getResult().equals("-1") ){
 
                                     Bundle bundle = new Bundle();
@@ -1633,6 +1622,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                     bundle.putString("Pallet",sPalletNo);
                                     bundle.putString("ActualLoc",vlpdDto1.getActvalLocation());
                                     bundle.putString("SuggestedLoc",vlpdDto1.getSuggestedLoc());
+                                    bundle.putString("Type",Type);
 
                                     PriorityBinZoneFragment priorityBinZoneFragment = new PriorityBinZoneFragment();
                                     priorityBinZoneFragment.setArguments(bundle);
