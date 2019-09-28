@@ -75,15 +75,15 @@ public class AboutFragment extends Fragment implements View.OnClickListener{
             txtYouTubeLink=(TextView)rootView.findViewById(R.id.txtYouTubeLink);
             txtYouTubeLink.setOnClickListener(this);
             txtYouTubeLink.setVisibility(View.GONE);
-            //txtLocation=(TextView)rootView.findViewById(R.id.txtLocation);
-            //txtLocation.setVisibility(TextView.GONE);
+            // txtLocation=(TextView)rootView.findViewById(R.id.txtLocation);
+            // txtLocation.setVisibility(TextView.GONE);
 
             txtWebSite = (TextView) rootView.findViewById(R.id.txtWebSite);
             txtWebSite.setOnClickListener(this);
 
             lblReleaseDate=(TextView) rootView.findViewById(R.id.lblReleaseDate);
             txtReleaseDate=(TextView)rootView.findViewById(R.id.txtReleaseDate);
-            txtReleaseDate.setText("06-03-2019");
+            txtReleaseDate.setText("28-09-2019");
 
         }catch (Exception ex){
             Log.d(AboutFragment.class.getName(), ex.toString());
@@ -116,6 +116,7 @@ public class AboutFragment extends Fragment implements View.OnClickListener{
                     updateServiceUtils.checkUpdate();
 
                     ProgressDialogUtils.closeProgressDialog();
+
                 }catch (Exception ex){
 
                     ProgressDialogUtils.closeProgressDialog();

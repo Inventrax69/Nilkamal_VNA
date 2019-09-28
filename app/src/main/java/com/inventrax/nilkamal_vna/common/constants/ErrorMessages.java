@@ -171,4 +171,6 @@ public class ErrorMessages {
 
     public String EMC_093 = "No more items to be picked from this pallet";
 
+    public String EMC_094 = "Please scan 'From pallet'";
+
 }

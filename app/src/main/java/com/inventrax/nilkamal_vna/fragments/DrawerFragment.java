@@ -34,6 +34,7 @@ import com.inventrax.nilkamal_vna.fragments.HH.PickOnDemandHHFragment;
 import com.inventrax.nilkamal_vna.fragments.HH.SLocToSLocFragmentHH;
 import com.inventrax.nilkamal_vna.fragments.HH.SkuToSkuFragmentHH;
 import com.inventrax.nilkamal_vna.fragments.HH.SorterPickFragmentHH;
+import com.inventrax.nilkamal_vna.fragments.HU.PalletToPalletHU;
 import com.inventrax.nilkamal_vna.fragments.HU.PickingFragmentHU;
 import com.inventrax.nilkamal_vna.fragments.HU.PutAwayFragment;
 import com.inventrax.nilkamal_vna.fragments.HU.CaseNoMapping;
@@ -232,6 +233,9 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
         headerList.add(menuModel);
 
         childModel = new MenuModel("Bin to Bin", false, false, "Bin to Bin");
+        childModelsList.add(childModel);
+
+        childModel = new MenuModel("Pallet to Pallet", false, false, "Pallet to Pallet");
         childModelsList.add(childModel);
 
 /*        childModel = new MenuModel("Put Away", false, false, "Put Away");
@@ -448,6 +452,10 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
 
                 case "Picking":
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new PickingFragmentHU());
+                    break;
+
+                case "Pallet to Pallet":
+                    FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new PalletToPalletHU());
                     break;
 
                 case "Picking & Sorting":

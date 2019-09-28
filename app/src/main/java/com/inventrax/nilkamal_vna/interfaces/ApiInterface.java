@@ -100,6 +100,9 @@ public interface ApiInterface {
     @POST("VLPD/GetVLPDID")
     Call<String> GetVLPDID(@Body WMSCoreMessage oRequest);
 
+    @POST("VLPD/PallettoPalletMovement")
+    Call<String> PallettoPalletMovement(@Body WMSCoreMessage oRequest);
+
     @POST("VLPD/PrintNewRSN")
     Call<String> PrintNewRSN(@Body WMSCoreMessage oRequest);
 

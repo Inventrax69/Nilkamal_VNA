@@ -92,14 +92,11 @@ public class VlpdDto {
     @SerializedName("UniqueRSN")
     private String UniqueRSN;
 
-
     @SerializedName("RSN")
     private String RSN;
 
-
     @SerializedName("PalletNo")
     private String palletNo;
-
 
     @SerializedName("IpAddress")
     private String IpAddress;
@@ -113,17 +110,21 @@ public class VlpdDto {
     @SerializedName("PickRSNCount")
     private String PickRSNCount;
 
-
     @SerializedName("MDescreiption")
     private String MDescreiption;
 
     @SerializedName("SuggestedLoc")
     private String SuggestedLoc;
 
-
-
     @SerializedName("ActvalLocation")
     private String ActvalLocation;
+
+
+    @SerializedName("FromPallet")
+    private String FromPallet;
+
+    @SerializedName("ToPallet")
+    private String ToPallet;
 
 
     public VlpdDto() { }
@@ -302,6 +303,18 @@ public class VlpdDto {
                 case "ActvalLocation":
                     if (entry.getValue() != null) {
                         this.setActvalLocation(entry.getValue().toString());
+                    }
+                    break;
+
+                case "FromPallet":
+                    if (entry.getValue() != null) {
+                        this.setFromPallet(entry.getValue().toString());
+                    }
+                    break;
+
+                case "ToPallet":
+                    if (entry.getValue() != null) {
+                        this.setToPallet(entry.getValue().toString());
                     }
                     break;
             }
@@ -605,5 +618,21 @@ public class VlpdDto {
 
     public void setActvalLocation(String actvalLocation) {
         ActvalLocation = actvalLocation;
+    }
+
+    public String getFromPallet() {
+        return FromPallet;
+    }
+
+    public void setFromPallet(String fromPallet) {
+        FromPallet = fromPallet;
+    }
+
+    public String getToPallet() {
+        return ToPallet;
+    }
+
+    public void setToPallet(String toPallet) {
+        ToPallet = toPallet;
     }
 }

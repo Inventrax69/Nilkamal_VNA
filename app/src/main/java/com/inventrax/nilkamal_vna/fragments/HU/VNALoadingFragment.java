@@ -306,6 +306,8 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                 if(ScanValidator.IsRSNScanned(scannedData)){
                     if(!txtOBDNumber.getText().toString().isEmpty())
                         VNAuniqueRSNLoading(scannedData);
+                }else{
+                    common.showUserDefinedAlertType("Invalid RSN", getActivity(), getContext(), "Error");
                 }
 
             }else {
