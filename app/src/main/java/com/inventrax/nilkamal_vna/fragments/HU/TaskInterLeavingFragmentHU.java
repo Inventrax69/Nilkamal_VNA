@@ -778,6 +778,8 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
     }
 
     public void clearAllFileds(){
+        ProgressDialogUtils.closeProgressDialog();
+        Common.setIsPopupActive(false);
         isPalletScanned=false;
         isFromLocationScanned=true;
         isToLocationScanned=false;
@@ -793,6 +795,9 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
     }
 
     public void clearAllFileds1(){
+
+        ProgressDialogUtils.closeProgressDialog();
+        Common.setIsPopupActive(false);
         isPalletScanned=false;
         isFromLocationScanned=true;
         isToLocationScanned=false;
@@ -996,7 +1001,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                         });
                         pickingSkipdialog.show();
 
-                        //TODO after Skipping()
+                        // TODO after Skipping()
                     }else{
                         if(isToLocationScanned && isPalletScanned){
                             Toast.makeText(getActivity(), "Already Transfered", Toast.LENGTH_SHORT).show();

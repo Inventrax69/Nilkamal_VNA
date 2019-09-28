@@ -820,7 +820,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                                                sColor.isEmpty() && !sColor.equals("SELECT COLOR")){
                                                 common.showUserDefinedAlertType("Enter all fields", getActivity(), getContext(), "Warning");
                                             }else{
-                                                //TODO call service
                                                 PalletCreation(sColor,
                                                         dialogetLength.getText().toString(),
                                                         dialogetBreadth.getText().toString(),

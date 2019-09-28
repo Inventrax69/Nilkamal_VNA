@@ -299,7 +299,6 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
                 //ConfirmBinPosting();
                 if(isPalletScanned && isFromLocationScanned && isToLocationScanned){
                     Toast.makeText(getActivity(), "You can Complete putaway", Toast.LENGTH_SHORT).show();
-                    // TODO putaway completed ()
                 }else{
                     if(!isFromLocationScanned){
                         common.showUserDefinedAlertType(errorMessages.EMC_083, getActivity(), getContext(), "Error");
@@ -730,6 +729,9 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
 
     public void ClearFields() {
 
+        ProgressDialogUtils.closeProgressDialog();
+        Common.setIsPopupActive(false);
+
         cvScanFromLocation.setCardBackgroundColor(getResources().getColor(R.color.locationColor));
         ivScanFromLocation.setImageResource(R.drawable.fullscreen_img);
 
@@ -826,7 +828,7 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
 
     //Assigning scanned value to the respective fields
     public void ProcessScannedinfo(String scannedData) {
-        Log.v("ABCDE",scannedData+" "+Common.isPopupActive()+" "+ProgressDialogUtils.isProgressActive());
+
         if (scannedData != null && !Common.isPopupActive()) {
 
             if (!ProgressDialogUtils.isProgressActive()) {

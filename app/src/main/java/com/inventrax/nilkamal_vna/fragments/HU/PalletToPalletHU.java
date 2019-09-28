@@ -71,7 +71,6 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
 
     private static final String classCode = "API_FRAG_TOINHAND_LOCATION";
     private View rootView;
-
     private RelativeLayout rlStRefSelect, rlPutaway, rlPalletType;
     private TextView lblStoreRefNo, lblSuggestedLoc, lblPalletConfirm;
     private CardView cvScanToPallet, cvScanFromPallet,cvScanRSN;
@@ -308,7 +307,6 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
                 //ConfirmBinPosting();
                 if(isToPalletScanned && isFromPalletScanned && isRSN){
                     Toast.makeText(getActivity(), "You can Complete putaway", Toast.LENGTH_SHORT).show();
-                    // TODO putaway completed ()
                 }else{
                     if(!isFromPalletScanned){
                         common.showUserDefinedAlertType(errorMessages.EMC_083, getActivity(), getContext(), "Error");
@@ -354,6 +352,9 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
 
     public void ClearFields() {
 
+        ProgressDialogUtils.closeProgressDialog();
+        Common.setIsPopupActive(false);
+
         cvScanFromPallet.setCardBackgroundColor(getResources().getColor(R.color.palletColor));
         ivScanFromPallet.setImageResource(R.drawable.fullscreen_img);
 
@@ -373,9 +374,7 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
         etQty.setText("");
         etMDesc.setText("");
         etQtyCount.setText("");
-
         count=0;
-
         isFromPalletScanned=false;
         isToPalletScanned=false;
         isRSN=false;
@@ -383,6 +382,9 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
     }
 
     public void ClearFields1() {
+
+        ProgressDialogUtils.closeProgressDialog();
+        Common.setIsPopupActive(false);
 
         cvScanToPallet.setCardBackgroundColor(getResources().getColor(R.color.palletColor));
         ivScanToPallet.setImageResource(R.drawable.fullscreen_img);
@@ -693,7 +695,7 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
 
             } catch (Exception ex) {
                 try {
-                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
                     logException();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -737,7 +739,7 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
                                 if(vlpdDto1.getResult()!=null){
                                     if(vlpdDto1.getResult().equals("1")){
                                         count++;
-                                        etQtyCount.setText(""+count);
+                                        etQtyCount.setText(String.valueOf(count));
                                         etQty.setText(vlpdDto1.getLoadRSNCount());
                                         etmCode.setText(vlpdDto1.getMcode());
                                         etMDesc.setText(vlpdDto1.getMDescreiption());
@@ -746,7 +748,7 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
                                         etHuSize.setText(vlpdDto1.getHUSize());
                                     }
                                     else if (vlpdDto1.getResult().equals("-3")) {
-                                        common.showUserDefinedAlertType("To pallete location are not mapped", getActivity(), getContext(), "Error");
+                                        common.showUserDefinedAlertType("To pallet location are not mapped", getActivity(), getContext(), "Error");
                                     }
                                     else if (vlpdDto1.getResult().equals("-2")){
                                         common.showUserDefinedAlertType("Invalid Pallet", getActivity(), getContext(), "Error");
@@ -802,10 +804,4 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
             common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
         }
     }
-
-
-
-
-
-
 }

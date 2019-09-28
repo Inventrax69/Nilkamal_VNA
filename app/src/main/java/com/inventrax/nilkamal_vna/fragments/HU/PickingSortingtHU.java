@@ -260,7 +260,8 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     }
 
     public void clearAllFileds(){
-
+        ProgressDialogUtils.closeProgressDialog();
+        Common.setIsPopupActive(false);
         etPartNo.setText("");
         etPallet.setText("");
         etNewQty.setText("");
@@ -272,10 +273,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         txtHuNo.setText("");
         txtHuSize.setText("");
         txtPendingQty.setText("");
-        isPalletScanned=false;
-        isPartNoScanned=false;
-        isDockLocationScanned=false;
-        isNewRsn=false;
+        isPalletScanned=false;isPartNoScanned=false;isDockLocationScanned=false;isNewRsn=false;
         sNewUniqueRSN="";sPalletNo="";ipAdress="";sUniqueRSN="";
         cvScanPartNo.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
         ivScanPartNo.setImageResource(R.drawable.fullscreen_img);
@@ -285,7 +283,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         ivScanDockLocation.setImageResource(R.drawable.fullscreen_img);
         cvScanNewRSN.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
         ivScanNewRSN.setImageResource(R.drawable.fullscreen_img);
-
     }
 
     public void clearAllFileds1(){
