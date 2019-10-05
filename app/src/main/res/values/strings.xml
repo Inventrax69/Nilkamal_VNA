@@ -118,7 +118,8 @@
     <string name="title_activity_to_in_drop_location">To In-Drop Location</string>
     <string name="title_activity_pallet_to_pallet">Pallet to Pallet</string>
     <string name="title_activity_putaway">Putaway</string>
-    <string name="title_activity_task_inter_leaving">Task Inter Leaving</string>
+    <string name="title_activity_vna_transfer">VNA Transfers</string>
+    <string name="title_activity_vna_bin_to_bin">VNA Bin To Bin</string>
     <string name="title_activity_picking_sorting">Picking &amp; Sorting</string>
     <string name="title_activity_live_stock">Live Stock</string>
     <string name="title_activity_obdpicking">OBD Picking</string>

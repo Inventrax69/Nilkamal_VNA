@@ -245,12 +245,12 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
 
     @Override
     public void showProgress() {
-        progressDialogUtils.showProgressDialog("Please Wait ...");
+        ProgressDialogUtils.showProgressDialog("Please Wait ...");
     }
 
     @Override
     public void hideProgress() {
-        progressDialogUtils.closeProgressDialog();
+        ProgressDialogUtils.closeProgressDialog();
     }
 
     @Override
@@ -698,5 +698,4 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-
 }

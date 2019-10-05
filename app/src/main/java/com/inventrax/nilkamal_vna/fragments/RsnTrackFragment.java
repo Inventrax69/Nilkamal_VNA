@@ -192,25 +192,24 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.radioBin:
-
                         barcodeType = "LOCATION";
-                        common.setIsPopupActive(true);
+                        Common.setIsPopupActive(true);
                         ClearFields();
                         break;
                     case R.id.radioEAN:
                         barcodeType = "EAN";
                         ClearFields();
-                        common.setIsPopupActive(true);
+                        Common.setIsPopupActive(true);
                         break;
                     case R.id.radioRSN:
                         barcodeType = "RSN";
                         ClearFields();
-                        common.setIsPopupActive(true);
+                        Common.setIsPopupActive(true);
                         break;
                     case R.id.radioPallet:
                         barcodeType = "PALLET";
                         ClearFields();
-                        common.setIsPopupActive(true);
+                        Common.setIsPopupActive(true);
                         break;
                 }
             }
@@ -338,15 +337,14 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
     //01A01B2
     //Assigning scanned value to the respective fields
     public void ProcessScannedinfo(String scannedData) {
-        if (scannedData != null && !common.isPopupActive()) {
-            if (barcodeType.equalsIgnoreCase("LOCATION") && scanValidator.IsLocationScanned(scannedData)) {
+        if (scannedData != null && !Common.isPopupActive()) {
+            if (barcodeType.equalsIgnoreCase("LOCATION") && ScanValidator.IsLocationScanned(scannedData)) {
                 tvScan.setText(scannedData);
                 GetStockInformationByRSN(scannedData);
-
-            } else if(barcodeType.equalsIgnoreCase("RSN") && scanValidator.IsRSNScanned(scannedData)){
+            } else if(barcodeType.equalsIgnoreCase("RSN") && ScanValidator.IsRSNScanned(scannedData)){
                 tvScan.setText(scannedData);
                 GetStockInformationByRSN(scannedData);
-            }else if(barcodeType.equalsIgnoreCase("PALLET") && scanValidator.IsPalletScanned(scannedData)){
+            }else if(barcodeType.equalsIgnoreCase("PALLET") && ScanValidator.IsPalletScanned(scannedData)){
                 tvScan.setText(scannedData);
                 GetStockInformationByRSN(scannedData);
             }else if(barcodeType.equalsIgnoreCase("EAN") && !ScanValidator.IsPalletScanned(scannedData) && !ScanValidator.IsLocationScanned(scannedData)
@@ -509,7 +507,7 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
                 // }
             } catch (Exception ex) {
                 try {
-                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetStockInformationByRSN", getActivity());
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetStockInformationByRSN", getActivity());
                     logException();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -551,10 +549,11 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
                                 for (int i = 0; i < _lInventory.size(); i++) {
                                     inventorydto = new InventoryDTO(_lInventory.get(i).entrySet());
                                     lstInventory.add(inventorydto);
-
                                 }
-
                                 ProgressDialogUtils.closeProgressDialog();
+                                Common.setIsPopupActive(false);
+
+
 
                                 rvRsnTracking.setAdapter(null);
 
@@ -566,12 +565,12 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
 
                                 //rvRsnTracking.setVisibility(View.VISIBLE);
 
-                                common.setIsPopupActive(false);
+
                             }
 
                         } catch (Exception ex) {
                             try {
-                                exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetStockInformationByRSN", getActivity());
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetStockInformationByRSN", getActivity());
                                 logException();
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -590,7 +589,7 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
                 });
             } catch (Exception ex) {
                 try {
-                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetStockInformationByRSN", getActivity());
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetStockInformationByRSN", getActivity());
                     logException();
                 } catch (IOException e) {
                     e.printStackTrace();

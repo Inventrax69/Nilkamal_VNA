@@ -94,11 +94,21 @@ public interface ApiInterface {
     @POST("Inbound/GetInboundPalletInfo")
     Call<String> GetInboundPalletInfo(@Body WMSCoreMessage oRequest);
 
+
+    @POST("Inbound/PrintEcomLabelsForFurniture")
+    Call<String> PrintEcomLabelsForFurniture(@Body WMSCoreMessage oRequest);
+
     @POST("Inbound/ConfirmReceiptForSiteToSiteRSN")
     Call<String> ConfirmReceiptForSiteToSiteRSN(@Body WMSCoreMessage oRequest);
 
     @POST("VLPD/GetVLPDID")
     Call<String> GetVLPDID(@Body WMSCoreMessage oRequest);
+
+    @POST("VLPD/VNAPalletValidation")
+    Call<String> VNAPalletValidation(@Body WMSCoreMessage oRequest);
+
+    @POST("VLPD/VNABintoBinMovement")
+    Call<String> VNABintoBinMovement(@Body WMSCoreMessage oRequest);
 
     @POST("VLPD/PallettoPalletMovement")
     Call<String> PallettoPalletMovement(@Body WMSCoreMessage oRequest);
@@ -123,7 +133,6 @@ public interface ApiInterface {
 
     @POST("VLPD/PickandCheck")
     Call<String> PickandCheck(@Body WMSCoreMessage oRequest);
-
 
     @POST("VLPD/GetPalletValidationandSuggestion")
     Call<String> GetPalletValidationandSuggestion(@Body WMSCoreMessage oRequest);

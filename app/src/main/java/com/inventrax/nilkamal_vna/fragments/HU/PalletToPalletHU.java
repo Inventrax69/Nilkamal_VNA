@@ -255,7 +255,7 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
             }
         });
 
-
+        Common.setIsPopupActive(false);
         if (getArguments() != null) {
             lblStoreRefNo.setText(getArguments().getString("StoreRefNo"));
             clientId = getArguments().getString("ClientId");
@@ -463,6 +463,7 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
     public void ProcessScannedinfo(String scannedData) {
 
 
+        Log.v("ABCDE",scannedData+" "+Common.isPopupActive()+" "+ProgressDialogUtils.isProgressActive());
 
         if (scannedData != null && !Common.isPopupActive()) {
 

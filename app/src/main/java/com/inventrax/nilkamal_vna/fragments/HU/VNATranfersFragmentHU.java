@@ -3,7 +3,6 @@ package com.inventrax.nilkamal_vna.fragments.HU;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -49,7 +48,6 @@ import com.inventrax.nilkamal_vna.pojos.WMSCoreMessage;
 import com.inventrax.nilkamal_vna.pojos.WMSExceptionMessage;
 import com.inventrax.nilkamal_vna.searchableSpinner.SearchableSpinner;
 import com.inventrax.nilkamal_vna.services.RestService;
-import com.inventrax.nilkamal_vna.util.DialogUtils;
 import com.inventrax.nilkamal_vna.util.ExceptionLoggerUtils;
 import com.inventrax.nilkamal_vna.util.FragmentUtils;
 import com.inventrax.nilkamal_vna.util.ProgressDialogUtils;
@@ -66,7 +64,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, BarcodeReader.TriggerListener, BarcodeReader.BarcodeListener {
+public class VNATranfersFragmentHU extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, BarcodeReader.TriggerListener, BarcodeReader.BarcodeListener {
 
     private static final String classCode = "API_FRAG_TASK_INTER_LEAVING";
     private View rootView;
@@ -107,12 +105,12 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
         }
     };
 
-    public TaskInterLeavingFragmentHU() { }
+    public VNATranfersFragmentHU() { }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_task_inter_leaving, container, false);
+        rootView = inflater.inflate(R.layout.fragment_vna_transfer, container, false);
         barcodeReader = MainActivity.getBarcodeObject();
         loadFormControls();
         return rootView;
@@ -190,6 +188,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
         });
 
         radioButtonClicks();
+        Common.setIsPopupActive(false);
 
 
 
@@ -203,16 +202,6 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                 SuggestionType="1";
                 inOutId="1";
                 setSuggestionTypeApi(SuggestionType);
-
-/*                if(!inOutId.equals("1")){
-
-                    clearAllFileds1();
-                }else{
-                    isPutaway=true;
-                    isPicking=false;
-                    clearAllFileds1();
-                }*/
-
             }
         });
        // ((RadioButton)rootView.findViewById(R.id.radioAuto)).performClick();
@@ -223,7 +212,6 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                 inOutId="2";
                 clearAllFileds1();
                 setSuggestionTypeApi(SuggestionType);
-
             }
         });
         ((RadioButton)rootView.findViewById(R.id.radioPutaway)).setOnClickListener(new View.OnClickListener() {
@@ -237,7 +225,6 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                 tvStRef.setText("Put Away");
                 lblVLPDNumber.setVisibility(View.INVISIBLE);
                 txtVLPDNumber.setVisibility(View.INVISIBLE);
-
             }
         });
     }
@@ -315,11 +302,14 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                 if(dto.getInout()!=null){
 
                                     if(SuggestionType.equals("1")){
-
                                         if(dto.getInoutId().equals("1")){
                                             isPicking=false;
                                             isPutaway=true;
                                             inOutId="1";
+                                            etFromLocation.setText(dto.getPickedLocation());
+                                            etPallet.setText(dto.getPalletNo());
+                                            etToLocation.setText(dto.getSuggestedLocation());
+                                            txtVLPDNumber.setText(dto.getVLPDNumber());
                                             lblVLPDNumber.setVisibility(View.INVISIBLE);
                                             txtVLPDNumber.setVisibility(View.INVISIBLE);
                                         }else{
@@ -333,11 +323,13 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                             lblVLPDNumber.setVisibility(View.VISIBLE);
                                             txtVLPDNumber.setVisibility(View.VISIBLE);
                                         }
-
                                     }else if(SuggestionType.equals("2")){
-
                                         isPicking=false;
                                         isPutaway=true;
+                                        etFromLocation.setText(dto.getPickedLocation());
+                                        etPallet.setText(dto.getPalletNo());
+                                        etToLocation.setText(dto.getSuggestedLocation());
+                                        txtVLPDNumber.setText(dto.getVLPDNumber());
                                         lblVLPDNumber.setVisibility(View.INVISIBLE);
                                         txtVLPDNumber.setVisibility(View.INVISIBLE);
                                     }else{
@@ -426,8 +418,6 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
             ProgressDialogUtils.closeProgressDialog();
             common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
         }
-
-
     }
 
     private void UpsertBintoBinTransfer(String scannedData) {
@@ -513,8 +503,13 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                                     ivScanToLocation.setImageResource(R.drawable.check);
                                     isToLocationScanned=true;
                                     inOutId=dto.getInoutId();
-                                    setSuggestionTypeApi(SuggestionType);
-                                    clearAllFileds();
+                                    if(SuggestionType.equals("2")){
+                                        setSuggestionTypeApi(SuggestionType);
+                                        clearAllFileds();
+                                    }else{
+                                        clearAllFileds1();
+                                    }
+
 /*                                    Common.setIsPopupActive(true);
                                     sound.alertSuccess(getActivity(), getContext());
                                     DialogUtils.showAlertDialog(getActivity(), "Success", "Successfully Transfer", R.drawable.success,new DialogInterface.OnClickListener() {
@@ -1103,6 +1098,9 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
 
     //Assigning scanned value to the respective fields
     public void ProcessScannedinfo(String scannedData) {
+
+        Log.v("ABCDE",scannedData+" "+Common.isPopupActive()+" "+ProgressDialogUtils.isProgressActive());
+
         if (scannedData != null && !Common.isPopupActive()) {
 
             if (!ProgressDialogUtils.isProgressActive()) {
@@ -1179,7 +1177,6 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                         }else{
                             if(isPalletScanned){
                                 if(etToLocation.getText().toString().equals(scannedData)){
-
                                     UpsertBintoBinTransfer(scannedData);
                                 }else{
                                     common.showUserDefinedAlertType(errorMessages.EMC_086, getActivity(), getContext(), "Error");
@@ -1232,7 +1229,7 @@ public class TaskInterLeavingFragmentHU extends Fragment implements View.OnClick
                 // Toast.makeText(this, "Scanner unavailable", Toast.LENGTH_SHORT).show();
             }
         }
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.title_activity_task_inter_leaving));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.title_activity_vna_transfer));
     }
 
     //Barcode scanner API

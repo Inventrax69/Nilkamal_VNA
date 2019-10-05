@@ -76,7 +76,7 @@ import retrofit2.Response;
 
 public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener, BarcodeReader.TriggerListener, BarcodeReader.BarcodeListener, AdapterView.OnItemSelectedListener {
 
-    private static final String classCode = "API_FRAG_RSN GOODS HU";
+    private static final String classCode = "API_FRAG_RSN_GOODS_HU";
     private View rootView;
 
     private RelativeLayout rlReceive, rlPrint;
@@ -87,9 +87,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
             txtInputLayoutLength, txtInputLayoutBreadth, txtInputLayoutHeight, txtInputLayoutWeight, txtInputLayoutBox,
             txtInputLayoutQty, txtInputLayoutVolume, txtInputLayoutTweight, txtInputLayoutCase, txtInputLayoutRSNPrint,
             txtInputLayoutStackCount, txtInputLayoutPrintQty, txtInputLayoutPrinterIP;
-    private CustomEditText etPallet, etLocation, etRSN, etLength, etBreadth, etHeight,
-            etWeight, etBox, etQty, etVolume, etTweight, etCase;
-
+    private CustomEditText etPallet, etLocation, etRSN, etLength, etBreadth, etHeight, etWeight, etBox, etQty, etVolume, etTweight, etCase;
     private EditText etRSNPrint, etStackCount, etPrintQty, etPrinterIP;
     private SearchableSpinner spinnerSelectSloc;
     private Button btnPalletClose, btnConfirmLBH, btnExport, btnPrint, btnClose, btnPrintBarcode, btnClosePrint;
@@ -194,16 +192,13 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    //SAVE THE DATA
-
+                    // SAVE THE DATA
                 } else {
                     if (!etPallet.getText().toString().isEmpty()) {
                        // GetPalletinformation();
                     }
-
-                    //GetPalletInfo();
+                    // GetPalletInfo();
                 }
-
             }
         });
 
@@ -224,18 +219,14 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
         etPrintQty = (EditText) rootView.findViewById(R.id.etPrintQty);
         etPrinterIP = (EditText) rootView.findViewById(R.id.etPrinterIP);
 
-
-
         etRSNPrint.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     //SAVE THE DATA
-
                 } else {
                     getPrintDetails();
                 }
-
             }
         });
 
@@ -346,7 +337,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                 ivScanSku.setImageResource(R.drawable.check);
             }
 
-
         }
 
         common = new Common();
@@ -357,7 +347,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
         core = new WMSCoreMessage();
         oInboundDataDTO = new InboundDTO();
         soundUtils = new SoundUtils();
-
 
         // For Cipher Barcode reader
         Intent RTintent = new Intent("sw.reader.decode.require");
@@ -387,6 +376,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
 
         GetStorageLocations();
+        Common.setIsPopupActive(false);
 
     }
 
@@ -405,7 +395,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                 if (!lblStoreRefNo.getText().toString().isEmpty()) {
 
                     etPrinterIP.setText(ipAddress);
-
                     rlReceive.setVisibility(View.GONE);
                     rlPrint.setVisibility(View.VISIBLE);
                 }
@@ -619,18 +608,22 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                         etRSN.setText(scannedData);
                         ConfirmReciptOnScan();
                         return;
-
-
                     }
                 } /*else {
                     common.showUserDefinedAlertType(errorMessages.EMC_0009, getActivity(), getContext(), "Error");
                     return;
                 }*/
-
-            } else {
-                soundUtils.alertWarning(getActivity(), getContext());
-
             }
+
+            if(ScanValidator.IsBatchRSN(scannedData)){
+
+                PrintEcomLabelsForFurniture(scannedData);
+
+               return;
+            }else{
+                soundUtils.alertWarning(getActivity(), getContext());
+            }
+
 
 
         } else {
@@ -1955,7 +1948,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
         try {
 
-
             WMSCoreMessage message = new WMSCoreMessage();
             message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
             InboundDTO inboundDTO = new InboundDTO();
@@ -2391,7 +2383,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-
     }
 
     @Override
@@ -2482,6 +2473,133 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                                     common.showUserDefinedAlertType("Invalid Pallet Color", getActivity(), getContext(), "Error");
                                 }else{
                                     common.showUserDefinedAlertType("Pallet already created", getActivity(), getContext(), "Error");
+                                }
+
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
+    }
+
+    private void PrintEcomLabelsForFurniture(String scannedData) {
+
+        try {
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
+            InboundDTO inboundDTO = new InboundDTO();
+            inboundDTO.setUserId(userId);
+            inboundDTO.setSKU(scannedData.split("[,]")[0]);
+            inboundDTO.setStoreRefNo(lblStoreRefNo.getText().toString());
+            inboundDTO.setIpAddress(ipAddress);
+            if(scannedData.split("[,]")[2].split("[.]").length==3){
+                inboundDTO.setBoxQuantity("1");
+            }else{
+                inboundDTO.setBoxQuantity(scannedData.split("[,]")[2]);
+            }
+            message.setEntityObject(inboundDTO);
+
+            Log.v("ABCDE_PrintEcom",new Gson().toJson(message));
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+
+                call = apiService.PrintEcomLabelsForFurniture(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+
+                            } else {
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+                                ProgressDialogUtils.closeProgressDialog();
+                                List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                InboundDTO inboundDTO1=null;
+                                for(int i=0;i<_lInbound.size();i++){
+                                    inboundDTO1=new InboundDTO(_lInbound.get(i).entrySet());
+                                }
+
+
+                                if(inboundDTO1.getResult().equals("Success")){
+                                    // TODO Nopting
+                                }else{
+                                    common.showUserDefinedAlertType("Print Failed", getActivity(), getContext(), "Error");
                                 }
 
                             }

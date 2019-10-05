@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,7 +107,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     Dialog pickingSkipdialog;
     String VLPDNumber="",Pallet="",ActualLoc="",SuggestedLoc="",Type="";
 
-
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -140,24 +140,24 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         cvScanDockLocation=(CardView)rootView.findViewById(R.id.cvScanDockLocation);
         cvScanNewRSN=(CardView)rootView.findViewById(R.id.cvScanNewRSN);
 
-        ivScanPallet=(ImageView)rootView.findViewById(R.id.ivScanPallet);
-        ivScanPartNo=(ImageView)rootView.findViewById(R.id.ivScanPartNo);
-        ivScanDockLocation=(ImageView)rootView.findViewById(R.id.ivScanDockLocation);
-        ivScanNewRSN=(ImageView)rootView.findViewById(R.id.ivScanNewRSN);
+        ivScanPallet =(ImageView)rootView.findViewById(R.id.ivScanPallet);
+        ivScanPartNo =(ImageView)rootView.findViewById(R.id.ivScanPartNo);
+        ivScanDockLocation =(ImageView)rootView.findViewById(R.id.ivScanDockLocation);
+        ivScanNewRSN =(ImageView)rootView.findViewById(R.id.ivScanNewRSN);
 
-        etPartNo=(EditText) rootView.findViewById(R.id.etPartNo);
-        etNewQty=(EditText) rootView.findViewById(R.id.etNewQty);
-        etPallet=(EditText) rootView.findViewById(R.id.etPallet);
-        etDockLocation=(EditText) rootView.findViewById(R.id.etDockLocation);
-        txtBatchNo=(EditText) rootView.findViewById(R.id.txtBatchNo);
-        txtHuNo=(EditText) rootView.findViewById(R.id.txtHuNo);
-        txtHuSize=(EditText) rootView.findViewById(R.id.txtHuSize);
+        etPartNo =(EditText) rootView.findViewById(R.id.etPartNo);
+        etNewQty =(EditText) rootView.findViewById(R.id.etNewQty);
+        etPallet =(EditText) rootView.findViewById(R.id.etPallet);
+        etDockLocation =(EditText) rootView.findViewById(R.id.etDockLocation);
+        txtBatchNo =(EditText) rootView.findViewById(R.id.txtBatchNo);
+        txtHuNo =(EditText) rootView.findViewById(R.id.txtHuNo);
+        txtHuSize =(EditText) rootView.findViewById(R.id.txtHuSize);
 
-        txtVLPDNumber=(TextView) rootView.findViewById(R.id.txtVLPDNumber);
-        txtMcode=(TextView) rootView.findViewById(R.id.txtMcode);
-        txtDesc=(TextView) rootView.findViewById(R.id.txtDesc);
-        txtDockName=(TextView) rootView.findViewById(R.id.txtDockName);
-        txtPendingQty=(TextView) rootView.findViewById(R.id.txtPendingQty);
+        txtVLPDNumber =(TextView) rootView.findViewById(R.id.txtVLPDNumber);
+        txtMcode =(TextView) rootView.findViewById(R.id.txtMcode);
+        txtDesc =(TextView) rootView.findViewById(R.id.txtDesc);
+        txtDockName =(TextView) rootView.findViewById(R.id.txtDockName);
+        txtPendingQty =(TextView) rootView.findViewById(R.id.txtPendingQty);
 
 
         rlVLPDSelect=(RelativeLayout) rootView.findViewById(R.id.rlVLPDSelect);
@@ -545,6 +545,9 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
     //Assigning scanned value to the respective fields
     public void ProcessScannedinfo(String scannedData) {
+
+        Log.v("ABCDE",scannedData+" "+Common.isPopupActive()+" "+ProgressDialogUtils.isProgressActive());
+
         if (scannedData != null && !Common.isPopupActive()) {
 
             if (!ProgressDialogUtils.isProgressActive()) {

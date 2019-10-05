@@ -48,7 +48,8 @@ import com.inventrax.nilkamal_vna.fragments.HU.ReceiveFromSiteFragmentHU;
 import com.inventrax.nilkamal_vna.fragments.HU.SLocToSLocFragment;
 import com.inventrax.nilkamal_vna.fragments.HU.SkuToSkuFragment;
 import com.inventrax.nilkamal_vna.fragments.HU.PickingSortingtHU;
-import com.inventrax.nilkamal_vna.fragments.HU.TaskInterLeavingFragmentHU;
+import com.inventrax.nilkamal_vna.fragments.HU.VNABinToBinFragmentHU;
+import com.inventrax.nilkamal_vna.fragments.HU.VNATranfersFragmentHU;
 import com.inventrax.nilkamal_vna.fragments.HU.ToInDropLocationHU;
 import com.inventrax.nilkamal_vna.fragments.HU.VLPDLoadingFragment;
 import com.inventrax.nilkamal_vna.fragments.HU.VNALoadingFragment;
@@ -232,6 +233,12 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
         menuModel = new MenuModel("Transfers", true, true, "Transfers");
         headerList.add(menuModel);
 
+        childModel = new MenuModel("VNA Transfers", false, false, "VNA Transfers");
+        childModelsList.add(childModel);
+
+        childModel = new MenuModel("VNA Bin to Bin", false, false, "VNA Bin to Bin");
+        childModelsList.add(childModel);
+
         childModel = new MenuModel("Bin to Bin", false, false, "Bin to Bin");
         childModelsList.add(childModel);
 
@@ -241,8 +248,7 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
 /*        childModel = new MenuModel("Put Away", false, false, "Put Away");
         childModelsList.add(childModel);*/
 
-        childModel = new MenuModel("Task Inter Leaving", false, false, "Task Inter Leaving");
-        childModelsList.add(childModel);
+
 
         childModel = new MenuModel("SKU to SKU", false, false, "SKU to SKU");
         childModelsList.add(childModel);
@@ -419,7 +425,6 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
             }
         } else if (division.equals("HU")) {                            // HU menu item navigation clicks
 
-
             switch (menuLink) {
 
                 case "Goods-In":
@@ -438,8 +443,8 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new PutawayFragmentHU());
                     break;
 
-                case "Task Inter Leaving":
-                    FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new TaskInterLeavingFragmentHU());
+                case "VNA Transfers":
+                    FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new VNATranfersFragmentHU());
                     break;
 
                 case "Stock Check":
@@ -472,6 +477,10 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
 
                 case "VLPD Loading":
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new VLPDLoadingFragment());
+                    break;
+
+                case "VNA Bin to Bin":
+                    FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new VNABinToBinFragmentHU());
                     break;
 
                 case "VNA Loading":

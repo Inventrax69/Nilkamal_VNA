@@ -127,6 +127,10 @@ public class VlpdDto {
     private String ToPallet;
 
 
+    @SerializedName("ToLocation")
+    private String ToLocation;
+
+
     public VlpdDto() { }
 
 
@@ -315,6 +319,12 @@ public class VlpdDto {
                 case "ToPallet":
                     if (entry.getValue() != null) {
                         this.setToPallet(entry.getValue().toString());
+                    }
+                    break;
+
+                 case "ToLocation":
+                    if (entry.getValue() != null) {
+                        this.setToLocation(entry.getValue().toString());
                     }
                     break;
             }
@@ -635,4 +645,13 @@ public class VlpdDto {
     public void setToPallet(String toPallet) {
         ToPallet = toPallet;
     }
+
+    public String getToLocation() {
+        return ToLocation;
+    }
+
+    public void setToLocation(String toLocation) {
+        ToLocation = toLocation;
+    }
+
 }

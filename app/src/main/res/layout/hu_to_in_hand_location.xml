@@ -106,6 +106,20 @@
             android:textSize="12sp"
             android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/lblQty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:text=""
+            android:padding="5dp"
+            android:visibility="invisible"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+
 
         <LinearLayout
             android:id="@+id/layoutRelayout"

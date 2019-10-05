@@ -56,7 +56,6 @@ public class Common {
         message.setType(Constant);
         message.setAuthToken(token);
         return message;
-
     }
 
 

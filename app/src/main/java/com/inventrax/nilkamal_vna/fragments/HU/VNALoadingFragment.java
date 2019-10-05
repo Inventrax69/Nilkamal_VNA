@@ -205,6 +205,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
         });
 
         GetOpenVNALOADLIST();
+        Common.setIsPopupActive(false);
     }
     
 
@@ -298,6 +299,8 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
 
     //Assigning scanned value to the respective fields
     public void ProcessScannedinfo(String scannedData) {
+
+        Log.v("ABCDE",scannedData+" "+Common.isPopupActive()+" "+ProgressDialogUtils.isProgressActive());
 
         if (scannedData != null && !Common.isPopupActive()) {
 

@@ -24,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.cipherlab.barcode.GeneralString;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -43,9 +42,7 @@ import com.inventrax.nilkamal_vna.common.constants.EndpointConstants;
 import com.inventrax.nilkamal_vna.common.constants.ErrorMessages;
 import com.inventrax.nilkamal_vna.fragments.HomeFragment;
 import com.inventrax.nilkamal_vna.interfaces.ApiInterface;
-import com.inventrax.nilkamal_vna.pojos.ExecutionResponseDTO;
 import com.inventrax.nilkamal_vna.pojos.InboundDTO;
-import com.inventrax.nilkamal_vna.pojos.InventoryDTO;
 import com.inventrax.nilkamal_vna.pojos.WMSCoreMessage;
 import com.inventrax.nilkamal_vna.pojos.WMSExceptionMessage;
 import com.inventrax.nilkamal_vna.searchableSpinner.SearchableSpinner;
@@ -56,13 +53,11 @@ import com.inventrax.nilkamal_vna.util.FragmentUtils;
 import com.inventrax.nilkamal_vna.util.ProgressDialogUtils;
 import com.inventrax.nilkamal_vna.util.ScanValidator;
 import com.inventrax.nilkamal_vna.util.SoundUtils;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -74,7 +69,7 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
     private View rootView;
 
     private RelativeLayout rlStRefSelect, rlPutaway, rlPalletType;
-    private TextView lblStoreRefNo, lblSuggestedLoc, lblPalletConfirm, txtLoction;
+    private TextView lblStoreRefNo, lblSuggestedLoc, lblPalletConfirm, txtLoction,lblQty;
     private CardView cvScanPallet, cvScanFromLocation,cvScanToLocation;
     private ImageView ivScanPallet, ivScanFromLocation,ivScanToLocation;
     private TextInputLayout txtInputLayoutPallet, txtInputLayoutLocation;
@@ -142,6 +137,7 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
         lblStoreRefNo = (TextView) rootView.findViewById(R.id.lblStoreRefNo);
         lblSuggestedLoc = (TextView) rootView.findViewById(R.id.lblSuggestedLoc);
         lblPalletConfirm = (TextView) rootView.findViewById(R.id.lblPalletConfirm);
+        lblQty = (TextView) rootView.findViewById(R.id.lblQty);
 
         cvScanPallet = (CardView) rootView.findViewById(R.id.cvScanPallet);
         cvScanFromLocation = (CardView) rootView.findViewById(R.id.cvScanFromLocation);
@@ -281,6 +277,8 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
                 ivScanFromLocation.setImageResource(R.drawable.check);
             }
         }
+
+        ClearFields();
     }
 
 
@@ -512,7 +510,6 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
 
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
-
 
                         try {
                             core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
@@ -829,14 +826,11 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
     //Assigning scanned value to the respective fields
     public void ProcessScannedinfo(String scannedData) {
 
+        Log.v("ABCDE",scannedData+" "+Common.isPopupActive()+" "+ProgressDialogUtils.isProgressActive());
+
         if (scannedData != null && !Common.isPopupActive()) {
 
             if (!ProgressDialogUtils.isProgressActive()) {
-
-                if (rlPalletType.getVisibility() == View.VISIBLE) {
-                   // ValidatePalletOrLocation(scannedData);
-                    return;
-                }
 
                 //Scan Pallet Number
 
@@ -878,6 +872,12 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
                 }/* else {
                     common.showUserDefinedAlertType(errorMessages.EMC_083, getActivity(), getContext(), "Error");
                 }*/
+
+
+                if (rlPalletType.getVisibility() == View.VISIBLE) {
+                    // ValidatePalletOrLocation(scannedData);
+                    return;
+                }
             }else {
                 if(!Common.isPopupActive())
                 {

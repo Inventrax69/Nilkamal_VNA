@@ -17,7 +17,7 @@ public class InboundDTO {
     private String inboundID;
     @SerializedName("StoreRefNo")
     private String storeRefNo;
-    @SerializedName("SKU ")
+    @SerializedName("SKU")
     private String SKU ;
     @SerializedName("SerialNo")
     private String serialNo;
