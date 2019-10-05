@@ -95,7 +95,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
     public String SuggestionType;
     public String inOutId="1";
     String skipReason;
-    TextView lblVLPDNumber,txtVLPDNumber;
+    TextView lblVLPDNumber,txtVLPDNumber,txtPenPallet;
 
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
         @Override
@@ -126,6 +126,9 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
         tvStRef=(TextView)rootView.findViewById(R.id.tvStRef);
         lblVLPDNumber=(TextView)rootView.findViewById(R.id.lblVLPDNumber);
         txtVLPDNumber=(TextView)rootView.findViewById(R.id.txtVLPDNumber);
+        txtPenPallet=(TextView)rootView.findViewById(R.id.txtPenPallet);
+
+
         cvScanFromLocation=(CardView)rootView.findViewById(R.id.cvScanFromLocation);
         cvScanPallet=(CardView)rootView.findViewById(R.id.cvScanPallet);
         cvScanToLocation=(CardView)rootView.findViewById(R.id.cvScanToLocation);
@@ -199,12 +202,13 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
             @Override
             public void onClick(View view) {
                 clearAllFileds1();
-                SuggestionType="1";
-                inOutId="1";
-                setSuggestionTypeApi(SuggestionType);
+              //  SuggestionType="1";
+              //  inOutId="1";
+              //  setSuggestionTypeApi(SuggestionType);
+                common.showUserDefinedAlertType("No Yet Enabled", getActivity(), getContext(), "Warning");
             }
         });
-       // ((RadioButton)rootView.findViewById(R.id.radioAuto)).performClick();
+        // ((RadioButton)rootView.findViewById(R.id.radioAuto)).performClick();
         ((RadioButton)rootView.findViewById(R.id.radioPicking)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -212,6 +216,10 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                 inOutId="2";
                 clearAllFileds1();
                 setSuggestionTypeApi(SuggestionType);
+                lblVLPDNumber.setVisibility(View.VISIBLE);
+                txtVLPDNumber.setVisibility(View.VISIBLE);
+                txtPenPallet.setVisibility(View.VISIBLE);
+                btnSkip.setVisibility(View.VISIBLE);
             }
         });
         ((RadioButton)rootView.findViewById(R.id.radioPutaway)).setOnClickListener(new View.OnClickListener() {
@@ -222,9 +230,12 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                 clearAllFileds1();
                 isPutaway=true;
                 isPicking=false;
+                //setSuggestionTypeApi(SuggestionType); TODO WHILE AUTO ENABLING
                 tvStRef.setText("Put Away");
                 lblVLPDNumber.setVisibility(View.INVISIBLE);
                 txtVLPDNumber.setVisibility(View.INVISIBLE);
+                txtPenPallet.setVisibility(View.INVISIBLE);
+                btnSkip.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -312,6 +323,8 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                                             txtVLPDNumber.setText(dto.getVLPDNumber());
                                             lblVLPDNumber.setVisibility(View.INVISIBLE);
                                             txtVLPDNumber.setVisibility(View.INVISIBLE);
+                                            txtPenPallet.setVisibility(View.INVISIBLE);
+                                            btnSkip.setVisibility(View.INVISIBLE);
                                         }else{
                                             isPicking=true;
                                             isPutaway=false;
@@ -322,6 +335,8 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                                             txtVLPDNumber.setText(dto.getVLPDNumber());
                                             lblVLPDNumber.setVisibility(View.VISIBLE);
                                             txtVLPDNumber.setVisibility(View.VISIBLE);
+                                            txtPenPallet.setVisibility(View.VISIBLE);
+                                            btnSkip.setVisibility(View.VISIBLE);
                                         }
                                     }else if(SuggestionType.equals("2")){
                                         isPicking=false;
@@ -332,6 +347,8 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                                         txtVLPDNumber.setText(dto.getVLPDNumber());
                                         lblVLPDNumber.setVisibility(View.INVISIBLE);
                                         txtVLPDNumber.setVisibility(View.INVISIBLE);
+                                        txtPenPallet.setVisibility(View.INVISIBLE);
+                                        btnSkip.setVisibility(View.INVISIBLE);
                                     }else{
                                         isPicking=true;
                                         isPutaway=false;
@@ -341,6 +358,8 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                                         txtVLPDNumber.setText(dto.getVLPDNumber());
                                         lblVLPDNumber.setVisibility(View.VISIBLE);
                                         txtVLPDNumber.setVisibility(View.VISIBLE);
+                                        txtPenPallet.setVisibility(View.VISIBLE);
+                                        btnSkip.setVisibility(View.VISIBLE);
                                     }
 
 /*                                    if(dto.getInoutId().equals("1")){
@@ -368,10 +387,13 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
 
                                     }*/
 
-                                    if(isPicking)
+                                    if(isPicking){
                                         tvStRef.setText("Picking");
-                                    else
+                                    }
+                                    else{
                                         tvStRef.setText("Put Away");
+                                    }
+
                                 }else{
                                     clearAllFileds1();
                                     common.showUserDefinedAlertType(errorMessages.EMC_089, getActivity(), getContext(), "Warning");
@@ -504,26 +526,11 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                                     isToLocationScanned=true;
                                     inOutId=dto.getInoutId();
                                     if(SuggestionType.equals("2")){
+                                        clearAllFileds1();
+                                    }else{
                                         setSuggestionTypeApi(SuggestionType);
                                         clearAllFileds();
-                                    }else{
-                                        clearAllFileds1();
                                     }
-
-/*                                    Common.setIsPopupActive(true);
-                                    sound.alertSuccess(getActivity(), getContext());
-                                    DialogUtils.showAlertDialog(getActivity(), "Success", "Successfully Transfer", R.drawable.success,new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which)
-                                        {
-                                            switch (which) {
-                                                case DialogInterface.BUTTON_POSITIVE:
-                                                    Common.setIsPopupActive(false);
-
-                                                    break;
-                                            }
-                                        }
-                                    });*/
                                 }else{
                                     common.showUserDefinedAlertType(dto.getResult(), getActivity(), getContext(), "Error");
                                 }
@@ -1111,7 +1118,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                 }
 
                 if (ScanValidator.IsPalletScanned(scannedData)) {
-                    if(isPicking){
+/*                    if(isPicking){
                         if(isFromLocationScanned){
                             if(etPallet.getText().toString().equals(scannedData)){
                                 cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
@@ -1134,6 +1141,21 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                         }else{
                             common.showUserDefinedAlertType(errorMessages.EMC_083, getActivity(), getContext(), "Error");
                         }
+                    }*/
+
+                    if(isFromLocationScanned){
+                        if(etPallet.getText().toString().equals(scannedData)){
+                            cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                            ivScanPallet.setImageResource(R.drawable.check);
+                            isPalletScanned=true;
+                        }else{
+                            cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                            ivScanPallet.setImageResource(R.drawable.warning_img);
+                            isPalletScanned=false;
+                            common.showUserDefinedAlertType(errorMessages.EMC_087, getActivity(), getContext(), "Error");
+                        }
+                    }else{
+                        common.showUserDefinedAlertType(errorMessages.EMC_083, getActivity(), getContext(), "Error");
                     }
 
                     return;

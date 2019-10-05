@@ -104,6 +104,9 @@ public interface ApiInterface {
     @POST("VLPD/GetVLPDID")
     Call<String> GetVLPDID(@Body WMSCoreMessage oRequest);
 
+    @POST("VLPD/ExportPendingPallet")
+    Call<String> ExportPendingPallet(@Body WMSCoreMessage oRequest);
+
     @POST("VLPD/VNAPalletValidation")
     Call<String> VNAPalletValidation(@Body WMSCoreMessage oRequest);
 

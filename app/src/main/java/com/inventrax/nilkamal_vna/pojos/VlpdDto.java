@@ -64,7 +64,6 @@ public class VlpdDto {
     @SerializedName("PendingQty")
     private String PendingQty;
 
-
     @SerializedName("PickedQty")
     private String PickedQty;
 
@@ -119,13 +118,11 @@ public class VlpdDto {
     @SerializedName("ActvalLocation")
     private String ActvalLocation;
 
-
     @SerializedName("FromPallet")
     private String FromPallet;
 
     @SerializedName("ToPallet")
     private String ToPallet;
-
 
     @SerializedName("ToLocation")
     private String ToLocation;

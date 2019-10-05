@@ -18,7 +18,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginLeft="0dp"
         android:layout_marginTop="2dp"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tvSelectOBDNo"
@@ -77,7 +77,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/rlOBDLoading"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_below="@+id/rlOBDSelect"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
@@ -161,12 +161,42 @@
         </LinearLayout>
 
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/txtInputLayoutDockNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layoutScan"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:layout_marginLeft="10dp">
+
+            <EditText
+                android:id="@+id/etDockNo"
+                style="@style/editTextStyleSmall"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/txtInputLayoutFromLocation"
+                android:layout_alignBottom="@+id/txtInputLayoutFromLocation"
+                android:clickable="false"
+                android:focusable="false"
+                android:hint="Dock No"
+                android:textStyle="bold"
+                android:background="@android:color/transparent"
+                android:inputType="text"
+                android:longClickable="false"
+                android:singleLine="true"
+                android:layout_alignLeft="@+id/txtInputLayoutFromLocation" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
             android:id="@+id/txtInputmCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginStart="10dp"
-            android:layout_below="@+id/layoutScan"
+            android:layout_below="@+id/txtInputLayoutDockNo"
             android:layout_marginTop="10dp"
             android:layout_alignParentStart="true"
             android:clickable="false"
@@ -338,6 +368,8 @@
                 android:layout_alignLeft="@+id/txtInputLayoutFromLocation" />
 
         </android.support.design.widget.TextInputLayout>
+
+
 
 
 

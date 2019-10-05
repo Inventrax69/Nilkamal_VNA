@@ -58,7 +58,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     private Common common = null;
     private WMSCoreMessage core;
-    String printerIp = null;
+    String printerIp = "";
     private ExceptionLoggerUtils exceptionLoggerUtils;
     private ErrorMessages errorMessages;
     SoundUtils sound = null;
@@ -119,13 +119,20 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             case R.id.btnSave:
 
                 if (!inputService.getText().toString().isEmpty()) {
-                    serviceUrl.setServiceUrl("");
-                    SharedPreferences sp = this.getSharedPreferences("SettingsActivity", Context.MODE_PRIVATE);
-                    sharedPreferencesUtils.removePreferences("url");
-                    sharedPreferencesUtils.savePreference("url", inputService.getText().toString());
-
-                    DialogUtils.showAlertDialog(SettingsActivity.this, "Saved successfully");
-                    getPrinters();
+                    if(printerIp.isEmpty()){
+                        serviceUrl.setServiceUrl("");
+                        SharedPreferences sp = this.getSharedPreferences("SettingsActivity", Context.MODE_PRIVATE);
+                        sharedPreferencesUtils.removePreferences("url");
+                        sharedPreferencesUtils.savePreference("url", inputService.getText().toString());
+                        DialogUtils.showAlertDialog(SettingsActivity.this, "Saved successfully");
+                        getPrinters();
+                    }else{
+                        serviceUrl.setServiceUrl("");
+                        SharedPreferences sp = this.getSharedPreferences("SettingsActivity", Context.MODE_PRIVATE);
+                        sharedPreferencesUtils.removePreferences("url");
+                        sharedPreferencesUtils.savePreference("url", inputService.getText().toString());
+                        DialogUtils.showAlertDialog(SettingsActivity.this, "Saved successfully");
+                    }
                 } else {
                     DialogUtils.showAlertDialog(SettingsActivity.this, "Service Url  not be empty");
                 }

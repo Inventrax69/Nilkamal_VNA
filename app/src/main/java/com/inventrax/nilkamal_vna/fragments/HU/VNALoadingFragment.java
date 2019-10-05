@@ -100,7 +100,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
     TextView txtOBDNumber,txtPenQty;
     String ID=null;
 
-    EditText etmCode,etBatchNo,etHuSize,etHuNo,etMDesc,etRSN;
+    EditText etmCode,etBatchNo,etHuSize,etHuNo,etMDesc,etRSN,etDockNo;
 
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
         @Override
@@ -141,6 +141,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
         etHuNo = (EditText) rootView.findViewById(R.id.etHuNo);
         etMDesc = (EditText) rootView.findViewById(R.id.etMDesc);
         etRSN = (EditText) rootView.findViewById(R.id.etRSN);
+        etDockNo = (EditText) rootView.findViewById(R.id.etDockNo);
 
         cvScanRSN = (CardView) rootView.findViewById(R.id.cvScanPartNo);
         ivScanRSN = (ImageView) rootView.findViewById(R.id.ivScanPartNo);
@@ -653,6 +654,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
 
                                 if(vlpdResponseDTO.getResult().equals("1")){
                                     txtPenQty.setText(vlpdResponseDTO.getLoadRSNCount()+" / "+vlpdResponseDTO.getPickRSNCount());
+                                    etDockNo.setText(vlpdResponseDTO.getDockNo());
                                 }
                                 else if(vlpdResponseDTO.getResult().equals("-2")){
                                     common.showUserDefinedAlertType(vlpdResponseDTO.getErrorMessage(), getActivity(), getContext(), "Error");
@@ -779,6 +781,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                                     etHuNo.setText(vlpdDto.getHUNo());
                                     etMDesc.setText(vlpdDto.getMDescreiption());
                                     etRSN.setText(scannedData);
+
                                     txtPenQty.setText(vlpdDto.getLoadRSNCount()+" / "+vlpdDto.getPickRSNCount());
                                     if(vlpdDto.getLoadRSNCount().equals(vlpdDto.getPickRSNCount())){
                                         cvScanRSN.setCardBackgroundColor(getResources().getColor(R.color.skuColor));

@@ -657,6 +657,8 @@ public class VNABinToBinFragmentHU extends Fragment implements View.OnClickListe
             vlpdDto.setFromPallet(scannedData);
             message.setEntityObject(vlpdDto);
 
+            Log.v("ABCDE",new Gson().toJson(message));
+
             Call<String> call = null;
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
 
@@ -710,23 +712,32 @@ public class VNABinToBinFragmentHU extends Fragment implements View.OnClickListe
                                 List<LinkedTreeMap<?, ?>> _lVlpd= new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lVlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
+                                Log.v("ABCDE",new Gson().toJson(_lVlpd));
+
                                 VlpdDto vlpdDto=null;
                                 for(int i=0;i<_lVlpd.size();i++){
                                     vlpdDto=new VlpdDto(_lVlpd.get(i).entrySet());
                                 }
-
-                                if(vlpdDto.getResult().equals("1")){
-                                    cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
-                                    ivScanPallet.setImageResource(R.drawable.check);
-                                    etPallet.setText(scannedData);
-                                    etFromLocation.setText(vlpdDto.getActvalLocation());
-                                    isPalletScanned=true;
+                                if(vlpdDto.getResult()!=null){
+                                    if(vlpdDto.getResult().equals("1")){
+                                        cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                        ivScanPallet.setImageResource(R.drawable.check);
+                                        etPallet.setText(scannedData);
+                                        etFromLocation.setText(vlpdDto.getActvalLocation());
+                                        isPalletScanned=true;
+                                    }else{
+                                        cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                        ivScanPallet.setImageResource(R.drawable.warning_img);
+                                        common.showUserDefinedAlertType("Invalid Pallet", getActivity(), getContext(), "Error");
+                                        isPalletScanned=false;
+                                    }
                                 }else{
                                     cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanPallet.setImageResource(R.drawable.warning_img);
                                     common.showUserDefinedAlertType("Invalid Pallet", getActivity(), getContext(), "Error");
                                     isPalletScanned=false;
                                 }
+
 
                             }
 

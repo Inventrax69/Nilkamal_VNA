@@ -1592,6 +1592,7 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
                                     txtLoction.setText(dto.getToLocation());
                                     etLocation.setText(dto.getLocation());
                                     etPallet.setText(scannedData);
+                                    // lblQty.setText(); TODO Qty in Pallet Number
                                     cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanPallet.setImageResource(R.drawable.check);
                                     isPalletScanned=true;

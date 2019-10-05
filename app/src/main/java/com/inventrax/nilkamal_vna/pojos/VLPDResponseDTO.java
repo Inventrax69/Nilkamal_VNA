@@ -37,6 +37,11 @@ public class VLPDResponseDTO {
     private String LoadRSNCount ;
 
 
+
+    @SerializedName("DockNo")
+    private String DockNo ;
+
+
     @SerializedName("ErrorMessage")
     private String ErrorMessage ;
 
@@ -118,6 +123,12 @@ public class VLPDResponseDTO {
                 case "ErrorMessage":
                     if (entry.getValue() != null) {
                         this.setErrorMessage(entry.getValue().toString());
+                    }
+                    break;
+
+                   case "DockNo":
+                    if (entry.getValue() != null) {
+                        this.setDockNo(entry.getValue().toString());
                     }
                     break;
                /* case "PreviousPickedItemResponce":
@@ -212,6 +223,12 @@ public class VLPDResponseDTO {
         ErrorMessage = errorMessage;
     }
 
+    public String getDockNo() {
+        return DockNo;
+    }
 
+    public void setDockNo(String dockNo) {
+        DockNo = dockNo;
+    }
 
 }

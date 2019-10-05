@@ -12,6 +12,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +41,8 @@ import com.honeywell.aidc.TriggerStateChangeEvent;
 import com.honeywell.aidc.UnsupportedPropertyException;
 import com.inventrax.nilkamal_vna.R;
 import com.inventrax.nilkamal_vna.activities.MainActivity;
+import com.inventrax.nilkamal_vna.adapters.LiveStockAdapter;
+import com.inventrax.nilkamal_vna.adapters.PalletAdapter;
 import com.inventrax.nilkamal_vna.common.Common;
 import com.inventrax.nilkamal_vna.common.constants.EndpointConstants;
 import com.inventrax.nilkamal_vna.common.constants.ErrorMessages;
@@ -106,6 +110,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     LinearLayout layoutnewRsn;
     Dialog pickingSkipdialog;
     String VLPDNumber="",Pallet="",ActualLoc="",SuggestedLoc="",Type="";
+    RecyclerView rvPickingSortingList;
 
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
         @Override
@@ -163,6 +168,11 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         rlVLPDSelect=(RelativeLayout) rootView.findViewById(R.id.rlVLPDSelect);
         rlSorting=(RelativeLayout) rootView.findViewById(R.id.rlSorting);
         rlExport=(RelativeLayout) rootView.findViewById(R.id.rlExport);
+
+        rvPickingSortingList=(RecyclerView) rootView.findViewById(R.id.rvPickingSortingList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        rvPickingSortingList.setLayoutManager(linearLayoutManager);
+        rvPickingSortingList.setHasFixedSize(true);
 
         layoutnewRsn=(LinearLayout) rootView.findViewById(R.id.layoutnewRsn);
 
@@ -455,6 +465,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                 rlVLPDSelect.setVisibility(View.GONE);
                 rlSorting.setVisibility(View.GONE);
                 rlExport.setVisibility(View.VISIBLE);
+                ExportPendingPallet();
                 break;
             case R.id.btnGo:
                 if(!txtVLPDNumber.getText().toString().isEmpty()){
@@ -477,6 +488,123 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                 break;
         }
     }
+
+    private void ExportPendingPallet() {
+
+        try {
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.VLPDDTO, getContext());
+            VlpdDto vlpdDto=new VlpdDto();
+            vlpdDto.setvLPDNumber(txtVLPDNumber.getText().toString());
+            message.setEntityObject(vlpdDto);
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+
+                call = apiService.ExportPendingPallet(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+
+                            } else {
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+                                ProgressDialogUtils.closeProgressDialog();
+                                List<LinkedTreeMap<?, ?>> _lVlpd = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lVlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                VlpdDto vlpdDto1=null;
+                                List<VlpdDto> vlpdDtoList=new ArrayList<>();
+                                for(int i=0;i<_lVlpd.size();i++){
+                                    vlpdDto1=new VlpdDto(_lVlpd.get(i).entrySet());
+                                    vlpdDtoList.add(vlpdDto1);
+                                }
+
+                                rvPickingSortingList.setAdapter(null);
+                                PalletAdapter palletAdapter = new PalletAdapter(getContext(), vlpdDtoList);
+                                rvPickingSortingList.setAdapter(palletAdapter);
+
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
+    }
+
 
 
     @Override
