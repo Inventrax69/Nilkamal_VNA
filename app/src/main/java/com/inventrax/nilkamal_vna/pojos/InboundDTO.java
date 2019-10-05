@@ -85,6 +85,10 @@ public class InboundDTO {
     private String ScannedInput;
 
 
+    @SerializedName("PendingPalletcount")
+    private String PendingPalletcount ;
+
+
 
     @SerializedName("PutwayType")
     private String PutwayType;
@@ -479,6 +483,12 @@ public class InboundDTO {
                case "Weight":
                     if (entry.getValue() != null) {
                         this.setSkipReason(entry.getValue().toString());
+                    }
+                    break;
+
+               case "PendingPalletcount":
+                    if (entry.getValue() != null) {
+                        this.setPendingPalletcount(entry.getValue().toString());
                     }
                     break;
 
@@ -945,5 +955,14 @@ public class InboundDTO {
 
     public void setWeight(String weight) {
         Weight = weight;
+    }
+
+
+    public String getPendingPalletcount() {
+        return PendingPalletcount;
+    }
+
+    public void setPendingPalletcount(String pendingPalletcount) {
+        PendingPalletcount = pendingPalletcount;
     }
 }

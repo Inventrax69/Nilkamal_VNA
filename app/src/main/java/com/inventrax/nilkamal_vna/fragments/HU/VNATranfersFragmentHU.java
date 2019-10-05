@@ -193,8 +193,6 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
         radioButtonClicks();
         Common.setIsPopupActive(false);
 
-
-
     }
 
     private void radioButtonClicks() {
@@ -216,6 +214,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                 inOutId="2";
                 clearAllFileds1();
                 setSuggestionTypeApi(SuggestionType);
+                tvStRef.setText("Picking");
                 lblVLPDNumber.setVisibility(View.VISIBLE);
                 txtVLPDNumber.setVisibility(View.VISIBLE);
                 txtPenPallet.setVisibility(View.VISIBLE);
@@ -230,7 +229,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                 clearAllFileds1();
                 isPutaway=true;
                 isPicking=false;
-                //setSuggestionTypeApi(SuggestionType); TODO WHILE AUTO ENABLING
+                setSuggestionTypeApi(SuggestionType);
                 tvStRef.setText("Put Away");
                 lblVLPDNumber.setVisibility(View.INVISIBLE);
                 txtVLPDNumber.setVisibility(View.INVISIBLE);
@@ -320,6 +319,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                                             etFromLocation.setText(dto.getPickedLocation());
                                             etPallet.setText(dto.getPalletNo());
                                             etToLocation.setText(dto.getSuggestedLocation());
+                                            txtPenPallet.setText("Pending Pallet Count: "+dto.getPendingPalletcount());
                                             txtVLPDNumber.setText(dto.getVLPDNumber());
                                             lblVLPDNumber.setVisibility(View.INVISIBLE);
                                             txtVLPDNumber.setVisibility(View.INVISIBLE);
@@ -333,6 +333,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                                             etPallet.setText(dto.getPalletNo());
                                             etToLocation.setText(dto.getSuggestedLocation());
                                             txtVLPDNumber.setText(dto.getVLPDNumber());
+                                            txtPenPallet.setText("Pending Pallet Count: "+dto.getPendingPalletcount());
                                             lblVLPDNumber.setVisibility(View.VISIBLE);
                                             txtVLPDNumber.setVisibility(View.VISIBLE);
                                             txtPenPallet.setVisibility(View.VISIBLE);
@@ -344,7 +345,9 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                                         etFromLocation.setText(dto.getPickedLocation());
                                         etPallet.setText(dto.getPalletNo());
                                         etToLocation.setText(dto.getSuggestedLocation());
+                                        etToLocation.setText(dto.getSuggestedLocation());
                                         txtVLPDNumber.setText(dto.getVLPDNumber());
+                                        txtPenPallet.setText("Pending Pallet Count: "+dto.getPendingPalletcount());
                                         lblVLPDNumber.setVisibility(View.INVISIBLE);
                                         txtVLPDNumber.setVisibility(View.INVISIBLE);
                                         txtPenPallet.setVisibility(View.INVISIBLE);
@@ -356,6 +359,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                                         etPallet.setText(dto.getPalletNo());
                                         etToLocation.setText(dto.getSuggestedLocation());
                                         txtVLPDNumber.setText(dto.getVLPDNumber());
+                                        txtPenPallet.setText("Pending Pallet Count: "+dto.getPendingPalletcount());
                                         lblVLPDNumber.setVisibility(View.VISIBLE);
                                         txtVLPDNumber.setVisibility(View.VISIBLE);
                                         txtPenPallet.setVisibility(View.VISIBLE);
@@ -395,7 +399,8 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                                     }
 
                                 }else{
-                                    clearAllFileds1();
+
+                                    clearAllFileds();
                                     common.showUserDefinedAlertType(errorMessages.EMC_089, getActivity(), getContext(), "Warning");
                                 }
                                 ProgressDialogUtils.closeProgressDialog();

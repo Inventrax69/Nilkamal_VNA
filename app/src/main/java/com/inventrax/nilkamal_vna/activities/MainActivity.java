@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
     private List<String> userRouteStringList;
     private String selectedRouteCode,ipAdress="";
     private FragmentActivity fragmentActivity;
-    private SharedPreferencesUtils sharedPreferencesUtils;
+    private SharedPreferencesUtils sharedPreferencesUtils,sharedPreferencesUtils1;
     private LogoutUtil logoutUtil;
     private static BarcodeReader barcodeReader;
     Dialog ipAddressdialog;
@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
                 drawerFragment.setDrawerListener(this);
 
                 sharedPreferencesUtils = new SharedPreferencesUtils("LoginActivity", getApplicationContext());
+                sharedPreferencesUtils1 = new SharedPreferencesUtils("SettingsActivity", getApplicationContext());
 
                 userRouteStringList = new ArrayList<>();
 
@@ -335,9 +336,8 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
                                     btnOk.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            SharedPreferences sp = MainActivity.this.getSharedPreferences("SettingsActivity", Context.MODE_PRIVATE);
-                                            sharedPreferencesUtils.removePreferences("url");
-                                            sharedPreferencesUtils.savePreference("url", ipAdress);
+                                            sharedPreferencesUtils1.removePreferences("url");
+                                            sharedPreferencesUtils1.savePreference("url", ipAdress);
                                             ipAddressdialog.dismiss();
                                         }
                                     });

@@ -134,7 +134,6 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
         txtOBDNumber = (TextView) rootView.findViewById(R.id.txtOBDNumber);
         txtPenQty = (TextView) rootView.findViewById(R.id.txtPenQty);
 
-
         etmCode = (EditText) rootView.findViewById(R.id.etmCode);
         etBatchNo = (EditText) rootView.findViewById(R.id.etBatchNo);
         etHuSize = (EditText) rootView.findViewById(R.id.etHuSize);
@@ -462,6 +461,8 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
             vlpdRequestDTO.setUserID(userId);
             message.setEntityObject(vlpdRequestDTO);
 
+            Log.v("ABCDE",new Gson().toJson(message));
+
 
             Call<String> call = null;
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
@@ -514,6 +515,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                                 List<LinkedTreeMap<?, ?>> _lOBD = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lOBD = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
+                                Log.v("ABCDE",new Gson().toJson(_lOBD));
 
                                 if (_lOBD.size() > 0) {
                                     List<VLPDResponseDTO> lstDto = new ArrayList<VLPDResponseDTO>();
