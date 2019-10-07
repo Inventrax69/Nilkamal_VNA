@@ -336,8 +336,8 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
                                     btnOk.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            sharedPreferencesUtils1.removePreferences("url");
-                                            sharedPreferencesUtils1.savePreference("url", ipAdress);
+                                            sharedPreferencesUtils1.removePreferences("printerIP");
+                                            sharedPreferencesUtils1.savePreference("printerIP", ipAdress);
                                             ipAddressdialog.dismiss();
                                         }
                                     });

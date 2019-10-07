@@ -530,12 +530,12 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                                     ivScanToLocation.setImageResource(R.drawable.check);
                                     isToLocationScanned=true;
                                     inOutId=dto.getInoutId();
-                                    if(SuggestionType.equals("2")){
+/*                                    if(SuggestionType.equals("2")){
                                         clearAllFileds1();
-                                    }else{
+                                    }else{*/
                                         setSuggestionTypeApi(SuggestionType);
                                         clearAllFileds();
-                                    }
+                                    /*}*/
                                 }else{
                                     common.showUserDefinedAlertType(dto.getResult(), getActivity(), getContext(), "Error");
                                 }

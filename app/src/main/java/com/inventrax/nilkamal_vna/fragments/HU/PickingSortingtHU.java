@@ -699,7 +699,11 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
                 if (ScanValidator.IsRSNScanned(scannedData)) {
                     if(isPalletScanned && isDockLocationScanned){
-                        PickandCheck(scannedData);
+                        if(isNewRsn){
+                            PickandCheck(scannedData);
+                        }else{
+                            PickandCheck(scannedData);
+                        }
                     }else{
                         if(!isPalletScanned)
                             common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");
@@ -1151,7 +1155,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                             switch (which) {
                                                 case DialogInterface.BUTTON_POSITIVE:
                                                     Common.setIsPopupActive(false);
-                                                  //  GetVLPDPendingPalletCheck();
                                                     clearAllFileds();
                                                     break;
                                             }
@@ -1279,7 +1282,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                         pickingSkipdialog.dismiss();
                                         layoutnewRsn.setVisibility(View.VISIBLE);
                                         isNewRsn=true;
-                                        Toast.makeText(getActivity(), "Printer Succesfully", Toast.LENGTH_SHORT).show();
+                                        common.showUserDefinedAlertType("Please Scan New RSN", getActivity(), getContext(), "Warning");
                                     }else{
                                         Toast.makeText(getActivity(), "Please try again", Toast.LENGTH_SHORT).show();
                                     }
