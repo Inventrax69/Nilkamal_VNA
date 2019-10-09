@@ -291,7 +291,6 @@ public interface ApiInterface {
     @POST("HHStockTake/GetHHDetails")
     Call<String> GetHHDetails(@Body WMSCoreMessage oRequest);
 
-
     @POST("HHStockTake/UpsertEANDetails")
     Call<String> UpsertEANDetails(@Body WMSCoreMessage oRequest);
 

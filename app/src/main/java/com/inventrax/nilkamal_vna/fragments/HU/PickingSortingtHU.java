@@ -293,6 +293,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         ivScanDockLocation.setImageResource(R.drawable.fullscreen_img);
         cvScanNewRSN.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
         ivScanNewRSN.setImageResource(R.drawable.fullscreen_img);
+        layoutnewRsn.setVisibility(View.INVISIBLE);
     }
 
     public void clearAllFileds1(){

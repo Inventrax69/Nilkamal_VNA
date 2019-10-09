@@ -493,9 +493,9 @@
             android:layout_height="wrap_content">
 
             <RelativeLayout
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
             <android.support.v7.widget.CardView
                 android:id="@+id/cvScanNewRSN"
@@ -550,7 +550,7 @@
                     <EditText
                         android:id="@+id/etNewQty"
                         style="@style/editTextStyleSmall"
-                        android:layout_width="125dp"
+                        android:layout_width="175dp"
                         android:layout_height="wrap_content"
                         android:layout_alignStart="@+id/txtInputLayoutFromLocation"
                         android:layout_alignBottom="@+id/txtInputLayoutFromLocation"
@@ -684,7 +684,6 @@
             android:foregroundGravity="center"
             android:textAllCaps="false"
             android:textColor="@color/white" />
-
 
     </RelativeLayout>
 
