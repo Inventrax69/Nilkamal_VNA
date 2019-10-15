@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +40,6 @@ import com.honeywell.aidc.TriggerStateChangeEvent;
 import com.honeywell.aidc.UnsupportedPropertyException;
 import com.inventrax.nilkamal_vna.R;
 import com.inventrax.nilkamal_vna.activities.MainActivity;
-import com.inventrax.nilkamal_vna.adapters.LiveStockAdapter;
 import com.inventrax.nilkamal_vna.adapters.PalletAdapter;
 import com.inventrax.nilkamal_vna.common.Common;
 import com.inventrax.nilkamal_vna.common.constants.EndpointConstants;
@@ -91,7 +89,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     private Gson gson;
     private WMSCoreMessage core;
     private String userId = null, stRefNo = null, palletType = null, materialType = null;
-
     //For Honey well barcode
     private static BarcodeReader barcodeReader;
     private AidcManager manager;
@@ -134,7 +131,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     // Form controls
     private void loadFormControls() {
 
-
         isPalletScanned=false;
         isPartNoScanned=false;
         isDockLocationScanned=false;
@@ -164,7 +160,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         txtDockName =(TextView) rootView.findViewById(R.id.txtDockName);
         txtPendingQty =(TextView) rootView.findViewById(R.id.txtPendingQty);
 
-
         rlVLPDSelect=(RelativeLayout) rootView.findViewById(R.id.rlVLPDSelect);
         rlSorting=(RelativeLayout) rootView.findViewById(R.id.rlSorting);
         rlExport=(RelativeLayout) rootView.findViewById(R.id.rlExport);
@@ -187,7 +182,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         btnExport=(Button)rootView.findViewById(R.id.btnExport);
         btnCloseExport=(Button)rootView.findViewById(R.id.btnCloseExport);
         btnCloseOne=(Button)rootView.findViewById(R.id.btnCloseOne);
-
 
         btnClear.setOnClickListener(this);
         btnSkip.setOnClickListener(this);
@@ -246,7 +240,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         this.filter = new IntentFilter();
         this.filter.addAction("sw.reader.decode.complete");
         getActivity().registerReceiver(this.myDataReceiver, this.filter);
-
 
         GetAllOpenVLPDList();
 
@@ -363,7 +356,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                         try {
                             core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
 
-
                             if ((core.getType().toString().equals("Exception"))) {
                                 List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
@@ -477,7 +469,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                 }else{
                     common.showUserDefinedAlertType("Please select VLPD#", getActivity(), getContext(), "Warning");
                 }
-
                 break;
             case R.id.btnCloseOne:
                 FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new HomeFragment());
@@ -675,8 +666,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     //Assigning scanned value to the respective fields
     public void ProcessScannedinfo(String scannedData) {
 
-        Log.v("ABCDE",scannedData+" "+Common.isPopupActive()+" "+ProgressDialogUtils.isProgressActive());
-
         if (scannedData != null && !Common.isPopupActive()) {
 
             if (!ProgressDialogUtils.isProgressActive()) {
@@ -693,7 +682,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                         ivScanDockLocation.setImageResource(R.drawable.check);
                         isDockLocationScanned=true;
                     }else{
-                       common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");
+                       common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Warning");
                     }
                     return;
                 }
@@ -707,9 +696,9 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                         }
                     }else{
                         if(!isPalletScanned)
-                            common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");
+                            common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Warning");
                         else
-                            common.showUserDefinedAlertType(errorMessages.EMC_0015, getActivity(), getContext(), "Error");
+                            common.showUserDefinedAlertType(errorMessages.EMC_0015, getActivity(), getContext(), "Warning");
                     }
                     return;
                 }
@@ -832,7 +821,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
                             try {
                                 ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "002", getContext());
-
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -977,7 +965,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
-
                             }
 
                         } catch (Exception ex) {
@@ -1042,8 +1029,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
             if(isNewRsn){
                 vlpdDto.setUniqueRSN(sUniqueRSN);
                 vlpdDto.setNewUniqueRSN(scannedData);
-            }
-            else{
+            } else{
                 vlpdDto.setUniqueRSN(scannedData);
                 vlpdDto.setNewUniqueRSN(sNewUniqueRSN);
             }

@@ -24,6 +24,7 @@ import android.util.Log;
 import com.commonsware.cwac.wakeful.WakefulIntentService;
 
 public class UpdateService extends WakefulIntentService {
+
     public UpdateService() {
         super("UpdateService");
     }

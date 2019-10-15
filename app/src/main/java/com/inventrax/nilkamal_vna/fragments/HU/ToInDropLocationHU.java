@@ -741,6 +741,7 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
         etLocation.setText("");
         etPallet.setText("");
         txtLoction.setText("");
+        lblQty.setText("");
 
         isFromLocationScanned=true;
         isPalletScanned=false;
@@ -1192,8 +1193,6 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
                                 e.printStackTrace();
                             }
                             logException();
-
-
                             ProgressDialogUtils.closeProgressDialog();
                         }
                     }
@@ -1214,7 +1213,6 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
             common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
         }
     }
-
 
     @Override
     public void onPause() {
@@ -1588,11 +1586,12 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
                                     dto = new InboundDTO(_lInbound.get(i).entrySet());
                                 }
 
+
                                 if(dto.getResult().equals("Valid Pallet")){
                                     txtLoction.setText(dto.getToLocation());
                                     etLocation.setText(dto.getLocation());
                                     etPallet.setText(scannedData);
-                                    // lblQty.setText(); TODO Qty in Pallet Number
+                                    lblQty.setText("Quantity : "+dto.getBoxQuantity());
                                     cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanPallet.setImageResource(R.drawable.check);
                                     isPalletScanned=true;

@@ -137,11 +137,9 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
         lblBundle = (TextView) rootView.findViewById(R.id.lblBundle);
 
         cvScanBarcode = (CardView) rootView.findViewById(R.id.cvScanBarcode);
-
         ivScanBarcode = (ImageView) rootView.findViewById(R.id.ivScanBarcode);
 
         vlpdresponseobj = new VLPDResponseDTO();
-
         txtInputLayoutVLPD = (TextInputLayout) rootView.findViewById(R.id.txtInputLayoutVLPD);
 
         etVLPD = (CustomEditText) rootView.findViewById(R.id.etVLPD);
@@ -166,7 +164,6 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
         btnprint_final.setOnClickListener(this);
         btnClosefinal.setOnClickListener(this);
         btnClosePrint.setOnClickListener(this);
-
 
         SharedPreferences sp = getActivity().getSharedPreferences("LoginActivity", Context.MODE_PRIVATE);
         userId = sp.getString("RefUserId", "");
@@ -227,9 +224,7 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
                 break;
             case R.id.btnOk:
                 if (!etVLPD.getText().toString().isEmpty()) {
-
                     getBundleNumberForMatress("0");
-
                 } else {
                     common.showUserDefinedAlertType(errorMessages.EMC_0039, getActivity(), getContext(), "Warning");
                 }
@@ -305,8 +300,6 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
     public void captureMatressBundlePacking() {
 
         try {
-
-
             WMSCoreMessage message = new WMSCoreMessage();
             message = common.SetAuthentication(EndpointConstants.Outbound, getContext());
             OutboundDTO outboundDTO = new OutboundDTO();
@@ -501,13 +494,11 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
             outboundDTO.setUserId(userId);
             outboundDTO.setIsNew(isNew);
             outboundDTO.setOBDNumber(etVLPD.getText().toString());
-
             message.setEntityObject(outboundDTO);
 
 
             Call<String> call = null;
-            ApiInterface apiService =
-                    RestService.getClient().create(ApiInterface.class);
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
 
             try {
                 //Checking for Internet Connectivity

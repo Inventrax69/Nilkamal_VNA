@@ -129,6 +129,8 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
                     System.exit(0);
                 }
             });
+
+
             txtReleaseDate = (TextView) findViewById(R.id.txtDate);
             txtVersion = (TextView) findViewById(R.id.txtVersionName);
             txtVersion.setText("Version:" + " " + AndroidUtils.getVersionName().toString());
@@ -146,9 +148,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
             ArrayAdapter listDivisionAdapter = new ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, listDivision);
             spinnerSelectDivision.setAdapter(listDivisionAdapter);
 
-            SharedPreferences sp = this.getSharedPreferences("SettingsActivity", Context.MODE_PRIVATE);
-            serviceUrlString = sp.getString("url", "");
-
             common = new Common();
             errorMessages = new ErrorMessages();
             serviceURL = new ServiceURL();
@@ -161,7 +160,8 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
             gson = new GsonBuilder().create();
             core = new WMSCoreMessage();
 
-
+            SharedPreferences sp = this.getSharedPreferences("SettingsActivity", Context.MODE_PRIVATE);
+            serviceUrlString = sp.getString("url", "");
             ServiceURL.setServiceUrl(serviceUrlString);
 
             try {

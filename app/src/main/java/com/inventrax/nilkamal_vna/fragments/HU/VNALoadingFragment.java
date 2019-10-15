@@ -599,7 +599,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
 
             try {
 
-                //Checking for Internet Connectivity
+                // Checking for Internet Connectivity
                 // if (NetworkUtils.isInternetAvailable()) {
                 // Calling the Interface method
 

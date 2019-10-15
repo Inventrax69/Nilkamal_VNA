@@ -855,6 +855,7 @@ public class StockTakeFragment extends Fragment implements View.OnClickListener,
     }
 
     private void ClearFields() {
+
         cvScanLocation.setCardBackgroundColor(getResources().getColor(R.color.scanColor));
         ivScanLocation.setImageResource(R.drawable.fullscreen_img);
         cvScanRSN.setCardBackgroundColor(getResources().getColor(R.color.scanColor));
@@ -1034,7 +1035,7 @@ public class StockTakeFragment extends Fragment implements View.OnClickListener,
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
 
             try {
-                //Checking for Internet Connectivity
+                // Checking for Internet Connectivity
                 // if (NetworkUtils.isInternetAvailable()) {
                 // Calling the Interface method
                 call = apiService.LogException(message);

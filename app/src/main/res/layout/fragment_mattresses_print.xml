@@ -30,6 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/vlpd_number"
+                android:text="19VLP00025"
                 android:inputType="text"
                 android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
@@ -258,7 +259,8 @@
             android:background="@drawable/button_shape"
             android:text="@string/print"
             android:textAllCaps="false"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:layout_alignParentRight="true" />
 
 
         <Button
@@ -272,7 +274,9 @@
             android:background="@drawable/button_shape"
             android:text="@string/clear"
             android:textAllCaps="false"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="22dp" />
 
         <Button
             android:id="@+id/btnClosePrint"

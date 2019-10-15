@@ -100,7 +100,13 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         });
 
         sharedPreferencesUtils = new SharedPreferencesUtils("SettingsActivity", getApplicationContext());
+        // Setting Static URL
+        ServiceURL.setServiceUrl("");
         inputService.setText(sharedPreferencesUtils.loadPreference("url"));
+        if(inputService.getText().toString().isEmpty()){
+            sharedPreferencesUtils.savePreference("url", "http://192.168.46.2/hosur_api/");
+            inputService.setText(sharedPreferencesUtils.loadPreference("url"));
+        }
 
         common = new Common();
         errorMessages = new ErrorMessages();
@@ -108,8 +114,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         sound = new SoundUtils();
         gson = new GsonBuilder().create();
         core = new WMSCoreMessage();
-
-
 
     }
 

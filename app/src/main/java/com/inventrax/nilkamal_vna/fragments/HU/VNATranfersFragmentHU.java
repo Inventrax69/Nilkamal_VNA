@@ -128,7 +128,6 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
         txtVLPDNumber=(TextView)rootView.findViewById(R.id.txtVLPDNumber);
         txtPenPallet=(TextView)rootView.findViewById(R.id.txtPenPallet);
 
-
         cvScanFromLocation=(CardView)rootView.findViewById(R.id.cvScanFromLocation);
         cvScanPallet=(CardView)rootView.findViewById(R.id.cvScanPallet);
         cvScanToLocation=(CardView)rootView.findViewById(R.id.cvScanToLocation);
