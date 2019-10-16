@@ -34,6 +34,18 @@ public class ScanValidator {
         }
     }
 
+    public static boolean IsBundleRSN(String scannedData)
+    {
+        if (scannedData.split("[_]").length==2 )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 
     public static boolean IsLocationScanned(String scannedData)
     {

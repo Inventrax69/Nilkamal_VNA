@@ -99,7 +99,7 @@
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:layout_centerHorizontal="true"
-                    app:cardBackgroundColor="@color/palletColor"
+                    app:cardBackgroundColor="@color/spalletColor"
                     app:cardCornerRadius="22.5dp"
                     app:cardElevation="0dp">
 

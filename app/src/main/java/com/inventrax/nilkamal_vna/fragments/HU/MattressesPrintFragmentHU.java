@@ -308,13 +308,10 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
             outboundDTO.setEANNumber(lblScannedSku.getText().toString());
             outboundDTO.setTotalScannedQty("1");
             outboundDTO.setOBDNumber(lblVLPDNumber.getText().toString());
-
             message.setEntityObject(outboundDTO);
 
-
             Call<String> call = null;
-            ApiInterface apiService =
-                    RestService.getClient().create(ApiInterface.class);
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
 
             try {
                 //Checking for Internet Connectivity

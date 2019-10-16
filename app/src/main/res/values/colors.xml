@@ -27,6 +27,7 @@
 
     <color name="locationColor">#00A8FE</color>
     <color name="palletColor">#08BC50</color>
+    <color name="spalletColor">#FFEB3B</color>
     <color name="skuColor">#08B0BC</color>
     <color name="parentColor">#03A9F4</color>
     <color name="childColor">#3F51B5</color>

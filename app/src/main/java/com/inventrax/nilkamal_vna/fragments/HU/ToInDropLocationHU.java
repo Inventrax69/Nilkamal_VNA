@@ -1723,7 +1723,6 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
                                 List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
-
                                 InboundDTO dto=null;
                                 for (int i = 0; i < _lInbound.size(); i++) {
                                     dto = new InboundDTO(_lInbound.get(i).entrySet());
@@ -1909,4 +1908,5 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
             common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
         }
     }
+
 }

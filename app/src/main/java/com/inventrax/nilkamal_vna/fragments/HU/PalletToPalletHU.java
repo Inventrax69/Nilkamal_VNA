@@ -333,7 +333,6 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
                 }
                 UpdatePalletType();*/
 
-
                 break;
             case R.id.btnCloseThree:
                 FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new HomeFragment());
@@ -355,7 +354,7 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
         ProgressDialogUtils.closeProgressDialog();
         Common.setIsPopupActive(false);
 
-        cvScanFromPallet.setCardBackgroundColor(getResources().getColor(R.color.palletColor));
+        cvScanFromPallet.setCardBackgroundColor(getResources().getColor(R.color.spalletColor));
         ivScanFromPallet.setImageResource(R.drawable.fullscreen_img);
 
         cvScanToPallet.setCardBackgroundColor(getResources().getColor(R.color.palletColor));

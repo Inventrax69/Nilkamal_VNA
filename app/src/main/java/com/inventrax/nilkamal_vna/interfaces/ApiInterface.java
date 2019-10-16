@@ -61,6 +61,9 @@ public interface ApiInterface {
     @POST("PutAway/CheckPalletAndSuggestPutawayLocation")
     Call<String> CheckPalletAndSuggestPutawayLocation(@Body WMSCoreMessage oRequest);
 
+    @POST("PutAway/GeneratePutawayandPickingSuggestion")
+    Call<String> GeneratePutawayandPickingSuggestion(@Body WMSCoreMessage oRequest);
+
     @POST("PutAway/ConfirmBinPosting")
     Call<String> ConfirmBinPosting(@Body WMSCoreMessage oRequest);
 

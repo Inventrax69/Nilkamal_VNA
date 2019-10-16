@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -41,11 +40,7 @@ import com.inventrax.nilkamal_vna.common.constants.EndpointConstants;
 import com.inventrax.nilkamal_vna.common.constants.ErrorMessages;
 import com.inventrax.nilkamal_vna.fragments.HomeFragment;
 import com.inventrax.nilkamal_vna.interfaces.ApiInterface;
-import com.inventrax.nilkamal_vna.pojos.ExecutionResponseDTO;
-import com.inventrax.nilkamal_vna.pojos.InboundDTO;
 import com.inventrax.nilkamal_vna.pojos.ItemInfoDTO;
-import com.inventrax.nilkamal_vna.pojos.OutboundDTO;
-import com.inventrax.nilkamal_vna.pojos.VLPDLoadingDTO;
 import com.inventrax.nilkamal_vna.pojos.VLPDRequestDTO;
 import com.inventrax.nilkamal_vna.pojos.VLPDResponseDTO;
 import com.inventrax.nilkamal_vna.pojos.VlpdDto;
@@ -300,18 +295,28 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
     //Assigning scanned value to the respective fields
     public void ProcessScannedinfo(String scannedData) {
 
-        Log.v("ABCDE",scannedData+" "+Common.isPopupActive()+" "+ProgressDialogUtils.isProgressActive());
-
         if (scannedData != null && !Common.isPopupActive()) {
 
             if(!ProgressDialogUtils.isProgressActive()) {
 
                 if(ScanValidator.IsRSNScanned(scannedData)){
                     if(!txtOBDNumber.getText().toString().isEmpty())
-                        VNAuniqueRSNLoading(scannedData);
-                }else{
+                        VNAuniqueRSNLoading(scannedData,"1");
+                }
+                else{
                     common.showUserDefinedAlertType("Invalid RSN", getActivity(), getContext(), "Error");
                 }
+
+/*                if(ScanValidator.IsRSNScanned(scannedData)){
+                    if(!txtOBDNumber.getText().toString().isEmpty())
+                        VNAuniqueRSNLoading(scannedData,"1");
+                }else if(ScanValidator.IsBundleRSN(scannedData)){
+                    if(!txtOBDNumber.getText().toString().isEmpty())
+                        VNAuniqueRSNLoading(scannedData,"2");
+                }
+                else{
+                    common.showUserDefinedAlertType("Invalid RSN", getActivity(), getContext(), "Error");
+                }*/
 
             }else {
                 if(!Common.isPopupActive())
@@ -707,7 +712,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    private void VNAuniqueRSNLoading(final String scannedData) {
+    private void VNAuniqueRSNLoading(final String scannedData, String rSnType) {
 
         try {
             WMSCoreMessage message = new WMSCoreMessage();
@@ -716,6 +721,10 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
             vlpdRequestDTO.setID(ID);
             vlpdRequestDTO.setUserID(userId);
             vlpdRequestDTO.setRSNNumber(scannedData);
+/*            if(rSnType.equals("1"))
+            vlpdRequestDTO.setRSNNumber(scannedData);
+            if(rSnType.equals("2"))
+            vlpdRequestDTO.setRSNNumber(scannedData.split("[_]")[1]);*/
             message.setEntityObject(vlpdRequestDTO);
 
             Call<String> call = null;
@@ -775,6 +784,7 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                                 }
 
                                 if(vlpdDto.getResult().equals("1")){
+
                                     cvScanRSN.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanRSN.setImageResource(R.drawable.check);
                                     etmCode.setText(vlpdDto.getMcode());
@@ -783,8 +793,8 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                                     etHuNo.setText(vlpdDto.getHUNo());
                                     etMDesc.setText(vlpdDto.getMDescreiption());
                                     etRSN.setText(scannedData);
-
                                     txtPenQty.setText(vlpdDto.getLoadRSNCount()+" / "+vlpdDto.getPickRSNCount());
+
                                     if(vlpdDto.getLoadRSNCount().equals(vlpdDto.getPickRSNCount())){
                                         cvScanRSN.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
                                         ivScanRSN.setImageResource(R.drawable.fullscreen_img);
@@ -810,7 +820,6 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                                     common.showUserDefinedAlertType("Invalid RSN", getActivity(), getContext(), "Warning");
 
                                 }else{
-
                                     cvScanRSN.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
                                     ivScanRSN.setImageResource(R.drawable.fullscreen_img);
                                     etmCode.setText("");
@@ -820,7 +829,6 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                                     etMDesc.setText("");
                                     etRSN.setText("");
                                     common.showUserDefinedAlertType("Item already loaded", getActivity(), getContext(), "Error");
-
                                 }
 
                                 ProgressDialogUtils.closeProgressDialog();

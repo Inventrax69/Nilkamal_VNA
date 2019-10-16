@@ -369,7 +369,7 @@
             android:id="@+id/btnSkip"
             android:layout_width="100dp"
             android:layout_height="35dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="10dp"
             android:layout_marginEnd="20dp"
             android:layout_above="@+id/btnCloseLoadPallet"
             android:background="@drawable/button_shape"
@@ -380,12 +380,25 @@
             android:layout_alignParentEnd="true"
             android:layout_marginRight="20dp" />
 
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_above="@+id/btnSkip"
+            android:background="@drawable/button_shape"
+            android:text="Start Sugg"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="20dp" />
 
         <Button
             android:id="@+id/btnClear"
             android:layout_width="100dp"
             android:layout_height="35dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="10dp"
             android:layout_marginStart="20dp"
             android:layout_above="@+id/btnCloseLoadPallet"
             android:background="@drawable/button_shape"
@@ -395,7 +408,6 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginLeft="20dp" />
-
 
         <Button
             android:layout_width="100dp"
@@ -408,7 +420,6 @@
             android:visibility="gone"
             android:textAllCaps="false"
             android:textColor="@color/white" />
-
 
         <Button
             android:id="@+id/btnCloseLoadPallet"
@@ -424,9 +435,6 @@
             android:textAllCaps="false"
             android:textColor="@color/white" />
 
-
     </RelativeLayout>
-
-
 
 </RelativeLayout>

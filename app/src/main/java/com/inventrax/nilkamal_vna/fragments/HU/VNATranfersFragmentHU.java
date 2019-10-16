@@ -71,7 +71,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
     private CardView cvScanFromLocation,cvScanPallet,cvScanToLocation;
     private ImageView ivScanFromLocation,ivScanPallet, ivScanToLocation;
     private EditText etFromLocation,etPallet,etToLocation;
-    Button btnClear, btnSkip,btnCloseLoadPallet;
+    Button btnClear, btnSkip,btnCloseLoadPallet,btnStart;
     private Common common = null;
     String scanner = null;
     String getScanner = null;
@@ -142,18 +142,19 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
 
         btnClear=(Button)rootView.findViewById(R.id.btnClear);
         btnSkip=(Button)rootView.findViewById(R.id.btnSkip);
+        btnStart=(Button)rootView.findViewById(R.id.btnStart);
         btnCloseLoadPallet=(Button)rootView.findViewById(R.id.btnCloseLoadPallet);
 
 
         btnClear.setOnClickListener(this);
         btnSkip.setOnClickListener(this);
+        btnStart.setOnClickListener(this);
         btnCloseLoadPallet.setOnClickListener(this);
 
         SharedPreferences sp = getActivity().getSharedPreferences("LoginActivity", Context.MODE_PRIVATE);
         userId = sp.getString("RefUserId", "");
         materialType = sp.getString("division", "");
         SharedPreferences spPrinterIP = getActivity().getSharedPreferences("SettingsActivity", Context.MODE_PRIVATE);
-
 
         common = new Common();
         errorMessages = new ErrorMessages();
@@ -248,7 +249,6 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
             inboundDTO.setSuggestionType(suggestionType);
             inboundDTO.setInoutId(inOutId);
             message.setEntityObject(inboundDTO);
-
 
             Call<String> call = null;
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
@@ -961,6 +961,9 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
             case R.id.btnClear:
                     clearAllFileds1();
                 break;
+            case R.id.btnStart:
+                GeneratePutawayandPickingSuggestion();
+            break;
             case R.id.btnSkip:
 
                 if(isPicking){
@@ -1110,8 +1113,6 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
     //Assigning scanned value to the respective fields
     public void ProcessScannedinfo(String scannedData) {
 
-        Log.v("ABCDE",scannedData+" "+Common.isPopupActive()+" "+ProgressDialogUtils.isProgressActive());
-
         if (scannedData != null && !Common.isPopupActive()) {
 
             if (!ProgressDialogUtils.isProgressActive()) {
@@ -1152,11 +1153,12 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                             cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                             ivScanPallet.setImageResource(R.drawable.check);
                             isPalletScanned=true;
+                            // TODO check pallet number
                         }else{
                             cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                             ivScanPallet.setImageResource(R.drawable.warning_img);
                             isPalletScanned=false;
-                            common.showUserDefinedAlertType(errorMessages.EMC_087, getActivity(), getContext(), "Error");
+                            common.showUserDefinedAlertType(errorMessages.EMC_087, getActivity(), getContext(), "Warning");
                         }
                     }else{
                         common.showUserDefinedAlertType(errorMessages.EMC_083, getActivity(), getContext(), "Error");
@@ -1366,6 +1368,246 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                                     common.showUserDefinedAlertType("Cannot Skip", getActivity(), getContext(),"Error");
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
+    }
+
+
+    private void GeneratePutawayandPickingSuggestion() {
+
+        try {
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
+            InboundDTO inboundDTO = new InboundDTO();
+            inboundDTO.setUserId(userId);
+            message.setEntityObject(inboundDTO);
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+                call = apiService.GeneratePutawayandPickingSuggestion(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+
+                            } else {
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+                                List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                InboundDTO inboundDTO1=null;
+                                for(int i=0;i<_lInbound.size();i++){
+                                    inboundDTO1=new InboundDTO(_lInbound.get(i).entrySet());
+                                }
+
+                                if(inboundDTO1.getResult().equals("Success")){
+                                    common.showUserDefinedAlertType(inboundDTO1.getResult(), getActivity(), getContext(), "Success");
+                                }else{
+                                    common.showUserDefinedAlertType(inboundDTO1.getResult(), getActivity(), getContext(), "Error");
+                                }
+
+                                ProgressDialogUtils.closeProgressDialog();
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
+    }
+
+
+    private void SampleAPI(String scannedData) {
+
+        try {
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
+            InboundDTO inboundDTO = new InboundDTO();
+            inboundDTO.setUserId(userId);
+            inboundDTO.setPalletNo(scannedData);//TODO setPalletNo
+            inboundDTO.setInoutId(inOutId);
+            message.setEntityObject(inboundDTO);
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+
+                call = apiService.CheckPalletAndSuggestPutawayLocation(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+
+                            } else {
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+                                ProgressDialogUtils.closeProgressDialog();
+                                List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                InboundDTO inboundDTO1=null;
+                                for(int i=0;i<_lInbound.size();i++){
+                                    inboundDTO1=new InboundDTO(_lInbound.get(i).entrySet());
+                                }
+
+                                if(inboundDTO1.getResult().equals("")){
+                                    cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                    ivScanPallet.setImageResource(R.drawable.check);
+                                    isPalletScanned=true;
+                                }else{
+                                    cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                    ivScanPallet.setImageResource(R.drawable.warning_img);
+                                    isPalletScanned=false;
+                                    common.showUserDefinedAlertType("Please scan again", getActivity(), getContext(), "Warning");
+                                }
+
                             }
 
                         } catch (Exception ex) {
