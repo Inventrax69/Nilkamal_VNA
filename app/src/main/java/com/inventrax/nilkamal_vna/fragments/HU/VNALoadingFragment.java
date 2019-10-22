@@ -68,13 +68,11 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
 
     private static final String classCode = "API_FRAG_VNA_LOADING";
     private View rootView;
-
     private RelativeLayout rlOBDSelect, rlOBDLoading;
     private CardView cvScanRSN;
     private ImageView ivScanRSN;
     private SearchableSpinner spinnerSelectOBDNo;
     private Button btnSubmit, btnExport, btnGo, btnCloseOne, btnCloseTwo;
-
     private Common common = null;
     String scanner = null;
     String getScanner = null;
@@ -299,24 +297,27 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
 
             if(!ProgressDialogUtils.isProgressActive()) {
 
-                if(ScanValidator.IsRSNScanned(scannedData)){
+/*                if(ScanValidator.IsRSNScanned(scannedData)){
                     if(!txtOBDNumber.getText().toString().isEmpty())
                         VNAuniqueRSNLoading(scannedData,"1");
                 }
                 else{
                     common.showUserDefinedAlertType("Invalid RSN", getActivity(), getContext(), "Error");
-                }
+                }*/
 
-/*                if(ScanValidator.IsRSNScanned(scannedData)){
+                if(ScanValidator.IsRSNScanned(scannedData)){
                     if(!txtOBDNumber.getText().toString().isEmpty())
                         VNAuniqueRSNLoading(scannedData,"1");
-                }else if(ScanValidator.IsBundleRSN(scannedData)){
+                    return;
+                }
+
+                if(ScanValidator.IsBundleRSN(scannedData)){
                     if(!txtOBDNumber.getText().toString().isEmpty())
                         VNAuniqueRSNLoading(scannedData,"2");
                 }
                 else{
                     common.showUserDefinedAlertType("Invalid RSN", getActivity(), getContext(), "Error");
-                }*/
+                }
 
             }else {
                 if(!Common.isPopupActive())
@@ -453,7 +454,6 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
     }
 
     List<String> lstVLPD,lstId;
-    // To get VLPD Id
     private void GetOpenVNALOADLIST() {
         try {
 
@@ -720,18 +720,25 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
             VLPDRequestDTO vlpdRequestDTO=new VLPDRequestDTO();
             vlpdRequestDTO.setID(ID);
             vlpdRequestDTO.setUserID(userId);
-            vlpdRequestDTO.setRSNNumber(scannedData);
-/*            if(rSnType.equals("1"))
-            vlpdRequestDTO.setRSNNumber(scannedData);
-            if(rSnType.equals("2"))
-            vlpdRequestDTO.setRSNNumber(scannedData.split("[_]")[1]);*/
+            vlpdRequestDTO.setType(rSnType);
+             //   vlpdRequestDTO.setRSNNumber(scannedData);
+            if(rSnType.equals("1")){
+                vlpdRequestDTO.setRSNNumber(scannedData);
+                vlpdRequestDTO.setVLPDNumber("");
+            }
+            if(rSnType.equals("2")){
+                vlpdRequestDTO.setRSNNumber(scannedData.split("[_]")[1]);
+                vlpdRequestDTO.setVLPDNumber(scannedData.split("[_]")[0]);
+            }
+
+
             message.setEntityObject(vlpdRequestDTO);
 
             Call<String> call = null;
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
 
             try {
-                //Checking for Internet Connectivity
+                // Checking for Internet Connectivity
                 // if (NetworkUtils.isInternetAvailable()) {
                 // Calling the Interface method
                 call = apiService.VNAuniqueRSNLoading(message);

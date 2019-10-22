@@ -236,6 +236,14 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                 } else {
                                     ProgressDialogUtils.closeProgressDialog();
 
+                                    SharedPreferences sp = SettingsActivity.this.getSharedPreferences("SettingsActivity", Context.MODE_PRIVATE);
+                                    String printerIP = sp.getString("printerIP", "");
+                                    int index = lstPrinters.indexOf(printerIP);
+                                    if(index>=0){
+                                        lstPrinters.remove(index);
+                                        lstPrinters.add(0, printerIP);
+                                    }
+
                                     ArrayAdapter arrayAdapterPickList = new ArrayAdapter(SettingsActivity.this, R.layout.support_simple_spinner_dropdown_item, lstPrinters);
                                     spinnerSelectPrinter.setAdapter(arrayAdapterPickList);
                                 }

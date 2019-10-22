@@ -25,6 +25,11 @@ public class VLPDRequestDTO {
     @SerializedName("IsNew")
     private String IsNew;
 
+
+    @SerializedName("VLPDNumber")
+    private String VLPDNumber;
+
+
     @SerializedName("ID")
     private String ID;
 
@@ -101,6 +106,11 @@ public class VLPDRequestDTO {
                 case "RSNNumber":
                     if(entry.getValue()!=null) {
                         this.setRSNNumber(entry.getValue().toString());
+                    }
+                    break;
+                case "VLPDNumber":
+                    if(entry.getValue()!=null) {
+                        this.setVLPDNumber(entry.getValue().toString());
                     }
                     break;
                 case "InputType":
@@ -215,5 +225,14 @@ public class VLPDRequestDTO {
     public void setRSNNumber(String RSNNumber) {
         this.RSNNumber = RSNNumber;
     }
+
+    public String getVLPDNumber() {
+        return VLPDNumber;
+    }
+
+    public void setVLPDNumber(String VLPDNumber) {
+        this.VLPDNumber = VLPDNumber;
+    }
+
 
 }

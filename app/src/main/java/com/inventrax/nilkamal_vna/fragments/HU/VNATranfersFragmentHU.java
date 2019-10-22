@@ -515,7 +515,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
 
                             } else {
                                 core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
-                                ProgressDialogUtils.closeProgressDialog();
+
                                 List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
@@ -523,7 +523,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                                 for (int i = 0; i < _lInbound.size(); i++) {
                                     dto = new InboundDTO(_lInbound.get(i).entrySet());
                                 }
-
+                                ProgressDialogUtils.closeProgressDialog();
                                 if(dto.getResult().equals("Successfully Transfer")){
                                     cvScanToLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanToLocation.setImageResource(R.drawable.check);
@@ -539,7 +539,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                                     common.showUserDefinedAlertType(dto.getResult(), getActivity(), getContext(), "Error");
                                 }
 
-                                ProgressDialogUtils.closeProgressDialog();
+
 
                             }
 
@@ -792,6 +792,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
         etFromLocation.setText("");
         etPallet.setText("");
         etToLocation.setText("");
+        txtPenPallet.setText("");
         cvScanFromLocation.setCardBackgroundColor(getResources().getColor(R.color.locationColor));
         ivScanFromLocation.setImageResource(R.drawable.fullscreen_img);
         cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.palletColor));
@@ -1150,10 +1151,10 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
 
                     if(isFromLocationScanned){
                         if(etPallet.getText().toString().equals(scannedData)){
-                            cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+/*                            cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                             ivScanPallet.setImageResource(R.drawable.check);
-                            isPalletScanned=true;
-                            // TODO check pallet number
+                            isPalletScanned=true;*/
+                             VNAPalletScan(scannedData);
                         }else{
                             cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                             ivScanPallet.setImageResource(R.drawable.warning_img);
@@ -1313,6 +1314,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
 
                 call = apiService.PutawayandpickingSkip(message);
                 ProgressDialogUtils.showProgressDialog("Please Wait");
+
                 // } else {
                 // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
                 // return;
@@ -1527,15 +1529,14 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
         }
     }
 
-
-    private void SampleAPI(String scannedData) {
+    private void VNAPalletScan(String scannedData) {
 
         try {
             WMSCoreMessage message = new WMSCoreMessage();
             message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
             InboundDTO inboundDTO = new InboundDTO();
             inboundDTO.setUserId(userId);
-            inboundDTO.setPalletNo(scannedData);//TODO setPalletNo
+            inboundDTO.setPalletNo(scannedData);
             inboundDTO.setInoutId(inOutId);
             message.setEntityObject(inboundDTO);
 
@@ -1547,7 +1548,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                 // if (NetworkUtils.isInternetAvailable()) {
                 // Calling the Interface method
 
-                call = apiService.CheckPalletAndSuggestPutawayLocation(message);
+                call = apiService.VNAPalletScan(message);
                 ProgressDialogUtils.showProgressDialog("Please Wait");
                 // } else {
                 // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
@@ -1588,16 +1589,17 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
 
                             } else {
                                 core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
-                                ProgressDialogUtils.closeProgressDialog();
                                 List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                Log.v("ABCDE",new Gson().toJson(_lInbound));
 
                                 InboundDTO inboundDTO1=null;
                                 for(int i=0;i<_lInbound.size();i++){
                                     inboundDTO1=new InboundDTO(_lInbound.get(i).entrySet());
                                 }
 
-                                if(inboundDTO1.getResult().equals("")){
+                                if(inboundDTO1.getResult().equals("1")){
                                     cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanPallet.setImageResource(R.drawable.check);
                                     isPalletScanned=true;
@@ -1607,7 +1609,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                                     isPalletScanned=false;
                                     common.showUserDefinedAlertType("Please scan again", getActivity(), getContext(), "Warning");
                                 }
-
+                                ProgressDialogUtils.closeProgressDialog();
                             }
 
                         } catch (Exception ex) {
@@ -1650,5 +1652,4 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
             common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
         }
     }
-
 }

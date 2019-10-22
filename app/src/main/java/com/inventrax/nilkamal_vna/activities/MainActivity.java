@@ -10,6 +10,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -322,6 +324,10 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
                                     lstPrinters.add(lstDto.get(i).getDeviceIP());
                                 }
 
+
+
+
+
                                 if (lstPrinters == null) {
                                     ProgressDialogUtils.closeProgressDialog();
                                     DialogUtils.showAlertDialog(MainActivity.this, "No Printers Available");
@@ -331,6 +337,15 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
                                     ipAddressdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                     ipAddressdialog.setCancelable(false);
                                     ipAddressdialog.setContentView(R.layout.pinter_dialog1);
+
+
+                                    SharedPreferences sp = MainActivity.this.getSharedPreferences("SettingsActivity", Context.MODE_PRIVATE);
+                                    String printerIP = sp.getString("printerIP", "");
+                                    int index = lstPrinters.indexOf(printerIP);
+                                    if(index>=0){
+                                        lstPrinters.remove(index);
+                                        lstPrinters.add(0, printerIP);
+                                    }
 
                                     TextView btnOk = (TextView) ipAddressdialog.findViewById(R.id.btnOk);
                                     btnOk.setOnClickListener(new View.OnClickListener() {

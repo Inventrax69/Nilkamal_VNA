@@ -759,6 +759,7 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
 
         etPallet.setText("");
         txtLoction.setText("");
+        lblQty.setText("");
 
         isPalletScanned=false;
         isToLocationScanned=false;
@@ -826,8 +827,6 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
 
     //Assigning scanned value to the respective fields
     public void ProcessScannedinfo(String scannedData) {
-
-        Log.v("ABCDE",scannedData+" "+Common.isPopupActive()+" "+ProgressDialogUtils.isProgressActive());
 
         if (scannedData != null && !Common.isPopupActive()) {
 
@@ -1086,7 +1085,6 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
                                 List<InboundDTO> lstDto = new ArrayList<InboundDTO>();
                                 List<String> lstInboundNo = new ArrayList<>();
 
-
                                 for (int i = 0; i < _lInbound.size(); i++) {
                                     InboundDTO dto = new InboundDTO(_lInbound.get(i).entrySet());
                                     lstDto.add(dto);
@@ -1265,9 +1263,7 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
         //storageloc=spinnerSelectSloc.getSelectedItem().toString();
-
     }
 
     @Override
@@ -1577,7 +1573,7 @@ public class ToInDropLocationHU extends Fragment implements View.OnClickListener
 
                             } else {
                                 core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
-                                ProgressDialogUtils.closeProgressDialog();
+
                                 List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 

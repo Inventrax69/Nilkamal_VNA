@@ -61,6 +61,9 @@ public interface ApiInterface {
     @POST("PutAway/CheckPalletAndSuggestPutawayLocation")
     Call<String> CheckPalletAndSuggestPutawayLocation(@Body WMSCoreMessage oRequest);
 
+    @POST("PutAway/VNAPalletScan")
+    Call<String> VNAPalletScan(@Body WMSCoreMessage oRequest);
+
     @POST("PutAway/GeneratePutawayandPickingSuggestion")
     Call<String> GeneratePutawayandPickingSuggestion(@Body WMSCoreMessage oRequest);
 

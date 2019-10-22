@@ -384,13 +384,12 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                         lstDto.add(dto);
                                         lstVLPD.add(lstDto.get(i).getVLPDNumber());
                                     }
-                                    ProgressDialogUtils.closeProgressDialog();
+
 
                                     ArrayAdapter arrayAdapterStoreRefNo = new ArrayAdapter(getActivity(), R.layout.support_simple_spinner_dropdown_item, lstVLPD);
                                     spinnerSelectVLPDNo.setAdapter(arrayAdapterStoreRefNo);
 
                                 } else {
-                                    ProgressDialogUtils.closeProgressDialog();
                                     common.showUserDefinedAlertType(errorMessages.EMC_039, getActivity(), getContext(), "Error");
                                     clearAllFileds();
                                     return;
@@ -539,7 +538,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
                             } else {
                                 core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
-                                ProgressDialogUtils.closeProgressDialog();
+
                                 List<LinkedTreeMap<?, ?>> _lVlpd = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lVlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
@@ -553,7 +552,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                 rvPickingSortingList.setAdapter(null);
                                 PalletAdapter palletAdapter = new PalletAdapter(getContext(), vlpdDtoList);
                                 rvPickingSortingList.setAdapter(palletAdapter);
-
+                                ProgressDialogUtils.closeProgressDialog();
                             }
 
                         } catch (Exception ex) {
@@ -1097,7 +1096,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                 }
 
                                 sUniqueRSN=scannedData;
-
+                                ProgressDialogUtils.closeProgressDialog();
                                 if(vlpdDto1.getMessage()!=null){
                                     if(vlpdDto1.getMessage().equals("-1")){
                                         etPartNo.setText(scannedData);
@@ -1133,6 +1132,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                         GetVNAPickingandShortingList(sPalletNo);
                                     }
                                 }else{
+
                                     Common.setIsPopupActive(true);
                                     soundUtils.alertError(getActivity(), getContext());
                                     DialogUtils.showAlertDialog(getActivity(), "Warning", errorMessages.EMC_093, R.drawable.warning_img, new DialogInterface.OnClickListener() {
@@ -1148,7 +1148,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                         }
                                     });
                                 }
-                                ProgressDialogUtils.closeProgressDialog();
+
                             }
 
                         } catch (Exception ex) {
@@ -1433,9 +1433,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                         }
 
                                         @Override
-                                        public void onNothingSelected(AdapterView<?> adapterView) {
-
-                                        }
+                                        public void onNothingSelected(AdapterView<?> adapterView) { }
                                     });
                                     pickingSkipdialog.show();
 

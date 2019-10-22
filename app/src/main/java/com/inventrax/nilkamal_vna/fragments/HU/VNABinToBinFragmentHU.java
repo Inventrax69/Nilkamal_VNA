@@ -385,15 +385,12 @@ public class VNABinToBinFragmentHU extends Fragment implements View.OnClickListe
     //Assigning scanned value to the respective fields
     public void ProcessScannedinfo(String scannedData) {
 
-        Log.v("ABCDE",scannedData+" "+Common.isPopupActive()+" "+ProgressDialogUtils.isProgressActive());
-
         if (scannedData != null && !Common.isPopupActive()) {
 
             if (!ProgressDialogUtils.isProgressActive()) {
 
                 if (ScanValidator.IsPalletScanned(scannedData)) {
                         if(isFromLocationScanned){
-                            // TODO SCAN PALLET NO TO GET FROM LOCATION () ---- ACTUAL LOCATION
                             VNAPalletValidation(scannedData);
                         }
                         else{
@@ -415,8 +412,6 @@ public class VNABinToBinFragmentHU extends Fragment implements View.OnClickListe
                         }
                         else{
                             if(isPalletScanned){
-                                    // TODO TRANSFERS BIN FROM ACUAL LOCATION TO LOCATION TO TRANSFER. -- CLEAR DATA
-
                                 VNABintoBinMovement(scannedData);
                             }else{
                                 common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");
@@ -562,7 +557,7 @@ public class VNABinToBinFragmentHU extends Fragment implements View.OnClickListe
 
                             } else {
                                 core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
-                                ProgressDialogUtils.closeProgressDialog();
+
                                 List<LinkedTreeMap<?, ?>> _lvlpd = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lvlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
@@ -571,6 +566,7 @@ public class VNABinToBinFragmentHU extends Fragment implements View.OnClickListe
                                 for(int i=0;i<_lvlpd.size();i++){
                                     vlpdDto1=new VlpdDto(_lvlpd.get(i).entrySet());
                                 }
+                                ProgressDialogUtils.closeProgressDialog();
 
                                 if(vlpdDto1.getResult().equals("1")){
 
@@ -657,7 +653,6 @@ public class VNABinToBinFragmentHU extends Fragment implements View.OnClickListe
             vlpdDto.setFromPallet(scannedData);
             message.setEntityObject(vlpdDto);
 
-            Log.v("ABCDE",new Gson().toJson(message));
 
             Call<String> call = null;
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
@@ -708,16 +703,17 @@ public class VNABinToBinFragmentHU extends Fragment implements View.OnClickListe
 
                             } else {
                                 core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
-                                ProgressDialogUtils.closeProgressDialog();
+
                                 List<LinkedTreeMap<?, ?>> _lVlpd= new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lVlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
-                                Log.v("ABCDE",new Gson().toJson(_lVlpd));
 
                                 VlpdDto vlpdDto=null;
                                 for(int i=0;i<_lVlpd.size();i++){
                                     vlpdDto=new VlpdDto(_lVlpd.get(i).entrySet());
                                 }
+                                ProgressDialogUtils.closeProgressDialog();
+
                                 if(vlpdDto.getResult()!=null){
                                     if(vlpdDto.getResult().equals("1")){
                                         cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
