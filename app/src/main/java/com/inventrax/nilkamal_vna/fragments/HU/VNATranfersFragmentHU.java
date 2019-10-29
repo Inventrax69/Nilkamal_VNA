@@ -44,6 +44,7 @@ import com.inventrax.nilkamal_vna.common.constants.ErrorMessages;
 import com.inventrax.nilkamal_vna.fragments.HomeFragment;
 import com.inventrax.nilkamal_vna.interfaces.ApiInterface;
 import com.inventrax.nilkamal_vna.pojos.InboundDTO;
+import com.inventrax.nilkamal_vna.pojos.VlpdDto;
 import com.inventrax.nilkamal_vna.pojos.WMSCoreMessage;
 import com.inventrax.nilkamal_vna.pojos.WMSExceptionMessage;
 import com.inventrax.nilkamal_vna.searchableSpinner.SearchableSpinner;
@@ -299,7 +300,6 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
 
                             } else {
                                 core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
-                                ProgressDialogUtils.closeProgressDialog();
                                 List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
@@ -403,6 +403,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                                     common.showUserDefinedAlertType(errorMessages.EMC_089, getActivity(), getContext(), "Warning");
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
+
                             }
 
                         } catch (Exception ex) {
@@ -532,15 +533,13 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
 /*                                    if(SuggestionType.equals("2")){
                                         clearAllFileds1();
                                     }else{*/
-                                        setSuggestionTypeApi(SuggestionType);
                                         clearAllFileds();
+                                        setSuggestionTypeApi(SuggestionType);
+
                                     /*}*/
                                 }else{
                                     common.showUserDefinedAlertType(dto.getResult(), getActivity(), getContext(), "Error");
                                 }
-
-
-
                             }
 
                         } catch (Exception ex) {
@@ -968,7 +967,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
             case R.id.btnSkip:
 
                 if(isPicking){
-                    if(isFromLocationScanned && !isPalletScanned && !isToLocationScanned){
+                   /* if(isFromLocationScanned && !isPalletScanned && !isToLocationScanned){*/
 
 
                         final Dialog pickingSkipdialog = new Dialog(getActivity());
@@ -980,7 +979,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                         btnOk.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                PutawayandpickingSkip();
+                                VNApickingSkip();
                                 pickingSkipdialog.dismiss();
                             }
                         });
@@ -1011,7 +1010,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                         });
                         pickingSkipdialog.show();
 
-                        // TODO after Skipping()
+/*                        // TODO after Skipping()
                     }else{
                         if(isToLocationScanned && isPalletScanned){
                             Toast.makeText(getActivity(), "Already Transfered", Toast.LENGTH_SHORT).show();
@@ -1020,7 +1019,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                           //  Toast.makeText(getActivity(), "Please scan 'from location' and pallet to skip", Toast.LENGTH_SHORT).show();
                         }
                         //TODO setError messages
-                    }
+                    }*/
                 }else{
                     if(isFromLocationScanned && isPalletScanned && !isToLocationScanned){
                         Toast.makeText(getActivity(), "Skkiped", Toast.LENGTH_SHORT).show();
@@ -1290,6 +1289,130 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    private void VNApickingSkip() {
+
+        try {
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
+            InboundDTO inboundDTO = new InboundDTO();
+            inboundDTO.setUserId(userId);
+            inboundDTO.setLocation(etFromLocation.getText().toString());
+            inboundDTO.setPalletNo(etPallet.getText().toString());
+            inboundDTO.setVLPDNumber(txtVLPDNumber.getText().toString());
+            inboundDTO.setSkipReason(skipReason);
+            message.setEntityObject(inboundDTO);
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+
+                call = apiService.VNApickingSkip(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+
+                            } else {
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+                                ProgressDialogUtils.closeProgressDialog();
+                                List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                InboundDTO dto = null;
+                                for (int i = 0; i < _lInbound.size(); i++) {
+                                    dto = new InboundDTO(_lInbound.get(i).entrySet());
+                                }
+
+                                Log.v("ABCDE",new Gson().toJson(dto));
+                                ProgressDialogUtils.closeProgressDialog();
+                                if(dto.getResult().equals("1") && dto.getResult()!=null){
+                                    inOutId="2";
+                                    setSuggestionTypeApi(SuggestionType);
+                                }else{
+                                    common.showUserDefinedAlertType("Cannot Skip", getActivity(), getContext(),"Error");
+                                }
+
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
     }
 
     private void PutawayandpickingSkip() {
@@ -1652,4 +1775,5 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
             common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
         }
     }
+
 }

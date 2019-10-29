@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,7 @@ import com.inventrax.nilkamal_vna.interfaces.ApiInterface;
 import com.inventrax.nilkamal_vna.pojos.InboundDTO;
 import com.inventrax.nilkamal_vna.pojos.ItemInfoDTO;
 import com.inventrax.nilkamal_vna.pojos.LoginUserDTO;
+import com.inventrax.nilkamal_vna.pojos.OutboundDTO;
 import com.inventrax.nilkamal_vna.pojos.PrinterDetailsDTO;
 import com.inventrax.nilkamal_vna.pojos.VLPDRequestDTO;
 import com.inventrax.nilkamal_vna.pojos.VLPDResponseDTO;
@@ -108,6 +110,8 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     Dialog pickingSkipdialog;
     String VLPDNumber="",Pallet="",ActualLoc="",SuggestedLoc="",Type="";
     RecyclerView rvPickingSortingList;
+    private SearchableSpinner spinnerSelectReason;
+    String skipReason;
 
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
         @Override
@@ -446,6 +450,51 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                 clearAllFileds();
                 break;
             case R.id.btnSkip:
+                if(isPalletScanned){
+                    //TODO SKIP
+                    final Dialog pickingSkipdialog = new Dialog(getActivity());
+                    pickingSkipdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    pickingSkipdialog.setCancelable(false);
+                    pickingSkipdialog.setContentView(R.layout.skip_dialog);
+
+                    TextView btnOk = (TextView) pickingSkipdialog.findViewById(R.id.btnOk);
+                    btnOk.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            PickingandShortingSkip();
+                            pickingSkipdialog.dismiss();
+                        }
+                    });
+
+                    TextView btnCancel = (TextView) pickingSkipdialog.findViewById(R.id.btnCancel);
+                    btnCancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            pickingSkipdialog.dismiss();
+                        }
+                    });
+                    final List<String> lstSkipReason = new ArrayList<>();
+                    lstSkipReason.add("Damage");
+                    lstSkipReason.add("Not Found");
+                    spinnerSelectReason=(SearchableSpinner) pickingSkipdialog.findViewById(R.id.spinnerSelectReason);
+                    ArrayAdapter arrayAdapterSelectReason = new ArrayAdapter(getActivity(), R.layout.support_simple_spinner_dropdown_item, lstSkipReason);
+                    spinnerSelectReason.setAdapter(arrayAdapterSelectReason);
+                    spinnerSelectReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            skipReason=spinnerSelectReason.getSelectedItem().toString();
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            skipReason=lstSkipReason.get(0);
+                        }
+                    });
+                    pickingSkipdialog.show();
+                }else{
+                    common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Warning");
+                }
+
                 break;
             case R.id.btnCloseExport:
                 rlVLPDSelect.setVisibility(View.GONE);
@@ -669,6 +718,10 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
             if (!ProgressDialogUtils.isProgressActive()) {
 
+                if(rlExport.getVisibility()==View.VISIBLE){
+                    return;
+                }
+
                 if (ScanValidator.IsPalletScanned(scannedData)) {
                     GetVNAPickingandShortingList(scannedData);
                     return;
@@ -676,10 +729,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
                 if (ScanValidator.IsLocationScanned(scannedData)) {
                     if(isPalletScanned){
-                        etDockLocation.setText(scannedData);
-                        cvScanDockLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
-                        ivScanDockLocation.setImageResource(R.drawable.check);
-                        isDockLocationScanned=true;
+                        PickingandShortingDockValidation(scannedData);
                     }else{
                        common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Warning");
                     }
@@ -1748,6 +1798,253 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                     common.showUserDefinedAlertType("No items available on this pallet.", getActivity(), getContext(), "Error");
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
+    }
+
+
+    private void PickingandShortingDockValidation(final String scannedData) {
+
+        try {
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.Outbound, getContext());
+            VlpdDto vlpdDto = new VlpdDto();
+            vlpdDto.setUserId(userId);
+            vlpdDto.setDockLocation(scannedData);
+            vlpdDto.setDockNumber(txtDockName.getText().toString());
+            message.setEntityObject(vlpdDto);
+
+            Log.v("ABCDE",new Gson().toJson(message));
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+
+                call = apiService.PickingandShortingDockValidation(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+
+                            } else {
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                                List<LinkedTreeMap<?, ?>> _lOutbound = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lOutbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                VlpdDto outboundDTO=null;
+                                for(int i=0;i<_lOutbound.size();i++){
+                                    outboundDTO=new VlpdDto(_lOutbound.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                if(outboundDTO.getMessage().equals("1")){
+                                    etDockLocation.setText(scannedData);
+                                    cvScanDockLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                    ivScanDockLocation.setImageResource(R.drawable.check);
+                                    isDockLocationScanned=true;
+                                }else{
+                                    etDockLocation.setText(scannedData);
+                                    cvScanDockLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                    ivScanDockLocation.setImageResource(R.drawable.warning_img);
+                                    isDockLocationScanned=false;
+                                    common.showUserDefinedAlertType("Invalid dock location", getActivity(), getContext(), "Warning");
+                                }
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
+    }
+
+
+    private void PickingandShortingSkip() {
+
+        try {
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.Outbound, getContext());
+            VlpdDto vlpdDto = new VlpdDto();
+            vlpdDto.setUserId(userId);
+            vlpdDto.setAssignedId(mVlpdDto.getAssignedId());
+            vlpdDto.setQuntity(mVlpdDto.getPendingQty());
+            vlpdDto.setSkipReason(skipReason);
+            message.setEntityObject(vlpdDto);
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+
+                call = apiService.PickingandShortingSkip(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+
+                            } else {
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+                                ProgressDialogUtils.closeProgressDialog();
+                                List<LinkedTreeMap<?, ?>> _lvlpd = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lvlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                VlpdDto vlpdDto1=null;
+                                for(int i=0;i<_lvlpd.size();i++){
+                                    vlpdDto1=new VlpdDto(_lvlpd.get(i).entrySet());
+                                }
+
+                                if(vlpdDto1.getMessage().equals("1")){
+                                    GetVNAPickingandShortingList(sPalletNo);
+                                }else{
+                                    common.showUserDefinedAlertType("Error while skip", getActivity(), getContext(), "Error");
+                                }
+
                             }
 
                         } catch (Exception ex) {

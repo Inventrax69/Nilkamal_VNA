@@ -79,6 +79,9 @@ public interface ApiInterface {
     @POST("PutAway/PutawayandpickingSkip")
     Call<String> PutawayandpickingSkip(@Body WMSCoreMessage oRequest);
 
+    @POST("PutAway/VNApickingSkip")
+    Call<String> VNApickingSkip(@Body WMSCoreMessage oRequest);
+
     @POST("PutAway/CheckPalletandLocationValidation")
     Call<String> CheckPalletandLocationValidation(@Body WMSCoreMessage oRequest);
 
@@ -109,6 +112,16 @@ public interface ApiInterface {
 
     @POST("VLPD/GetVLPDID")
     Call<String> GetVLPDID(@Body WMSCoreMessage oRequest);
+
+    @POST("VLPD/PalletValidationForPtoP")
+    Call<String> PalletValidationForPtoP(@Body WMSCoreMessage oRequest);
+
+
+   @POST("VLPD/PickingandShortingSkip")
+    Call<String> PickingandShortingSkip(@Body WMSCoreMessage oRequest);
+
+    @POST("VLPD/PickingandShortingDockValidation")
+    Call<String> PickingandShortingDockValidation(@Body WMSCoreMessage oRequest);
 
     @POST("VLPD/ExportPendingPallet")
     Call<String> ExportPendingPallet(@Body WMSCoreMessage oRequest);

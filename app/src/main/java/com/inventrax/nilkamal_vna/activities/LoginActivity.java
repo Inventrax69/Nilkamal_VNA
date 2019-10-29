@@ -133,7 +133,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
             txtReleaseDate = (TextView) findViewById(R.id.txtDate);
             txtVersion = (TextView) findViewById(R.id.txtVersionName);
             txtVersion.setText("Version:" + " " + AndroidUtils.getVersionName().toString());
-            txtReleaseDate.setText("Release Date:" + " " + "18-10-2019");
+            txtReleaseDate.setText("Release Date:" + " " + "23-10-2019");
 
             spinnerSelectDivision = (SearchableSpinner) findViewById(R.id.spinnerSelectDivision);
             spinnerSelectDivision.setOnItemSelectedListener(this);

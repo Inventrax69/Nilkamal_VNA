@@ -462,8 +462,6 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
     public void ProcessScannedinfo(String scannedData) {
 
 
-        Log.v("ABCDE",scannedData+" "+Common.isPopupActive()+" "+ProgressDialogUtils.isProgressActive());
-
         if (scannedData != null && !Common.isPopupActive()) {
 
             if (!ProgressDialogUtils.isProgressActive()) {
@@ -493,17 +491,12 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
                 if (ScanValidator.IsPalletScanned(scannedData)) {
 
                     if(!isFromPalletScanned){
-                        cvScanFromPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
-                        ivScanFromPallet.setImageResource(R.drawable.check);
-                        isFromPalletScanned=true;
-                        etFromPallet.setText(scannedData);
+                        PalletValidationForPtoP(scannedData,1);
+
                     }else{
                         if(!isToPalletScanned){
                             if(!(etFromPallet.getText().toString().equals(scannedData))){
-                                cvScanToPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
-                                ivScanToPallet.setImageResource(R.drawable.check);
-                                isToPalletScanned=true;
-                                etToPallet.setText(scannedData);
+                                PalletValidationForPtoP(scannedData,2);
                             }else{
                                 common.showUserDefinedAlertType("From Pallet and To Pallet are Same", getActivity(), getContext(), "Error");
                             }
@@ -511,8 +504,6 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
                             common.showUserDefinedAlertType(errorMessages.EMC_0046, getActivity(), getContext(), "Error");
                         }
                     }
-
-                    //ConfirmPalletPut;away();
 
                     return;
                 }/* else {
@@ -755,6 +746,15 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
                                     }
                                     else if (vlpdDto1.getResult().equals("-1")){
                                         common.showUserDefinedAlertType("Dulicatie RSN are generated", getActivity(), getContext(), "Error");
+                                    }
+                                    else if (vlpdDto1.getResult().equals("-6")){
+                                        common.showUserDefinedAlertType("From pallet is not mapped to priority bin", getActivity(), getContext(), "Error");
+                                    }
+                                    else if (vlpdDto1.getResult().equals("-7")){
+                                        common.showUserDefinedAlertType("To pallet is not mapped to priority bin", getActivity(), getContext(), "Error");
+                                    }
+                                    else if (vlpdDto1.getResult().equals("-8")){
+                                        common.showUserDefinedAlertType("Picking is not done on from pallet", getActivity(), getContext(), "Error");
                                     }else {
                                         common.showUserDefinedAlertType("Error While Transfer", getActivity(), getContext(), "Error");
                                     }
@@ -762,6 +762,147 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
                                     common.showUserDefinedAlertType("Error", getActivity(), getContext(), "Error");
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
+    }
+
+    private void PalletValidationForPtoP(final String scannedData, final int type) {
+
+        try {
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.Outbound, getContext());
+            InboundDTO inboundDTO = new InboundDTO();
+            inboundDTO.setUserId(userId);
+            inboundDTO.setPalletNo(scannedData);
+            message.setEntityObject(inboundDTO);
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+
+                call = apiService.PalletValidationForPtoP(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+
+                            } else {
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+                                ProgressDialogUtils.closeProgressDialog();
+                                List<LinkedTreeMap<?, ?>> _lVlpd = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lVlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+
+                                VlpdDto vlpdDto=null;
+                                for(int i=0;i<_lVlpd.size();i++){
+                                    vlpdDto=new VlpdDto(_lVlpd.get(i).entrySet());
+                                }
+
+                                if(vlpdDto.getMessage().equals("1")){
+
+                                    if(type==1){
+                                        cvScanFromPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                        ivScanFromPallet.setImageResource(R.drawable.check);
+                                        isFromPalletScanned=true;
+                                        etFromPallet.setText(scannedData);
+                                    }else{
+                                        cvScanToPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                        ivScanToPallet.setImageResource(R.drawable.check);
+                                        isToPalletScanned=true;
+                                        etToPallet.setText(scannedData);
+                                    }
+
+                                }else{
+                                    if(type==1){
+                                        cvScanFromPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                        ivScanFromPallet.setImageResource(R.drawable.warning_img);
+                                        isFromPalletScanned=false;
+                                        etFromPallet.setText(scannedData);
+                                    }else{
+                                        cvScanToPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                        ivScanToPallet.setImageResource(R.drawable.warning_img);
+                                        isToPalletScanned=false;
+                                        etToPallet.setText(scannedData);
+                                    }
+                                    common.showUserDefinedAlertType("Pallet is not moved to priority bin zone", getActivity(), getContext(), "Warning");
+                                }
+
                             }
 
                         } catch (Exception ex) {

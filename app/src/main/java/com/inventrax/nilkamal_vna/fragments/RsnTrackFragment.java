@@ -493,8 +493,7 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
             message.setEntityObject(inboundDTO);
 
             Call<String> call = null;
-            ApiInterface apiService =
-                    RestService.getClient().create(ApiInterface.class);
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
             try {
                 //Checking for Internet Connectivity
                 // if (NetworkUtils.isInternetAvailable()) {

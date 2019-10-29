@@ -127,6 +127,16 @@ public class VlpdDto {
     @SerializedName("ToLocation")
     private String ToLocation;
 
+    @SerializedName("Quntity")
+    private String Quntity;
+
+    @SerializedName("SkipReason")
+    private String SkipReason;
+
+
+    @SerializedName("DockNumber")
+    private String DockNumber;
+
 
     public VlpdDto() { }
 
@@ -322,6 +332,25 @@ public class VlpdDto {
                  case "ToLocation":
                     if (entry.getValue() != null) {
                         this.setToLocation(entry.getValue().toString());
+                    }
+                    break;
+
+                case "Quntity":
+                    if (entry.getValue() != null) {
+                        this.setQuntity(entry.getValue().toString());
+                    }
+                    break;
+
+                case "SkipReason":
+                    if (entry.getValue() != null) {
+                        this.setSkipReason(entry.getValue().toString());
+                    }
+                    break;
+
+
+                case "DockNumber":
+                    if (entry.getValue() != null) {
+                        this.setDockNumber(entry.getValue().toString());
                     }
                     break;
             }
@@ -651,4 +680,27 @@ public class VlpdDto {
         ToLocation = toLocation;
     }
 
+    public String getQuntity() {
+        return Quntity;
+    }
+
+    public void setQuntity(String quntity) {
+        Quntity = quntity;
+    }
+
+    public String getSkipReason() {
+        return SkipReason;
+    }
+
+    public void setSkipReason(String skipReason) {
+        SkipReason = skipReason;
+    }
+
+    public String getDockNumber() {
+        return DockNumber;
+    }
+
+    public void setDockNumber(String dockNumber) {
+        DockNumber = dockNumber;
+    }
 }
