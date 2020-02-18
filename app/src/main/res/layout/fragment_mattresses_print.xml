@@ -204,7 +204,6 @@
 
 
             <LinearLayout
-            
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -237,6 +236,70 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_below="@+id/tvScanOldRsn"
+                android:layout_marginTop="15dp"
+                android:weightSum="1">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.4"
+                    android:text="Customer Name"
+                    android:textColor="@color/black"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/lblCustomerName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.6"
+                    android:gravity="right"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_below="@+id/tvScanOldRsn"
+                android:layout_marginTop="15dp"
+                android:weightSum="1">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.4"
+                    android:text="OBD No."
+                    android:textColor="@color/black"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/lblOBDNumber"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.6"
+                    android:gravity="right"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
@@ -252,14 +315,15 @@
             android:id="@+id/btnPrint"
             android:layout_width="100dp"
             android:layout_height="35dp"
-            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
             android:layout_alignTop="@+id/btnClear"
             android:layout_marginRight="22dp"
+            android:layout_marginBottom="69dp"
             android:background="@drawable/button_shape"
             android:text="@string/print"
             android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:layout_alignParentRight="true" />
+            android:textColor="@color/white" />
 
 
         <Button
@@ -272,6 +336,7 @@
             android:layout_marginStart="22dp"
             android:background="@drawable/button_shape"
             android:text="@string/clear"
+            android:visibility="gone"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:layout_alignParentLeft="true"

@@ -2,6 +2,7 @@ package com.inventrax.nilkamal_vna.fragments.HU;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -45,6 +46,7 @@ import com.inventrax.nilkamal_vna.pojos.WMSCoreMessage;
 import com.inventrax.nilkamal_vna.pojos.WMSExceptionMessage;
 import com.inventrax.nilkamal_vna.services.RestService;
 import com.inventrax.nilkamal_vna.util.CustomEditText;
+import com.inventrax.nilkamal_vna.util.DialogUtils;
 import com.inventrax.nilkamal_vna.util.ExceptionLoggerUtils;
 import com.inventrax.nilkamal_vna.util.FragmentUtils;
 import com.inventrax.nilkamal_vna.util.ProgressDialogUtils;
@@ -67,7 +69,7 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
     private View rootView;
 
     private RelativeLayout rlMattress, rlVLPD, rlPrint;
-    private TextView lblVLPDNumber, lblScannedSku, lblCount, lblBundle;
+    private TextView lblVLPDNumber, lblScannedSku, lblCount, lblBundle,lblOBDNumber ,lblCustomerName;
     private CardView cvScanBarcode;
     private ImageView ivScanBarcode;
     private TextInputLayout txtInputLayoutVLPD;
@@ -133,6 +135,9 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
         lblScannedSku = (TextView) rootView.findViewById(R.id.lblScannedSku);
         lblCount = (TextView) rootView.findViewById(R.id.lblCount);
         lblBundle = (TextView) rootView.findViewById(R.id.lblBundle);
+
+        lblOBDNumber = (TextView) rootView.findViewById(R.id.lblOBDNumber);
+        lblCustomerName = (TextView) rootView.findViewById(R.id.lblCustomerName);
 
         cvScanBarcode = (CardView) rootView.findViewById(R.id.cvScanBarcode);
         ivScanBarcode = (ImageView) rootView.findViewById(R.id.ivScanBarcode);
@@ -372,8 +377,13 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
                                     cvScanBarcode.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanBarcode.setImageResource(R.drawable.check);
 
-                                    lblCount.setText(vlpdResponseDTO.getPreviousPickedItemResponce().get(0).getMessage());
+                                    String count=vlpdResponseDTO.getPreviousPickedItemResponce().get(0).getMessage().split("[,]")[0];
+                                    String CustomerName=vlpdResponseDTO.getPreviousPickedItemResponce().get(0).getMessage().split("[,]")[1];
+                                    String OBDNumber=vlpdResponseDTO.getPreviousPickedItemResponce().get(0).getMessage().split("[,]")[2];
 
+                                    lblCount.setText(count);
+                                    lblCustomerName.setText(CustomerName);
+                                    lblOBDNumber.setText(OBDNumber);
                                     return;
                                 } else {
 
@@ -461,6 +471,8 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
         ivScanBarcode.setImageResource(R.drawable.fullscreen_img);
         lblScannedSku.setText("");
         lblCount.setText("");
+        lblOBDNumber.setText("");
+        lblCustomerName.setText("");
     }
 
     public void getBundleNumberForMatress(String isNew) {
@@ -549,7 +561,12 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
                                 ProgressDialogUtils.closeProgressDialog();
 
                                 if (oExecutionResponseDto.getStatus()) {
+                                    /*
+                                    rlVLPD.setVisibility(View.GONE);
+                                    rlMattress.setVisibility(View.VISIBLE);
+                                    */
 
+                                    rlPrint.setVisibility(View.GONE);
                                     rlVLPD.setVisibility(View.GONE);
                                     rlMattress.setVisibility(View.VISIBLE);
 
@@ -668,10 +685,7 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
 
                                     WMSExceptionMessage owmsExceptionMessage = null;
                                     for (int i = 0; i < _lExceptions.size(); i++) {
-
                                         owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
-
-
                                     }
                                     ProgressDialogUtils.closeProgressDialog();
 
@@ -695,7 +709,23 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
 
                                 ProgressDialogUtils.closeProgressDialog();
 
-                                common.showUserDefinedAlertType(errorMessages.EMC_0049, getActivity(), getContext(), "Success");
+                                    common.setIsPopupActive(true);
+                                    soundUtils.alertSuccess(getActivity(), getActivity());
+                                    DialogUtils.showAlertDialog(getActivity(), "Success", errorMessages.EMC_0049, R.drawable.success,new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which)
+                                        {
+                                            switch (which) {
+                                                case DialogInterface.BUTTON_POSITIVE:
+                                                    common.setIsPopupActive(false);
+                                                    ClearFields();
+                                                    getBundleNumberForMatress("1");
+                                                    break;
+                                            }
+                                        }
+                                    });
+
+                               // common.showUserDefinedAlertType(errorMessages.EMC_0049, getActivity(), getContext(), "Success");
                             }
 
                         } catch (Exception ex) {
