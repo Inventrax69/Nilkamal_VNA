@@ -25,13 +25,9 @@ public class ScanValidator {
     public static boolean IsBatchRSN(String scannedData)
     {
         if (scannedData.split("[,]").length==3 )
-        {
             return true;
-        }
         else
-        {
             return false;
-        }
     }
 
     public static boolean IsBundleRSN(String scannedData)
@@ -87,7 +83,6 @@ public class ScanValidator {
 
     public static boolean isNumeric(String ValueToCheck)
     {
-
         try
         {
             Double result = Double.parseDouble(ValueToCheck);
@@ -98,6 +93,7 @@ public class ScanValidator {
             return false;
         }
     }
+
     public static boolean IsMatressBundleScanned(String scannedData)
     {
         if ((scannedData.substring(2, 5).equals("VLP")  || scannedData.substring(2, 5).equals("vlp"))&& scannedData.split("[_]")[0].length()==10)

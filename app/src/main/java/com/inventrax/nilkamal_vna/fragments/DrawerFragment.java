@@ -67,7 +67,6 @@ import java.util.List;
 public class DrawerFragment extends Fragment implements View.OnClickListener {
 
     private static final String classCode = "API_FRAG_NAVIGATION DRAWER";
-
     private static String TAG = DrawerFragment.class.getSimpleName();
     private RecyclerView mRecyclerView;
     private Context mContext;
@@ -77,18 +76,12 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
     private FragmentDrawerListener drawerListener;
     private View layout;
     private TextView txtLoginUser, tvCycleCount;
-
     public DrawerLayout drawerLayout;
-
     private AppCompatActivity appCompatActivity;
-
     private IntentFilter mIntentFilter;
-
     private String userName;
     private String division, menuLink;
     SharedPreferences sp;
-
-
     ExpandableListAdapter expandableListAdapter;
     ExpandableListView expandableListView;
     List<MenuModel> headerList = new ArrayList<>();
@@ -181,8 +174,8 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
         childModel = new MenuModel("To In-Drop Location", false, false, "To In-Drop Location");
         childModelsList.add(childModel);
 
-/*        childModel = new MenuModel("Putaway", false, false, "Putaway");
-        childModelsList.add(childModel);*/
+        childModel = new MenuModel("Putaway", false, false, "Putaway");
+        childModelsList.add(childModel);
 
         childModel = new MenuModel("Stock Check", false, false, "Stock Check");
         childModelsList.add(childModel);
@@ -444,7 +437,8 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
                     break;
 
                 case "VNA Transfers":
-                    FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new VNATranfersFragmentHU());
+                    if(userName.equalsIgnoreCase("VNA"))
+                        FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new VNATranfersFragmentHU());
                     break;
 
                 case "Stock Check":

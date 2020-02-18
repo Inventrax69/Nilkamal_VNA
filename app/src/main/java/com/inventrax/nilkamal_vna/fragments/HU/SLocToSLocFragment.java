@@ -319,8 +319,7 @@ public class SLocToSLocFragment extends Fragment implements View.OnClickListener
                 goBackToNormalView();
                 break;
             case R.id.btnCloseTwo:
-               // FragmentUtils.replaceFragment(getActivity(), R.id.container_body, new HomeFragment());
-
+                // FragmentUtils.replaceFragment(getActivity(), R.id.container_body, new HomeFragment());
                 rlSelectReason.setVisibility(View.GONE);
                 rlPick.setVisibility(View.VISIBLE);
                 break;

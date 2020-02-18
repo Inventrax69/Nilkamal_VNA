@@ -965,6 +965,7 @@ public class PickOnDemandFragmentHU extends Fragment implements View.OnClickList
 
 
     private void UpDateUI(ItemInfoDTO suggestedItem) {
+
         rlPick.setVisibility(View.VISIBLE);
         rlSelectReason.setVisibility(View.GONE);
         rlVLPD.setVisibility(View.GONE);
@@ -972,7 +973,7 @@ public class PickOnDemandFragmentHU extends Fragment implements View.OnClickList
 
         if (suggestedItem != null) {
             ////Fill Outbound Information
-            if (suggestedItem.getMcode() != null && suggestedItem.getMcode() != "") {
+            if (suggestedItem.getMcode() != null && !suggestedItem.getMcode().equals("")) {
                 vlpdTypeId = suggestedItem.getVlpdTypeId();
                 lblSKU.setText(suggestedItem.getMcode());
                 lblDesc.setText(suggestedItem.getDescription());
@@ -1441,20 +1442,23 @@ public class PickOnDemandFragmentHU extends Fragment implements View.OnClickList
             if (!ProgressDialogUtils.isProgressActive()) {
 
                 if (ScanValidator.IsPalletScanned(scannedData)) {
+
                     if (lblSKU.getText().toString().isEmpty()) {
                         clearFields();
                         common.showUserDefinedAlertType(errorMessages.EMC_039, getActivity(), getContext(), "Error");
                         return;
                     }
+
                     etPallet.setText(scannedData);
 
                     cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                     ivScanPallet.setImageResource(R.drawable.check);
 
                     return;
-                }else {
+
+                }/*else {
                     common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");
-                }
+                }*/
 
                 if (ScanValidator.IsRSNScanned(scannedData)) {
                     if (lblSKU.getText().toString().isEmpty()) {
@@ -1481,10 +1485,8 @@ public class PickOnDemandFragmentHU extends Fragment implements View.OnClickList
 
                 }
                 soundUtils.alertWarning(getActivity(), getContext());
-
             }
         }
-
     }
 
     public void updateSuggestedStatus() {

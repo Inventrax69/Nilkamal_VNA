@@ -831,23 +831,20 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
 
     //Assigning scanned value to the respective fields
     public void ProcessScannedinfo(String scannedData) {
+
         if (scannedData != null && !common.isPopupActive()) {
 
             if (!ProgressDialogUtils.isProgressActive()) {
 
-
                 if (rlLoadPallet.getVisibility() == View.VISIBLE) {
-
                     processScanForLoadPallet(scannedData);
                 } else {
-
                     processScanForBinMapping(scannedData);
                 }
 
             } else {
                 if (!common.isPopupActive()) {
                     common.showUserDefinedAlertType(errorMessages.EMC_081, getActivity(), getContext(), "Error");
-
                 }
                 soundUtils.alertWarning(getActivity(), getContext());
 
@@ -1167,7 +1164,6 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
             if (!ProgressDialogUtils.isProgressActive())
             {
 
-
                 // Checking for Source Pallet
                 if (etSourcePallet.getText().toString().isEmpty())
                 {
@@ -1187,7 +1183,6 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
                 if (etDestPallet.getText().toString().isEmpty()) {
                     if (ScanValidator.IsPalletScanned(scannedData)) {
                         etDestPallet.setText(scannedData);
-
                         GetPalletCurrentLocation();
                         return;
                     }else
@@ -1558,7 +1553,6 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
                                 ProgressDialogUtils.closeProgressDialog();
 
                                 if (dto.getResult() != null && !dto.getResult().equals("0")) {
-
                                     etCountBinMap.setText(dto.getResult());
                                 } else {
                                     etSourcePallet.setText("");
@@ -1609,13 +1603,11 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
             ProgressDialogUtils.closeProgressDialog();
             common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
         }
-
     }
 
-
     private void ValidatePalletOrLocation(String scannedData, final String ScannedBarcodetype) {
-        try {
 
+        try {
             WMSCoreMessage message = new WMSCoreMessage();
             message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
             InboundDTO inboundDTO = new InboundDTO();
@@ -1626,14 +1618,12 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
             message.setEntityObject(inboundDTO);
 
             Call<String> call = null;
-            ApiInterface apiService =
-                    RestService.getClient().create(ApiInterface.class);
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
 
             try {
                 //Checking for Internet Connectivity
                 // if (NetworkUtils.isInternetAvailable()) {
                 // Calling the Interface method
-
                 call = apiService.ValidatePalletOrLocation(message);
                 ProgressDialogUtils.showProgressDialog("Please Wait");
                 // } else {
@@ -1694,7 +1684,6 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
                                     ProgressDialogUtils.closeProgressDialog();
                                     IsValidLocationorPallet = true;
 
-
                                 } else {
                                     IsValidLocationorPallet = false;
                                 }
@@ -1711,9 +1700,7 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
                                         return;
                                     } else {
                                         // IsFromLocationScanned = true;
-
                                         // IsFromPalletScanned = false;
-
                                     }
                                 } else {
                                     cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
@@ -1722,10 +1709,8 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
                                         common.showUserDefinedAlertType(errorMessages.EMC_0031, getActivity(), getContext(), "Error");
                                         etSourceBin.setText("");
                                     } else {
-
                                         //IsFromLocationScanned = false;
                                         // IsFromPalletScanned = true;
-
                                     }
                                 }
 

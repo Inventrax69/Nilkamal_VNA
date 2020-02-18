@@ -2,9 +2,7 @@ package com.inventrax.nilkamal_vna.common.constants;
 
 public class ErrorMessages {
 
-    public ErrorMessages() {
-
-    }
+    public ErrorMessages() { }
 
     public String EMC_0001 = "Unable to Connect to the Server.";
 
@@ -108,7 +106,6 @@ public class ErrorMessages {
 
     public String EMC_0051 = "Please Scan Barcode. ";
 
-
     public String EMC_0061 = "Cannot pick more than required quantity";
 
     public String EMC_0062 = "Invalid Barcode Scanned";
@@ -134,17 +131,29 @@ public class ErrorMessages {
     public String EMC_035 = " Invalid location scanned ";
 
     public String EMC_039 = " No items available to pick";
+
     public String EMC_070 = " Bin cleared successfully";
+
     public String EMC_071 = " Bin cleared unsuccessfully";
+
     public String EMC_072 = " Enter qty";
+
     public String EMC_073 = " Enter valid qty";
+
     public String EMC_074 = " Please select division";
+
     public String EMC_075 = " Error while updating EAN details";
+
     public String EMC_076 = " Please select storage location";
+
     public String EMC_077 = " Bin qty. updated";
+
     public String EMC_078 = " Bin closed";
+
     public String EMC_079 = " Plase provide qty.";
+
     public String EMC_080 = " Plase enter valid qty.";
+
     public String EMC_081 = "Other request is in progress .";
 
     public String EMC_082 = "Cannot Exceed Master barcode Qty.";

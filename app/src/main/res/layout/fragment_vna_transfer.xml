@@ -391,8 +391,25 @@
             android:text="Start Sugg"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:layout_centerHorizontal="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:layout_marginLeft="20dp" />
+
+        <Button
+            android:id="@+id/btnStop"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_above="@+id/btnSkip"
+            android:background="@drawable/button_shape"
+            android:text="Stop Sugg"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" />
 
         <Button
             android:id="@+id/btnClear"

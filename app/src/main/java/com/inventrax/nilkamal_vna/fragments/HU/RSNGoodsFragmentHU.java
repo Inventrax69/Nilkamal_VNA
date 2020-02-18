@@ -78,7 +78,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
     private static final String classCode = "API_FRAG_RSN_GOODS_HU";
     private View rootView;
-
     private RelativeLayout rlReceive, rlPrint;
     private TextView lblStoreRefNo, lblInboundQty, lblScannedSku, lblDesc, lblPrintScannedSku, lblPrintSKUDesc;
     private CardView cvScanPallet, cvScanLocation, cvScanSku, cvScanRSN;
@@ -122,8 +121,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
     public String auditbinLocation = null;
     Dialog validPalletDialog;
 
-    private String pallet = null, location = null, rsn = null, L = null, B = null, H = null,
-            W = null, box = null, qty = null, vol = null, twt = null, caseString = null, sku = null, desc = null, count = null, ipAddress = null, printerIPAddress = null;
+    private String pallet = null, location = null, rsn = null, L = null, B = null, H = null, W = null, box = null, qty = null, vol = null, twt = null, caseString = null, sku = null, desc = null, count = null, ipAddress = null, printerIPAddress = null;
 
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
         @Override
@@ -133,9 +131,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
         }
     };
 
-    public RSNGoodsFragmentHU() {
-
-    }
+    public RSNGoodsFragmentHU() { }
 
     @Nullable
     @Override
@@ -144,6 +140,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
         rootView = inflater.inflate(R.layout.hu_fragment_rsn_goods, container, false);
         barcodeReader = MainActivity.getBarcodeObject();
         loadFormControls();
+
         return rootView;
     }
 
@@ -195,7 +192,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                     // SAVE THE DATA
                 } else {
                     if (!etPallet.getText().toString().isEmpty()) {
-                       // GetPalletinformation();
+                      // GetPalletinformation();
                     }
                     // GetPalletInfo();
                 }
@@ -281,11 +278,9 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                 etPallet.requestFocus();
             }
 
-
             lblStoreRefNo.setText(getArguments().getString("StoreRefNo"));
             clientId = getArguments().getString("ClientId");
             InboundId = getArguments().getString("InboundId");
-
 
             pallet = getArguments().getString("pallet");
             location = getArguments().getString("location");
@@ -302,7 +297,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
             sku = getArguments().getString("sku");
             desc = getArguments().getString("desc");
             count = getArguments().getString("count");
-
 
             etPallet.setText(pallet);
             etLocation.setText(location);
@@ -393,7 +387,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                 break;
             case R.id.btnPrint:
                 if (!lblStoreRefNo.getText().toString().isEmpty()) {
-
                     etPrinterIP.setText(ipAddress);
                     rlReceive.setVisibility(View.GONE);
                     rlPrint.setVisibility(View.VISIBLE);
@@ -407,16 +400,12 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                 UpdateLBH();
                 break;
             case R.id.btnPrintBarcode:
-
                 printValidation();
-
                 break;
 
             case R.id.btnClosePrint:
-
                 rlPrint.setVisibility(View.GONE);
                 rlReceive.setVisibility(View.VISIBLE);
-
                 break;
 
             default:
@@ -549,6 +538,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
     //Assigning scanned value to the respective fields
     public void ProcessScannedinfo(String scannedData) {
+
         if (!ProgressDialogUtils.isProgressActive()) {
 
             if (isMaxVolumeReached) {
@@ -616,10 +606,8 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
             }
 
             if(ScanValidator.IsBatchRSN(scannedData)){
-
                 PrintEcomLabelsForFurniture(scannedData);
-
-               return;
+                return;
             }else{
                 soundUtils.alertWarning(getActivity(), getContext());
             }
@@ -627,12 +615,12 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
 
         } else {
+
             if (!common.isPopupActive()) {
                 common.showUserDefinedAlertType(errorMessages.EMC_081, getActivity(), getContext(), "Error");
 
             }
             soundUtils.alertWarning(getActivity(), getContext());
-
         }
 
 
@@ -712,6 +700,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
         }*/
 
     }
+
     String sColor;
     private void GetPalletValidation(final String scannedData){
         try {
@@ -732,7 +721,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                 //Checking for Internet Connectivity
                 // if (NetworkUtils.isInternetAvailable()) {
                 // Calling the Interface method
-
                 call = apiService.GetPalletValidation(message);
                 ProgressDialogUtils.showProgressDialog("Please Wait");
                 // } else {
@@ -783,8 +771,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                                     dto = new InboundDTO(_lInbound.get(i).entrySet());
                                 }
 
-                                Log.v("ABCDE",new Gson().toJson(_lInbound));
-
                                 if (dto.getResult().toString().equalsIgnoreCase("1")) {
                                     etPallet.setText(scannedData);
                                     cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
@@ -813,11 +799,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                                                sColor.isEmpty() && !sColor.equals("SELECT COLOR")){
                                                 common.showUserDefinedAlertType("Enter all fields", getActivity(), getContext(), "Warning");
                                             }else{
-                                                PalletCreation(sColor,
-                                                        dialogetLength.getText().toString(),
-                                                        dialogetBreadth.getText().toString(),
-                                                        dialogetHeight.getText().toString(),
-                                                        dialogetWeight.getText().toString(),scannedData);
+                                                PalletCreation(sColor, dialogetLength.getText().toString(), dialogetBreadth.getText().toString(), dialogetHeight.getText().toString(), dialogetWeight.getText().toString(),scannedData);
                                             }
                                         }
                                     });
@@ -848,7 +830,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                                     validPalletDialog.show();
 
                                 }else {
-
                                     etPallet.setText("");
                                     cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanPallet.setImageResource(R.drawable.warning_img);
@@ -1387,10 +1368,8 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
 
                                 for (int i = 0; i < _lPrintList.size(); i++) {
-
                                     inboundDTO = new InboundDTO(_lPrintList.get(i).entrySet());
                                     lstInventory.add(inboundDTO);
-
                                 }
 
                                 ProgressDialogUtils.closeProgressDialog();
@@ -1748,7 +1727,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
         try {
 
-
             palletMaxVolume = Double.parseDouble(oInboundDTO.getPalletInfoDTO().get(0).getPalletVolume());
             palletMaxWeight = Integer.parseInt(oInboundDTO.getPalletInfoDTO().get(0).getPalletMaxWeight());
             palletLoadedVolume = Double.parseDouble(oInboundDTO.getPalletInfoDTO().get(0).getLoadedVolume());
@@ -1792,8 +1770,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
 
             Call<String> call = null;
-            ApiInterface apiService =
-                    RestService.getClient().create(ApiInterface.class);
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
 
             try {
                 //Checking for Internet Connectivity
@@ -1892,7 +1869,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                                         isMaxWeightReached = false;
                                     }
 
-
                                 }
                                 cvScanSku.setCardBackgroundColor(getResources().getColor(R.color.white));
                                 ivScanSku.setImageResource(R.drawable.check);
@@ -1957,9 +1933,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
             inboundDTO.setLocation(etLocation.getText().toString());
             inboundDTO.setInboundID(InboundId);
             message.setEntityObject(inboundDTO);
-
-            Log.v("ABCDE_GetLocationType",new Gson().toJson(message));
-
 
             Call<String> call = null;
             ApiInterface apiService =
@@ -2119,7 +2092,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
         try {
 
-
             WMSCoreMessage message = new WMSCoreMessage();
             message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
             InboundDTO inboundDTO = new InboundDTO();
@@ -2128,7 +2100,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
             inboundDTO.setMaterialType("Location");
             inboundDTO.setMaterialCode(auditbinLocation);
             message.setEntityObject(inboundDTO);
-
 
             Call<String> call = null;
             ApiInterface apiService =
@@ -2300,7 +2271,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
                             try {
                                 exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "002", getContext());
-
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -2535,8 +2505,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
             }
             message.setEntityObject(inboundDTO);
 
-            Log.v("ABCDE_PrintEcom",new Gson().toJson(message));
-
             Call<String> call = null;
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
 
@@ -2544,7 +2512,6 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                 //Checking for Internet Connectivity
                 // if (NetworkUtils.isInternetAvailable()) {
                 // Calling the Interface method
-
                 call = apiService.PrintEcomLabelsForFurniture(message);
                 ProgressDialogUtils.showProgressDialog("Please Wait");
                 // } else {
@@ -2586,7 +2553,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
                             } else {
                                 core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
-                                ProgressDialogUtils.closeProgressDialog();
+
                                 List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
@@ -2595,12 +2562,13 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                                     inboundDTO1=new InboundDTO(_lInbound.get(i).entrySet());
                                 }
 
-
                                 if(inboundDTO1.getResult().equals("Success")){
-                                    // TODO Nopting
+                                    // TODO Nothing
                                 }else{
                                     common.showUserDefinedAlertType("Print Failed", getActivity(), getContext(), "Error");
                                 }
+
+                                ProgressDialogUtils.closeProgressDialog();
 
                             }
 
@@ -2644,5 +2612,4 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
             common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
         }
     }
-
 }

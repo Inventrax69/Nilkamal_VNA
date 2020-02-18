@@ -204,8 +204,8 @@ public class PutawayFragmentHU extends Fragment implements View.OnClickListener,
         sloc = new ArrayList<>();
 
 
-        /*lblStoreRefNo.setText(getArguments().getString("Storefno"));
-        DefaultSLoc= getArguments().getString("DefaultSLOC");*/
+        /* lblStoreRefNo.setText(getArguments().getString("Storefno"));
+        DefaultSLoc= getArguments().getString("DefaultSLOC"); */
 
         common = new Common();
         errorMessages = new ErrorMessages();
@@ -214,6 +214,9 @@ public class PutawayFragmentHU extends Fragment implements View.OnClickListener,
         gson = new GsonBuilder().create();
         core = new WMSCoreMessage();
 
+        rlStRefSelect.setVisibility(View.VISIBLE);
+        rlPutaway.setVisibility(View.GONE);
+        rlPalletType.setVisibility(View.GONE);
 
         LoadInbounddetails();
         LoadPalletType();
@@ -287,7 +290,6 @@ public class PutawayFragmentHU extends Fragment implements View.OnClickListener,
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
             case R.id.btnCloseOne:
                 FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new HomeFragment());
                 break;
@@ -296,22 +298,17 @@ public class PutawayFragmentHU extends Fragment implements View.OnClickListener,
                 break;
             case R.id.btnConfirm:
                 ConfirmBinPosting();
-
                 break;
             case R.id.btnGo:
                 CheckInboundRefNumber();
                 lblStoreRefNo.setText(storeRefNo);
                 break;
-
-
             case R.id.btnExport:
                 goToPendingPuawayList();
                 break;
 
             case R.id.btnClear:
-
                 ResetUI();
-
                 break;
             case R.id.btnUpdatePallet:
                 if (etPallet.getText().toString().isEmpty()) {
@@ -335,8 +332,7 @@ public class PutawayFragmentHU extends Fragment implements View.OnClickListener,
                 FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new HomeFragment());
                 break;
 
-            default:
-                break;
+            default: break;
         }
     }
 
@@ -347,7 +343,6 @@ public class PutawayFragmentHU extends Fragment implements View.OnClickListener,
         bundle.putString("StoreRefNo", lblStoreRefNo.getText().toString());
         bundle.putString("ClientId", clientId);
         bundle.putString("InboundId", InboundId);
-
         bundle.putString("pallet", etPallet.getText().toString());
         bundle.putString("location", etLocation.getText().toString());
         bundle.putString("stRef", lblStoreRefNo.getText().toString());
@@ -1125,9 +1120,9 @@ public class PutawayFragmentHU extends Fragment implements View.OnClickListener,
                                     lstInboundNo.add(lstDto.get(i).getPalletType());
                                 }
 
-                                ProgressDialogUtils.closeProgressDialog();
                                 ArrayAdapter arrayAdapterStoreRefNo = new ArrayAdapter(getActivity(), R.layout.support_simple_spinner_dropdown_item, lstInboundNo);
                                 spinnerSelectPalletType.setAdapter(arrayAdapterStoreRefNo);
+                                ProgressDialogUtils.closeProgressDialog();
                             }
 
 

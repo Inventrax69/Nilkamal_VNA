@@ -110,9 +110,7 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
     };
 
 
-    public MattressesPrintFragmentHU() {
-
-    }
+    public MattressesPrintFragmentHU() { }
 
     @Nullable
     @Override
@@ -206,6 +204,7 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
                 } catch (ScannerUnavailableException e) {
                     e.printStackTrace();
                 }
+
             }
         });
 
@@ -229,32 +228,24 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
                     common.showUserDefinedAlertType(errorMessages.EMC_0039, getActivity(), getContext(), "Warning");
                 }
                 break;
-            case R.id.btnClosefinal:
 
+            case R.id.btnClosefinal:
                 rlPrint.setVisibility(View.GONE);
                 rlVLPD.setVisibility(View.GONE);
                 rlMattress.setVisibility(View.VISIBLE);
-
                 break;
 
             case R.id.btnNew:
-
                 if (!lblBundle.getText().toString().isEmpty()) {
                     getBundleNumberForMatress("1");
                 }
-
                 break;
-
 
             case R.id.btnClear:
-
                 ClearFields();
-
                 break;
 
-
             case R.id.btnPrint:
-
                 printValidations();
                 break;
 
@@ -262,9 +253,9 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
                 printeMatressBundle();
                 break;
 
-
             default:
                 break;
+
         }
     }
 
@@ -290,11 +281,8 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
 
                 }
                 soundUtils.alertWarning(getActivity(),getContext());
-
             }
-
         }
-
     }
 
     public void captureMatressBundlePacking() {
@@ -449,10 +437,8 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
             if (ipAddress != null) {
                 printerIPAddress = ipAddress;
             } else {
-
                 common.showUserDefinedAlertType(errorMessages.EMC_0046, getActivity(), getContext(), "Error");
                 return;
-
             }
 
             rlVLPD.setVisibility(View.GONE);
@@ -462,7 +448,6 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
             et_vlpd.setText(lblVLPDNumber.getText().toString());
             etBundlePrint.setText(bundleNo);
             etPrinterIP.setText(ipAddress);
-
 
         } else {
             common.showUserDefinedAlertType(errorMessages.EMC_034, getActivity(), getContext(), "Error");
@@ -474,16 +459,13 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
     public void ClearFields() {
         cvScanBarcode.setCardBackgroundColor(getResources().getColor(R.color.scanColor));
         ivScanBarcode.setImageResource(R.drawable.fullscreen_img);
-
         lblScannedSku.setText("");
         lblCount.setText("");
-
     }
 
     public void getBundleNumberForMatress(String isNew) {
 
         try {
-
 
             WMSCoreMessage message = new WMSCoreMessage();
             message = common.SetAuthentication(EndpointConstants.Outbound, getContext());
@@ -575,6 +557,7 @@ public class MattressesPrintFragmentHU extends Fragment implements View.OnClickL
                                     lblBundle.setText(oExecutionResponseDto.getMessage());
 
                                     bundleNo = oExecutionResponseDto.getMessage();
+                                    ClearFields();
 
                                     return;
                                 } else {

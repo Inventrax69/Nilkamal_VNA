@@ -113,9 +113,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
     private void loadFormControls() {
 
         try {
-
             sharedPreferencesUtils = new SharedPreferencesUtils("LoginActivity", getApplicationContext());
-
             inputUserId = (EditText) findViewById(R.id.etUsername);
             inputPassword = (EditText) findViewById(R.id.etPass);
             chkRememberPassword = (CheckBox) findViewById(R.id.cbRememberMe);
@@ -124,8 +122,10 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
             btnClear.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     LoginActivity.this.finish();
                     System.exit(0);
+
                 }
             });
 
@@ -133,7 +133,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
             txtReleaseDate = (TextView) findViewById(R.id.txtDate);
             txtVersion = (TextView) findViewById(R.id.txtVersionName);
             txtVersion.setText("Version:" + " " + AndroidUtils.getVersionName().toString());
-            txtReleaseDate.setText("Release Date:" + " " + "23-10-2019");
+            txtReleaseDate.setText("Release Date:" + " " + "21-01-2020");
 
             spinnerSelectDivision = (SearchableSpinner) findViewById(R.id.spinnerSelectDivision);
             spinnerSelectDivision.setOnItemSelectedListener(this);
@@ -294,6 +294,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
             inputLayoutUserId.setErrorEnabled(true);
             return false;
         }
+
         if (inputPassword.getText().toString().trim().isEmpty()) {
             inputLayoutPassword.setError(getString(R.string.passHint));
             inputLayoutPassword.setErrorEnabled(true);

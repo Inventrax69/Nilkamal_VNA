@@ -193,11 +193,9 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
                 */
 
                 case R.id.action_about: {
-
                    FragmentUtils.replaceFragmentWithBackStack(this, R.id.container_body, new AboutFragment());
-
                 }
-
+                break;
                 case R.id.action_ipaddress: {
                     getPrinters();
                 }

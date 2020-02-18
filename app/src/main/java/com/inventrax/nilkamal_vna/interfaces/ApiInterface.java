@@ -67,6 +67,9 @@ public interface ApiInterface {
     @POST("PutAway/GeneratePutawayandPickingSuggestion")
     Call<String> GeneratePutawayandPickingSuggestion(@Body WMSCoreMessage oRequest);
 
+    @POST("PutAway/StopSuggestion")
+    Call<String> StopSuggestion(@Body WMSCoreMessage oRequest);
+
     @POST("PutAway/ConfirmBinPosting")
     Call<String> ConfirmBinPosting(@Body WMSCoreMessage oRequest);
 
@@ -103,7 +106,6 @@ public interface ApiInterface {
     @POST("Inbound/GetInboundPalletInfo")
     Call<String> GetInboundPalletInfo(@Body WMSCoreMessage oRequest);
 
-
     @POST("Inbound/PrintEcomLabelsForFurniture")
     Call<String> PrintEcomLabelsForFurniture(@Body WMSCoreMessage oRequest);
 
@@ -116,8 +118,7 @@ public interface ApiInterface {
     @POST("VLPD/PalletValidationForPtoP")
     Call<String> PalletValidationForPtoP(@Body WMSCoreMessage oRequest);
 
-
-   @POST("VLPD/PickingandShortingSkip")
+    @POST("VLPD/PickingandShortingSkip")
     Call<String> PickingandShortingSkip(@Body WMSCoreMessage oRequest);
 
     @POST("VLPD/PickingandShortingDockValidation")

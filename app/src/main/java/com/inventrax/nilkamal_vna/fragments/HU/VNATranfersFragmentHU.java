@@ -72,7 +72,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
     private CardView cvScanFromLocation,cvScanPallet,cvScanToLocation;
     private ImageView ivScanFromLocation,ivScanPallet, ivScanToLocation;
     private EditText etFromLocation,etPallet,etToLocation;
-    Button btnClear, btnSkip,btnCloseLoadPallet,btnStart;
+    Button btnClear, btnSkip,btnCloseLoadPallet,btnStart,btnStop;
     private Common common = null;
     String scanner = null;
     String getScanner = null;
@@ -106,7 +106,9 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
         }
     };
 
-    public VNATranfersFragmentHU() { }
+    public VNATranfersFragmentHU() {
+
+    }
 
     @Nullable
     @Override
@@ -144,12 +146,13 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
         btnClear=(Button)rootView.findViewById(R.id.btnClear);
         btnSkip=(Button)rootView.findViewById(R.id.btnSkip);
         btnStart=(Button)rootView.findViewById(R.id.btnStart);
+        btnStop=(Button)rootView.findViewById(R.id.btnStop);
         btnCloseLoadPallet=(Button)rootView.findViewById(R.id.btnCloseLoadPallet);
-
 
         btnClear.setOnClickListener(this);
         btnSkip.setOnClickListener(this);
         btnStart.setOnClickListener(this);
+        btnStop.setOnClickListener(this);
         btnCloseLoadPallet.setOnClickListener(this);
 
         SharedPreferences sp = getActivity().getSharedPreferences("LoginActivity", Context.MODE_PRIVATE);
@@ -961,14 +964,20 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
             case R.id.btnClear:
                     clearAllFileds1();
                 break;
+
             case R.id.btnStart:
-                GeneratePutawayandPickingSuggestion();
-            break;
+                    GeneratePutawayandPickingSuggestion();
+                break;
+
+            case R.id.btnStop:
+
+                StopSuggestion();
+                break;
+
             case R.id.btnSkip:
 
                 if(isPicking){
                    /* if(isFromLocationScanned && !isPalletScanned && !isToLocationScanned){*/
-
 
                         final Dialog pickingSkipdialog = new Dialog(getActivity());
                         pickingSkipdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -991,6 +1000,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                                 pickingSkipdialog.dismiss();
                             }
                         });
+
                         final List<String> lstSkipReason = new ArrayList<>();
                         lstSkipReason.add("Damage");
                         lstSkipReason.add("Not Found");
@@ -1008,6 +1018,7 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                                 skipReason=lstSkipReason.get(0);
                             }
                         });
+
                         pickingSkipdialog.show();
 
 /*                        // TODO after Skipping()
@@ -1022,8 +1033,8 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
                     }*/
                 }else{
                     if(isFromLocationScanned && isPalletScanned && !isToLocationScanned){
-                        Toast.makeText(getActivity(), "Skkiped", Toast.LENGTH_SHORT).show();
-                        //TODO after Skipping()
+                        Toast.makeText(getActivity(), "Skiped", Toast.LENGTH_SHORT).show();
+                        // TODO after Skipping()
                     }else{
                         if(isToLocationScanned){
                             Toast.makeText(getActivity(), "Already Transfered", Toast.LENGTH_SHORT).show();
@@ -1536,6 +1547,123 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
         }
     }
 
+    private void StopSuggestion() {
+
+        try {
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
+            InboundDTO inboundDTO = new InboundDTO();
+            inboundDTO.setUserId(userId);
+            message.setEntityObject(inboundDTO);
+
+            Call<String> call = null;
+            ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+                call = apiService.StopSuggestion(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+
+                            } else {
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+                                List<LinkedTreeMap<?, ?>> _lInbound = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lInbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                InboundDTO inboundDTO1=null;
+                                for(int i=0;i<_lInbound.size();i++){
+                                    inboundDTO1=new InboundDTO(_lInbound.get(i).entrySet());
+                                }
+
+                                if(inboundDTO1.getResult().equals("1")){
+                                    common.showUserDefinedAlertType("Success", getActivity(), getContext(), "Success");
+                                    ((RadioButton)rootView.findViewById(R.id.radioAuto)).setEnabled(true);
+                                    ((RadioButton)rootView.findViewById(R.id.radioPicking)).setEnabled(true);
+                                    ((RadioButton)rootView.findViewById(R.id.radioPutaway)).setEnabled(true);
+                                }else{
+                                    common.showUserDefinedAlertType(inboundDTO1.getResult(), getActivity(), getContext(), "Error");
+                                }
+
+                                ProgressDialogUtils.closeProgressDialog();
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "001_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
+    }
 
     private void GeneratePutawayandPickingSuggestion() {
 
@@ -1604,6 +1732,12 @@ public class VNATranfersFragmentHU extends Fragment implements View.OnClickListe
 
                                 if(inboundDTO1.getResult().equals("Success")){
                                     common.showUserDefinedAlertType(inboundDTO1.getResult(), getActivity(), getContext(), "Success");
+                                    ((RadioButton)rootView.findViewById(R.id.radioAuto)).setEnabled(false);
+                                    ((RadioButton)rootView.findViewById(R.id.radioPicking)).setEnabled(false);
+                                    ((RadioButton)rootView.findViewById(R.id.radioPutaway)).setEnabled(false);
+                                    ((RadioButton)rootView.findViewById(R.id.radioAuto)).setChecked(false);
+                                    ((RadioButton)rootView.findViewById(R.id.radioPicking)).setChecked(false);
+                                    ((RadioButton)rootView.findViewById(R.id.radioPutaway)).setChecked(false);
                                 }else{
                                     common.showUserDefinedAlertType(inboundDTO1.getResult(), getActivity(), getContext(), "Error");
                                 }

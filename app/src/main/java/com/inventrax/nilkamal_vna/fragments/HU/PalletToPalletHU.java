@@ -755,6 +755,10 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
                                     }
                                     else if (vlpdDto1.getResult().equals("-8")){
                                         common.showUserDefinedAlertType("Picking is not done on from pallet", getActivity(), getContext(), "Error");
+                                    }else if (vlpdDto1.getResult().equals("-9")){
+                                        common.showUserDefinedAlertType("No space in this pallet", getActivity(), getContext(), "Error");
+                                    }else if (vlpdDto1.getResult().equals("-10")){
+                                        common.showUserDefinedAlertType("No space in this pallet", getActivity(), getContext(), "Error");
                                     }else {
                                         common.showUserDefinedAlertType("Error While Transfer", getActivity(), getContext(), "Error");
                                     }

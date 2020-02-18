@@ -88,8 +88,6 @@ public class InboundDTO {
     @SerializedName("PendingPalletcount")
     private String PendingPalletcount ;
 
-
-
     @SerializedName("PutwayType")
     private String PutwayType;
 
@@ -98,6 +96,7 @@ public class InboundDTO {
 
     @SerializedName("SuggestedLocation")
     private String SuggestedLocation;
+
 
 
 
@@ -965,4 +964,6 @@ public class InboundDTO {
     public void setPendingPalletcount(String pendingPalletcount) {
         PendingPalletcount = pendingPalletcount;
     }
+
+
 }

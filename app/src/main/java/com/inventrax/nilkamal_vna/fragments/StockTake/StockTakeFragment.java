@@ -380,7 +380,6 @@ public class StockTakeFragment extends Fragment implements View.OnClickListener,
                 {
                     etLocation.setText(scannedData);
                     GetLocationStatusForHH();
-
                 }
             }
         }
