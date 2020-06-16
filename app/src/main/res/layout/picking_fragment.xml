@@ -14,7 +14,8 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/rlSelectReason"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -716,6 +717,32 @@
                 android:inputType="text"
                 android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@+id/txtInputLayoutPrinterIP"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:padding="10dp">
+
+            <RadioButton
+                android:id="@+id/rbWithMRP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="With MRP"/>
+
+            <RadioButton
+                android:id="@+id/rbWithoutMRP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Withou MRP"/>
+
+
+        </RadioGroup>
 
         <Button
             android:id="@+id/btnPrint"

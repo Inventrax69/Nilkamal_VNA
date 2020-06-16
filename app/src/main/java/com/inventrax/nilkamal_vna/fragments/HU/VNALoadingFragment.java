@@ -311,6 +311,12 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                     return;
                 }
 
+                if(ScanValidator.IsBundleScanOnBundling(scannedData)){
+                    if(!txtOBDNumber.getText().toString().isEmpty())
+                        VNAuniqueRSNLoading(scannedData,"3");
+                    return;
+                }
+
                 if(ScanValidator.IsBundleRSN(scannedData)){
                     if(!txtOBDNumber.getText().toString().isEmpty())
                         VNAuniqueRSNLoading(scannedData,"2");
@@ -730,7 +736,10 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                 vlpdRequestDTO.setRSNNumber(scannedData.split("[_]")[1]);
                 vlpdRequestDTO.setVLPDNumber(scannedData.split("[_]")[0]);
             }
-
+            if(rSnType.equals("3")){
+                vlpdRequestDTO.setRSNNumber(scannedData);
+                vlpdRequestDTO.setVLPDNumber("");
+            }
 
             message.setEntityObject(vlpdRequestDTO);
 

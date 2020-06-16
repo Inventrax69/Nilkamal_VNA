@@ -133,7 +133,7 @@ public class AboutFragment extends Fragment implements View.OnClickListener{
                     // Create the intent.
                     Intent dialIntent = new Intent(Intent.ACTION_DIAL);
                     // Set the data for the intent as the phone number.
-                    dialIntent.setData(Uri.parse("tel:" + "9676692934"));
+                    dialIntent.setData(Uri.parse("tel:" + "123456"));
                     // sending intent.
                     startActivity(dialIntent);
                 }catch (Exception e){

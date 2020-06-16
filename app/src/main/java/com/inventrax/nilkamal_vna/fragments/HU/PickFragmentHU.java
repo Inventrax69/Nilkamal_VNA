@@ -1,5 +1,6 @@
 package com.inventrax.nilkamal_vna.fragments.HU;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -80,6 +83,10 @@ public class PickFragmentHU extends Fragment implements View.OnClickListener, Ba
     private SearchableSpinner spinnerSelectReason;
     private CustomEditText etPallet, etQty, etOldRsn, etNewRsn, etQtyPrint, etPrinterIP;
     private Button btnSkip, btnExport, btnPick, btnCloseOne, btnSkipItem, btnCloseTwo, btnPrint, btnClosePrint;
+
+    private RadioGroup radioGroup;
+    private RadioButton rbWithMRP,rbWithoutMRP;
+
     private String loc = null, sku = null, desc = null, reqQty = null,
             balQty = null, barcode = null, pallet = null, qty = null, Referenceno = null, Box = null, dock = null, batchno;
     FragmentUtils fragmentUtils;
@@ -165,6 +172,11 @@ public class PickFragmentHU extends Fragment implements View.OnClickListener, Ba
 
         etPallet = (CustomEditText) rootView.findViewById(R.id.etPallet);
         etQty = (CustomEditText) rootView.findViewById(R.id.etQty);
+
+        radioGroup = (RadioGroup) rootView.findViewById(R.id.radioGroup);
+
+        rbWithMRP = (RadioButton) rootView.findViewById(R.id.rbWithMRP);
+        rbWithoutMRP = (RadioButton) rootView.findViewById(R.id.rbWithoutMRP);
 
 
         btnCloseOne = (Button) rootView.findViewById(R.id.btnCloseOne);
@@ -280,6 +292,22 @@ public class PickFragmentHU extends Fragment implements View.OnClickListener, Ba
         btnPick.setOnClickListener(this);
         btnPick.setTextColor(getResources().getColor(R.color.black));
         btnPick.setBackgroundResource(R.drawable.button_hide);
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @SuppressLint("ResourceType")
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton rb = (RadioButton) group.findViewById(checkedId);
+                if (null != rb && checkedId > -1) {
+
+                    if (rb.getText() == getString(R.string.with_mrp)) {
+
+                    } else {
+
+                    }
+                }
+            }
+        });
 
         // For Cipher Barcode reader
         Intent RTintent = new Intent("sw.reader.decode.require");
@@ -679,6 +707,14 @@ public class PickFragmentHU extends Fragment implements View.OnClickListener, Ba
                         ValidateBarcodeAndConfirmPicking();
                         return;
 
+                    }else if(ScanValidator.IsBundleScanOnBundling(scannedData)){
+                        lblScannedBarcode.setText(scannedData);
+                        etQty.setText("0");
+                        isPrintWindowRequired = false;
+                        ValidateBarcodeAndConfirmPicking();
+                        return;
+                    }else {
+                        common.showUserDefinedAlertType(errorMessages.EMC_0045, getActivity(), getContext(), "Error");
                     }
                 } else {
                     common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");

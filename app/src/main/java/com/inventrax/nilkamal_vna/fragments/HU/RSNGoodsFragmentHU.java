@@ -1952,6 +1952,8 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
             } catch (Exception ex) {
                 try {
+                    etLocation.setText("");
+
                     exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetLocationType_01", getActivity());
                     logException();
                 } catch (IOException e) {
@@ -1982,6 +1984,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
 
                                 }
+                                etLocation.setText("");
                                 ProgressDialogUtils.closeProgressDialog();
                                 cvScanLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
                                 ivScanLocation.setImageResource(R.drawable.warning_img);
@@ -2034,6 +2037,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
                         } catch (Exception ex) {
                             try {
+                                etLocation.setText("");
                                 exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetLocationType_02", getActivity());
                                 logException();
                             } catch (IOException e) {
@@ -2050,11 +2054,13 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                     public void onFailure(Call<String> call, Throwable throwable) {
                         //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
                         ProgressDialogUtils.closeProgressDialog();
+                        etLocation.setText("");
                         common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
                     }
                 });
             } catch (Exception ex) {
                 try {
+                    etLocation.setText("");
                     exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetLocationType_03", getActivity());
                     logException();
                 } catch (IOException e) {
@@ -2065,6 +2071,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
             }
         } catch (Exception ex) {
             try {
+                etLocation.setText("");
                 exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetLocationType_04", getActivity());
                 logException();
             } catch (IOException e) {

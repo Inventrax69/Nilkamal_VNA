@@ -1646,6 +1646,25 @@ public class SkuToSkuFragment extends Fragment implements View.OnClickListener, 
                 return;
             }*/
 
+
+                if (ScanValidator.IsBundleScanOnBundling(scannedData)) {
+                    if (lblSKU.getText().toString().isEmpty()) {
+                        common.showUserDefinedAlertType(errorMessages.EMC_039, getActivity(), getContext(), "Error");
+                        clearFields();
+                        return;
+                    }
+
+                    if (etPallet.getText().toString().isEmpty()) {
+                        common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");
+                        return;
+                    }
+
+                    lblScannedBarcode.setText(scannedData);
+                    etQty.setText("0");
+                    isPrintWindowRequired = false;
+                    ValidateBarcodeAndConfirmPicking();
+                }
+
             }else {
                 if(!common.isPopupActive())
                 {

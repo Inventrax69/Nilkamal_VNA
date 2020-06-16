@@ -137,8 +137,12 @@ public class VlpdDto {
     @SerializedName("DockNumber")
     private String DockNumber;
 
+    @SerializedName("RSNType")
+    private String RSNType;
 
-    public VlpdDto() { }
+
+    public VlpdDto() {
+    }
 
 
     public VlpdDto(Set<? extends Map.Entry<?, ?>> entries) {
@@ -240,12 +244,12 @@ public class VlpdDto {
                         this.setHUNo(entry.getValue().toString());
                     }
                     break;
-                 case "HUSize":
+                case "HUSize":
                     if (entry.getValue() != null) {
                         this.setHUSize(entry.getValue().toString());
                     }
                     break;
-                 case "StorageLocation":
+                case "StorageLocation":
                     if (entry.getValue() != null) {
                         this.setStorageLocation(entry.getValue().toString());
                     }
@@ -254,7 +258,7 @@ public class VlpdDto {
                     if (entry.getValue() != null) {
                         this.setNewUniqueRSN(entry.getValue().toString());
                     }
-                break;
+                    break;
                 case "UserId":
                     if (entry.getValue() != null) {
                         this.setUserId(entry.getValue().toString());
@@ -280,22 +284,22 @@ public class VlpdDto {
                         this.setIpAddress(entry.getValue().toString());
                     }
                     break;
-                 case "PickedQty":
+                case "PickedQty":
                     if (entry.getValue() != null) {
                         this.setPickedQty(entry.getValue().toString());
                     }
                     break;
-                 case "RSN":
+                case "RSN":
                     if (entry.getValue() != null) {
                         this.setRSN(entry.getValue().toString());
                     }
                     break;
-                 case "LoadRSNCount":
+                case "LoadRSNCount":
                     if (entry.getValue() != null) {
                         this.setLoadRSNCount(entry.getValue().toString());
                     }
                     break;
-                 case "PickRSNCount":
+                case "PickRSNCount":
                     if (entry.getValue() != null) {
                         this.setPickRSNCount(entry.getValue().toString());
                     }
@@ -329,7 +333,7 @@ public class VlpdDto {
                     }
                     break;
 
-                 case "ToLocation":
+                case "ToLocation":
                     if (entry.getValue() != null) {
                         this.setToLocation(entry.getValue().toString());
                     }
@@ -702,5 +706,13 @@ public class VlpdDto {
 
     public void setDockNumber(String dockNumber) {
         DockNumber = dockNumber;
+    }
+
+    public String getRSNType() {
+        return RSNType;
+    }
+
+    public void setRSNType(String RSNType) {
+        this.RSNType = RSNType;
     }
 }

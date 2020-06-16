@@ -143,6 +143,7 @@
     <string name="title_activity_map_pallet_dock">Map Pallet Dock Loc.</string>
     <string name="title_activity_palletputaway">Pallet Putaway</string>
     <string name="title_activity_bintobin">Bin to Bin</string>
+    <string name="title_activity_bundle_bintobin">Bundle Bin to Bin</string>
     <string name="title_activity_HHReplinshment">HH BinReplenishment</string>
     <string name="title_activity_ecom_pendingPicking">Pending Ecom Pick</string>
     <string name="title_activity_ecom_pendingPickOnDemand">Pending Ecom Pick On Demand</string>
@@ -299,6 +300,8 @@
     <string name="title_activity_pending_cyclecount">Pending Cycle Count</string>
     <string name="cc_name">CC Name:</string>
     <string name="title_activity_mattress">Mattress Bundle</string>
+    <string name="title_activity_Bundle">Bundling</string>
+    <string name="title_activity_UnBundle">Un-Bundling</string>
     <string name="bundle">Bundle#</string>
     <string name="title_activity_pending_slocToSloc">SLoc To SLoc</string>
     <string name="title_activity_pending_skutosku">Sku To Sku</string>
@@ -310,4 +313,6 @@
     <string name="amazon_label_printer">Amazon Label Printer</string>
     <string name="so_num">SO Number</string>
     <string name="btnStart">Start</string>
+    <string name="with_mrp">With MRP</string>
+    <string name="without_mrp">Without MRP</string>
 </resources>

@@ -34,6 +34,7 @@ import com.inventrax.nilkamal_vna.fragments.HH.PickOnDemandHHFragment;
 import com.inventrax.nilkamal_vna.fragments.HH.SLocToSLocFragmentHH;
 import com.inventrax.nilkamal_vna.fragments.HH.SkuToSkuFragmentHH;
 import com.inventrax.nilkamal_vna.fragments.HH.SorterPickFragmentHH;
+import com.inventrax.nilkamal_vna.fragments.HU.BundlingFragment;
 import com.inventrax.nilkamal_vna.fragments.HU.PalletToPalletHU;
 import com.inventrax.nilkamal_vna.fragments.HU.PickingFragmentHU;
 import com.inventrax.nilkamal_vna.fragments.HU.PutAwayFragment;
@@ -48,6 +49,7 @@ import com.inventrax.nilkamal_vna.fragments.HU.ReceiveFromSiteFragmentHU;
 import com.inventrax.nilkamal_vna.fragments.HU.SLocToSLocFragment;
 import com.inventrax.nilkamal_vna.fragments.HU.SkuToSkuFragment;
 import com.inventrax.nilkamal_vna.fragments.HU.PickingSortingtHU;
+import com.inventrax.nilkamal_vna.fragments.HU.UnBundleFragment;
 import com.inventrax.nilkamal_vna.fragments.HU.VNABinToBinFragmentHU;
 import com.inventrax.nilkamal_vna.fragments.HU.VNATranfersFragmentHU;
 import com.inventrax.nilkamal_vna.fragments.HU.ToInDropLocationHU;
@@ -187,6 +189,21 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
             childList.put(menuModel, childModelsList);
         }
 
+        childModelsList = new ArrayList<>();
+        menuModel = new MenuModel("Bundling", true, true, "Transfers");
+        headerList.add(menuModel);
+
+        childModel = new MenuModel("Bundle", false, false, "Bundle");
+        childModelsList.add(childModel);
+
+        childModel = new MenuModel("Un-Bundle", false, false, "Un-Bundle");
+        childModelsList.add(childModel);
+
+
+        if (menuModel.hasChildren) {
+            childList.put(menuModel, childModelsList);
+        }
+
 
         menuModel = new MenuModel("Dispatches", true, true, "Dispatches");
         headerList.add(menuModel);
@@ -235,12 +252,14 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
         childModel = new MenuModel("Bin to Bin", false, false, "Bin to Bin");
         childModelsList.add(childModel);
 
+        childModel = new MenuModel("Bundle Bin to Bin", false, false, "Bundle Bin to Bin");
+        childModelsList.add(childModel);
+
         childModel = new MenuModel("Pallet to Pallet", false, false, "Pallet to Pallet");
         childModelsList.add(childModel);
 
 /*        childModel = new MenuModel("Put Away", false, false, "Put Away");
         childModelsList.add(childModel);*/
-
 
 
         childModel = new MenuModel("SKU to SKU", false, false, "SKU to SKU");
@@ -437,7 +456,7 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
                     break;
 
                 case "VNA Transfers":
-                    if(userName.equalsIgnoreCase("VNA"))
+                    if (userName.equalsIgnoreCase("VNA"))
                         FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new VNATranfersFragmentHU());
                     break;
 
@@ -485,6 +504,11 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new BintoBinFragment());
                     break;
 
+               case "Bundle Bin to Bin":
+                    FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new BundleBintoBinFragment());
+                    break;
+
+
                 case "Put Away":
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new PutAwayFragment());
                     break;
@@ -504,6 +528,14 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
                     break;
                 case "Mattress Bundle":
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new MattressesPrintFragmentHU());
+                    break;
+
+                case "Un-Bundle":
+                    FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new UnBundleFragment());
+                    break;
+
+                case "Bundle":
+                    FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new BundlingFragment());
                     break;
             }
         } else {
@@ -576,6 +608,10 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
                 case "Cycle Count":
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new CycleCountFragmentHH());
                     break;
+
+
+
+
             }
         }
 

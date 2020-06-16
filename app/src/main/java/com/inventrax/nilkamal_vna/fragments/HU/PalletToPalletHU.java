@@ -73,12 +73,12 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
     private View rootView;
     private RelativeLayout rlStRefSelect, rlPutaway, rlPalletType;
     private TextView lblStoreRefNo, lblSuggestedLoc, lblPalletConfirm;
-    private CardView cvScanToPallet, cvScanFromPallet,cvScanRSN;
-    private ImageView ivScanToPallet, ivScanFromPallet,ivScanRSN;
+    private CardView cvScanToPallet, cvScanFromPallet, cvScanRSN;
+    private ImageView ivScanToPallet, ivScanFromPallet, ivScanRSN;
     private TextInputLayout txtInputLayoutPallet, txtInputLayoutLocation;
-    private EditText etFromPallet,etToPallet,etRSN;
+    private EditText etFromPallet, etToPallet, etRSN;
     private SearchableSpinner spinnerSelectStRef, spinnerSelectPalletType;
-    private Button btnGo, btnConfirm, btnCloseOne, btnCloseTwo,btnConfirmPallet, btnCloseThree,btnClear;
+    private Button btnGo, btnConfirm, btnCloseOne, btnCloseTwo, btnConfirmPallet, btnCloseThree, btnClear;
 
     FragmentUtils fragmentUtils;
     private Common common = null;
@@ -105,9 +105,9 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
     private String pallet = null, suggestedLoc = null, loc = null, strRef = null;
     private Boolean isFromPendingPutway;
     public String auditbinLocation = null;
-    boolean isToPalletScanned,isFromPalletScanned,isRSN;
-    EditText etmCode,etBatchNo,etHuSize,etHuNo,etMDesc,etQty,etQtyCount;
-    int count=0;
+    boolean isToPalletScanned, isFromPalletScanned, isRSN;
+    EditText etmCode, etBatchNo, etHuSize, etHuNo, etMDesc, etQty, etQtyCount;
+    int count = 0;
 
 
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
@@ -118,7 +118,8 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
         }
     };
 
-    public PalletToPalletHU() { }
+    public PalletToPalletHU() {
+    }
 
     @Nullable
     @Override
@@ -132,9 +133,9 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
     // Form controls
     private void loadFormControls() {
 
-        isToPalletScanned=false;
-        isFromPalletScanned=false;
-        isRSN=false;
+        isToPalletScanned = false;
+        isFromPalletScanned = false;
+        isRSN = false;
 
         rlStRefSelect = (RelativeLayout) rootView.findViewById(R.id.rlStRefSelect);
         rlPutaway = (RelativeLayout) rootView.findViewById(R.id.rlPutaway);
@@ -305,18 +306,18 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
                 break;
             case R.id.btnConfirm:
                 //ConfirmBinPosting();
-                if(isToPalletScanned && isFromPalletScanned && isRSN){
+                if (isToPalletScanned && isFromPalletScanned && isRSN) {
                     Toast.makeText(getActivity(), "You can Complete putaway", Toast.LENGTH_SHORT).show();
-                }else{
-                    if(!isFromPalletScanned){
+                } else {
+                    if (!isFromPalletScanned) {
                         common.showUserDefinedAlertType(errorMessages.EMC_083, getActivity(), getContext(), "Error");
                         return;
                     }
-                    if(!isToPalletScanned){
+                    if (!isToPalletScanned) {
                         common.showUserDefinedAlertType(errorMessages.EMC_0017, getActivity(), getContext(), "Error");
                         return;
                     }
-                    if(!isRSN){
+                    if (!isRSN) {
                         common.showUserDefinedAlertType(errorMessages.EMC_084, getActivity(), getContext(), "Error");
                         return;
                     }
@@ -348,7 +349,6 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
     }
 
 
-
     public void ClearFields() {
 
         ProgressDialogUtils.closeProgressDialog();
@@ -373,10 +373,10 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
         etQty.setText("");
         etMDesc.setText("");
         etQtyCount.setText("");
-        count=0;
-        isFromPalletScanned=false;
-        isToPalletScanned=false;
-        isRSN=false;
+        count = 0;
+        isFromPalletScanned = false;
+        isToPalletScanned = false;
+        isRSN = false;
 
     }
 
@@ -394,8 +394,8 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
         etToPallet.setText("");
         etRSN.setText("");
 
-        isToPalletScanned=false;
-        isRSN=false;
+        isToPalletScanned = false;
+        isRSN = false;
 
     }
 
@@ -414,10 +414,12 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
     }
 
     @Override
-    public void onFailureEvent(BarcodeFailureEvent barcodeFailureEvent) { }
+    public void onFailureEvent(BarcodeFailureEvent barcodeFailureEvent) {
+    }
 
     @Override
-    public void onTriggerEvent(TriggerStateChangeEvent triggerStateChangeEvent) { }
+    public void onTriggerEvent(TriggerStateChangeEvent triggerStateChangeEvent) {
+    }
 
     public void HoneyWellBarcodeListeners() {
 
@@ -467,40 +469,52 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
             if (!ProgressDialogUtils.isProgressActive()) {
 
                 if (rlPalletType.getVisibility() == View.VISIBLE) {
-                   // ValidatePalletOrLocation(scannedData);
+                    // ValidatePalletOrLocation(scannedData);
                     return;
                 }
 
                 //Scan Pallet Number
 
                 if (ScanValidator.IsRSNScanned(scannedData)) {
-                    if(isFromPalletScanned && isToPalletScanned){
+                    if (isFromPalletScanned && isToPalletScanned) {
                         cvScanRSN.setCardBackgroundColor(getResources().getColor(R.color.white));
                         ivScanRSN.setImageResource(R.drawable.check);
-                        isRSN=true;
+                        isRSN = true;
                         etRSN.setText(scannedData);
                         PallettoPalletMovement();
-                    }else{
+                    } else {
                         common.showUserDefinedAlertType(errorMessages.EMC_094, getActivity(), getContext(), "Error");
                     }
                     return;
                 }
 
+                if (ScanValidator.IsBundleScanOnBundling(scannedData)) {
+                    if (isFromPalletScanned && isToPalletScanned) {
+                        cvScanRSN.setCardBackgroundColor(getResources().getColor(R.color.white));
+                        ivScanRSN.setImageResource(R.drawable.check);
+                        isRSN = true;
+                        etRSN.setText(scannedData);
+                        PallettoPalletMovement();
+                    } else {
+                        common.showUserDefinedAlertType(errorMessages.EMC_094, getActivity(), getContext(), "Error");
+                    }
+                    return;
+                }
 
                 //Location Criteria verification
                 if (ScanValidator.IsPalletScanned(scannedData)) {
 
-                    if(!isFromPalletScanned){
-                        PalletValidationForPtoP(scannedData,1);
+                    if (!isFromPalletScanned) {
+                        PalletValidationForPtoP(scannedData, 1);
 
-                    }else{
-                        if(!isToPalletScanned){
-                            if(!(etFromPallet.getText().toString().equals(scannedData))){
-                                PalletValidationForPtoP(scannedData,2);
-                            }else{
+                    } else {
+                        if (!isToPalletScanned) {
+                            if (!(etFromPallet.getText().toString().equals(scannedData))) {
+                                PalletValidationForPtoP(scannedData, 2);
+                            } else {
                                 common.showUserDefinedAlertType("From Pallet and To Pallet are Same", getActivity(), getContext(), "Error");
                             }
-                        }else{
+                        } else {
                             common.showUserDefinedAlertType(errorMessages.EMC_0046, getActivity(), getContext(), "Error");
                         }
                     }
@@ -509,18 +523,16 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
                 }/* else {
                     common.showUserDefinedAlertType(errorMessages.EMC_083, getActivity(), getContext(), "Error");
                 }*/
-            }else {
-                if(!Common.isPopupActive())
-                {
+            } else {
+                if (!Common.isPopupActive()) {
                     common.showUserDefinedAlertType(errorMessages.EMC_081, getActivity(), getContext(), "Error");
 
                 }
-                sound.alertWarning(getActivity(),getContext());
+                sound.alertWarning(getActivity(), getContext());
 
             }
         }
     }
-
 
 
     // sending exception to the database
@@ -662,7 +674,7 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
         try {
             WMSCoreMessage message = new WMSCoreMessage();
             message = common.SetAuthentication(EndpointConstants.VLPDDTO, getContext());
-            VlpdDto vlpdDto=new VlpdDto();
+            VlpdDto vlpdDto = new VlpdDto();
             vlpdDto.setUserId(userId);
             vlpdDto.setFromPallet(etFromPallet.getText().toString());
             vlpdDto.setToPallet(etToPallet.getText().toString());
@@ -722,13 +734,13 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
                                 List<LinkedTreeMap<?, ?>> _lVlpd = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lVlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
-                                VlpdDto vlpdDto1=null;
-                                for(int i=0;i<_lVlpd.size();i++){
-                                    vlpdDto1=new VlpdDto(_lVlpd.get(i).entrySet());
+                                VlpdDto vlpdDto1 = null;
+                                for (int i = 0; i < _lVlpd.size(); i++) {
+                                    vlpdDto1 = new VlpdDto(_lVlpd.get(i).entrySet());
                                 }
 
-                                if(vlpdDto1.getResult()!=null){
-                                    if(vlpdDto1.getResult().equals("1")){
+                                if (vlpdDto1.getResult() != null) {
+                                    if (vlpdDto1.getResult().equals("1")) {
                                         count++;
                                         etQtyCount.setText(String.valueOf(count));
                                         etQty.setText(vlpdDto1.getLoadRSNCount());
@@ -737,32 +749,26 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
                                         etBatchNo.setText(vlpdDto1.getBatchNo());
                                         etHuNo.setText(vlpdDto1.getHUNo());
                                         etHuSize.setText(vlpdDto1.getHUSize());
-                                    }
-                                    else if (vlpdDto1.getResult().equals("-3")) {
+                                    } else if (vlpdDto1.getResult().equals("-3")) {
                                         common.showUserDefinedAlertType("To pallet location are not mapped", getActivity(), getContext(), "Error");
-                                    }
-                                    else if (vlpdDto1.getResult().equals("-2")){
+                                    } else if (vlpdDto1.getResult().equals("-2")) {
                                         common.showUserDefinedAlertType("Invalid Pallet", getActivity(), getContext(), "Error");
-                                    }
-                                    else if (vlpdDto1.getResult().equals("-1")){
+                                    } else if (vlpdDto1.getResult().equals("-1")) {
                                         common.showUserDefinedAlertType("Dulicatie RSN are generated", getActivity(), getContext(), "Error");
-                                    }
-                                    else if (vlpdDto1.getResult().equals("-6")){
+                                    } else if (vlpdDto1.getResult().equals("-6")) {
                                         common.showUserDefinedAlertType("From pallet is not mapped to priority bin", getActivity(), getContext(), "Error");
-                                    }
-                                    else if (vlpdDto1.getResult().equals("-7")){
+                                    } else if (vlpdDto1.getResult().equals("-7")) {
                                         common.showUserDefinedAlertType("To pallet is not mapped to priority bin", getActivity(), getContext(), "Error");
-                                    }
-                                    else if (vlpdDto1.getResult().equals("-8")){
+                                    } else if (vlpdDto1.getResult().equals("-8")) {
                                         common.showUserDefinedAlertType("Picking is not done on from pallet", getActivity(), getContext(), "Error");
-                                    }else if (vlpdDto1.getResult().equals("-9")){
+                                    } else if (vlpdDto1.getResult().equals("-9")) {
                                         common.showUserDefinedAlertType("No space in this pallet", getActivity(), getContext(), "Error");
-                                    }else if (vlpdDto1.getResult().equals("-10")){
+                                    } else if (vlpdDto1.getResult().equals("-10")) {
                                         common.showUserDefinedAlertType("No space in this pallet", getActivity(), getContext(), "Error");
-                                    }else {
+                                    } else {
                                         common.showUserDefinedAlertType("Error While Transfer", getActivity(), getContext(), "Error");
                                     }
-                                }else{
+                                } else {
                                     common.showUserDefinedAlertType("Error", getActivity(), getContext(), "Error");
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
@@ -873,35 +879,35 @@ public class PalletToPalletHU extends Fragment implements View.OnClickListener, 
                                 _lVlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
 
-                                VlpdDto vlpdDto=null;
-                                for(int i=0;i<_lVlpd.size();i++){
-                                    vlpdDto=new VlpdDto(_lVlpd.get(i).entrySet());
+                                VlpdDto vlpdDto = null;
+                                for (int i = 0; i < _lVlpd.size(); i++) {
+                                    vlpdDto = new VlpdDto(_lVlpd.get(i).entrySet());
                                 }
 
-                                if(vlpdDto.getMessage().equals("1")){
+                                if (vlpdDto.getMessage().equals("1")) {
 
-                                    if(type==1){
+                                    if (type == 1) {
                                         cvScanFromPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                         ivScanFromPallet.setImageResource(R.drawable.check);
-                                        isFromPalletScanned=true;
+                                        isFromPalletScanned = true;
                                         etFromPallet.setText(scannedData);
-                                    }else{
+                                    } else {
                                         cvScanToPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                         ivScanToPallet.setImageResource(R.drawable.check);
-                                        isToPalletScanned=true;
+                                        isToPalletScanned = true;
                                         etToPallet.setText(scannedData);
                                     }
 
-                                }else{
-                                    if(type==1){
+                                } else {
+                                    if (type == 1) {
                                         cvScanFromPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                         ivScanFromPallet.setImageResource(R.drawable.warning_img);
-                                        isFromPalletScanned=false;
+                                        isFromPalletScanned = false;
                                         etFromPallet.setText(scannedData);
-                                    }else{
+                                    } else {
                                         cvScanToPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                         ivScanToPallet.setImageResource(R.drawable.warning_img);
-                                        isToPalletScanned=false;
+                                        isToPalletScanned = false;
                                         etToPallet.setText(scannedData);
                                     }
                                     common.showUserDefinedAlertType("Pallet is not moved to priority bin zone", getActivity(), getContext(), "Warning");

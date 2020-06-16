@@ -1652,6 +1652,25 @@ public class SLocToSLocFragment extends Fragment implements View.OnClickListener
                 common.showUserDefinedAlertType(errorMessages.EMC_0009, getActivity(), getContext(), "Error");
                 return;
             }*/
+
+                if (ScanValidator.IsBundleScanOnBundling(scannedData)) {
+                    if (lblSKU.getText().toString().isEmpty()) {
+                        common.showUserDefinedAlertType(errorMessages.EMC_039, getActivity(), getContext(), "Error");
+                        clearFields();
+                        return;
+                    }
+                    if (etPallet.getText().toString().isEmpty()) {
+                        common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Error");
+                        return;
+                    }
+
+                    lblScannedBarcode.setText(scannedData);
+
+                    etQty.setText("0");
+                    isPrintWindowRequired = false;
+                    ValidateBarcodeAndConfirmPicking();
+                }
+
             }else {
                 if(!common.isPopupActive())
                 {

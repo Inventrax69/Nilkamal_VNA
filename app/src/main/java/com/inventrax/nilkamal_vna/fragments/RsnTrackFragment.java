@@ -63,13 +63,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RsnTrackFragment extends Fragment implements View.OnClickListener, BarcodeReader.TriggerListener, BarcodeReader.BarcodeListener {
+
     private static final String classCode = "API_FRAG_RSN TRACK";
     private View rootView;
 
     private RelativeLayout rlSelection, rlRsnTrack;
     TextView tvScan;
     private RadioGroup radioGroup;
-    private RadioButton radioRSN, radioBin, radioPallet, radioEAN;
+    private RadioButton radioRSN, radioBin, radioPallet, radioEAN, radioBundle;
     private CardView cvScan;
     private ImageView ivScan;
     private RecyclerView rvRsnTracking;
@@ -129,6 +130,7 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
         radioEAN = (RadioButton) rootView.findViewById(R.id.radioEAN);
         radioRSN = (RadioButton) rootView.findViewById(R.id.radioRSN);
         radioPallet = (RadioButton) rootView.findViewById(R.id.radioPallet);
+        radioBundle = (RadioButton) rootView.findViewById(R.id.radioBundle);
 
         btnCloseOne = (Button) rootView.findViewById(R.id.btnCloseOne);
         btnCloseTwo = (Button) rootView.findViewById(R.id.btnCloseTwo);
@@ -159,6 +161,7 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
         sound = new SoundUtils();
         gson = new GsonBuilder().create();
         core = new WMSCoreMessage();
+
         common.setIsPopupActive(true);
 
         // For Cipher Barcode reader
@@ -191,26 +194,37 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
+
                     case R.id.radioBin:
                         barcodeType = "LOCATION";
                         Common.setIsPopupActive(true);
                         ClearFields();
                         break;
+
                     case R.id.radioEAN:
                         barcodeType = "EAN";
                         ClearFields();
                         Common.setIsPopupActive(true);
                         break;
+
                     case R.id.radioRSN:
                         barcodeType = "RSN";
                         ClearFields();
                         Common.setIsPopupActive(true);
                         break;
+
                     case R.id.radioPallet:
                         barcodeType = "PALLET";
                         ClearFields();
                         Common.setIsPopupActive(true);
                         break;
+
+                    case R.id.radioBundle:
+                        barcodeType = "BUNDLE";
+                        ClearFields();
+                        Common.setIsPopupActive(true);
+                        break;
+
                 }
             }
         });
@@ -228,18 +242,19 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
                 FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new HomeFragment());
                 break;
             case R.id.btnSelect:
+
                 common.setIsPopupActive(false);
-                if ((barcodeType.equals("LOCATION") || barcodeType.equals("EAN") || barcodeType.equals("RSN")
+
+                if ((barcodeType.equals("LOCATION") || barcodeType.equals("EAN") || barcodeType.equals("RSN") || barcodeType.equals("BUNDLE")
                         || barcodeType.equals("PALLET")) && (radioPallet.isChecked()
-                        || radioRSN.isChecked() || radioBin.isChecked() || radioEAN.isChecked() )){
+                        || radioRSN.isChecked() || radioBin.isChecked() || radioEAN.isChecked() || radioBundle.isChecked())) {
                     rlRsnTrack.setVisibility(View.VISIBLE);
 
-                }
-                else
-                {
-                    common.showUserDefinedAlertType(errorMessages.EMC_0066,getActivity(),getContext(),"Error");
+                } else {
+                    common.showUserDefinedAlertType(errorMessages.EMC_0066, getActivity(), getContext(), "Error");
                     return;
                 }
+
                 break;
 
             case R.id.btnClear:
@@ -255,7 +270,7 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
-    public void goToNormalView(){
+    public void goToNormalView() {
 
         ClearFields();
         radioGroup.clearCheck();
@@ -278,7 +293,6 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
             public void run() {
                 getScanner = barcodeReadEvent.getBarcodeData();
                 ProcessScannedinfo(getScanner);
-
 
             }
 
@@ -341,25 +355,25 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
             if (barcodeType.equalsIgnoreCase("LOCATION") && ScanValidator.IsLocationScanned(scannedData)) {
                 tvScan.setText(scannedData);
                 GetStockInformationByRSN(scannedData);
-            } else if(barcodeType.equalsIgnoreCase("RSN") && ScanValidator.IsRSNScanned(scannedData)){
+            } else if (barcodeType.equalsIgnoreCase("RSN") && ScanValidator.IsRSNScanned(scannedData)) {
                 tvScan.setText(scannedData);
                 GetStockInformationByRSN(scannedData);
-            }else if(barcodeType.equalsIgnoreCase("PALLET") && ScanValidator.IsPalletScanned(scannedData)){
+            } else if (barcodeType.equalsIgnoreCase("PALLET") && ScanValidator.IsPalletScanned(scannedData)) {
                 tvScan.setText(scannedData);
                 GetStockInformationByRSN(scannedData);
-            }else if(barcodeType.equalsIgnoreCase("EAN") && !ScanValidator.IsPalletScanned(scannedData) && !ScanValidator.IsLocationScanned(scannedData)
-                    && !ScanValidator.IsRSNScanned(scannedData)){
-                if(scannedData.split("[,]").length == 2){
+            } else if (barcodeType.equalsIgnoreCase("EAN") && !ScanValidator.IsPalletScanned(scannedData) && !ScanValidator.IsLocationScanned(scannedData)
+                    && !ScanValidator.IsRSNScanned(scannedData)) {
+                if (scannedData.split("[,]").length == 2) {
                     tvScan.setText(scannedData.split("[,]")[0]);
                     GetStockInformationByRSN(scannedData.split("[,]")[0]);
                     return;
-                }else {
+                } else {
                     tvScan.setText(scannedData);
                     GetStockInformationByRSN(scannedData);
                     return;
                 }
-            }else {
-                common.showUserDefinedAlertType(errorMessages.EMC_0022,getActivity(),getContext(),"Error");
+            } else {
+                common.showUserDefinedAlertType(errorMessages.EMC_0022, getActivity(), getContext(), "Error");
                 return;
             }
         }
@@ -551,7 +565,6 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
                                 Common.setIsPopupActive(false);
-
 
 
                                 rvRsnTracking.setAdapter(null);

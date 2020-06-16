@@ -105,4 +105,12 @@ public class ScanValidator {
         }
     }
 
+
+    public static boolean IsBundleScanOnBundling(String scannedData)
+    {
+        if (scannedData.length() == 17 && scannedData.substring(0,1).equals("B"))
+            return true;
+        else
+            return false;
+    }
 }

@@ -193,7 +193,7 @@ public interface ApiInterface {
     @POST("VLPD/GetVNAPickingandShortingList")
     Call<String> GetVNAPickingandShortingList(@Body WMSCoreMessage oRequest);
 
-    //Prasanna
+
     @POST("VLPD/ValidateBarcodeAndConfirmPicking")
     Call<String> ValidateBarcodeAndConfirmPicking(@Body WMSCoreMessage oRequest);
 
@@ -209,11 +209,10 @@ public interface ApiInterface {
     @POST("VLPD/GetOpenVLPDList")
     Call<String> GetOpenVLPDList(@Body WMSCoreMessage oRequest);
 
-    //Prasanna
+
     @POST("VLPD/GetHHLoadingInfo")
     Call<String> GetHHLoadingInfo(@Body WMSCoreMessage oRequest);
 
-    //Prasanna
     @POST("VLPD/ConfirmHHBoxLoading")
     Call<String> ConfirmHHBoxLoading(@Body WMSCoreMessage oRequest);
 
@@ -322,5 +321,22 @@ public interface ApiInterface {
 
     @POST("Outbound/GetBoxNumberForVLPD")
     Call<String> GetBoxNumberForVLPD(@Body WMSCoreMessage oRequest);
+
+    // Bundling & Unbundling
+
+    @POST("Inbound/GetBundleNumber ")
+    Call<String> GetBundleNumber(@Body WMSCoreMessage oRequest);
+
+    @POST("Inbound/CloseBundle ")
+    Call<String> CloseBundle(@Body WMSCoreMessage oRequest);
+
+    @POST("Inbound/UniqueRSNMappingWithbundle ")
+    Call<String> UniqueRSNMappingWithbundle(@Body WMSCoreMessage oRequest);
+
+    @POST("Inbound/UnbundleProccess ")
+    Call<String> UnbundleProccess(@Body WMSCoreMessage oRequest);
+
+
+
 
 }

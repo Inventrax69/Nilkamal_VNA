@@ -182,4 +182,6 @@ public class ErrorMessages {
 
     public String EMC_094 = "Please scan 'From pallet'";
 
+    public String EMC_095 = "Please select Store Ref#";
+
 }

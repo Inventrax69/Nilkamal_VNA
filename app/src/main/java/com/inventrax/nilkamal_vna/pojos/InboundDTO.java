@@ -18,7 +18,7 @@ public class InboundDTO {
     @SerializedName("StoreRefNo")
     private String storeRefNo;
     @SerializedName("SKU")
-    private String SKU ;
+    private String SKU;
     @SerializedName("SerialNo")
     private String serialNo;
     @SerializedName("MfgDate")
@@ -32,61 +32,61 @@ public class InboundDTO {
     @SerializedName("PutawayLocation")
     private String PutawayLocation;
     @SerializedName("SLOC ")
-    private List<StorageLocationDTO> SLOC ;
+    private List<StorageLocationDTO> SLOC;
     @SerializedName("ClientID")
-    private String clientID ;
+    private String clientID;
     @SerializedName("Location")
-    private String location ;
+    private String location;
     @SerializedName("MaterialType")
-    private String materialType ;
+    private String materialType;
     @SerializedName("IsSiteToSiteInward")
-    private String isSiteToSiteInward ;
+    private String isSiteToSiteInward;
     @SerializedName("UniqueRSN")
-    private String uniqueRSN ;
+    private String uniqueRSN;
     @SerializedName("HUNumber")
-    private String HUNumber ;
+    private String HUNumber;
     @SerializedName("BoxSerialNumber")
-    private String BoxSerialNumber ;
+    private String BoxSerialNumber;
     @SerializedName("BatchNo")
-    private String batchNo ;
+    private String batchNo;
     @SerializedName("SelectedStorageLocation")
-    private String selectedStorageLocation ;
+    private String selectedStorageLocation;
     @SerializedName("MaterialCode")
-    private String materialCode ;
+    private String materialCode;
     @SerializedName("Mdesc")
-    private String mDesc ;
+    private String mDesc;
     @SerializedName("PoNumber")
-    private String poNumber ;
+    private String poNumber;
     @SerializedName("HUsize")
-    private String HUsize ;
+    private String HUsize;
     @SerializedName("BoxQuantity")
-    private String boxQuantity ;
+    private String boxQuantity;
     @SerializedName("dimensions")
-    private List<DimensionsDTO> dimensionsDTO ;
+    private List<DimensionsDTO> dimensionsDTO;
     @SerializedName("palletinfo")
-    private List<PalletInfoDTO> palletInfoDTO ;
+    private List<PalletInfoDTO> palletInfoDTO;
     @SerializedName("StackCount")
-    private String stackCount ;
+    private String stackCount;
     @SerializedName("PrinyQTy")
-    private String prinyQty ;
+    private String prinyQty;
     @SerializedName("IpAddress")
-    private String ipAddress ;
+    private String ipAddress;
     @SerializedName("StackCountSpecified")
-    private Boolean stackCountSpecified ;
+    private Boolean stackCountSpecified;
     @SerializedName("PrinyQTySpecified")
-    private Boolean PrinyQtySpecified ;
+    private Boolean PrinyQtySpecified;
     @SerializedName("EANNumber")
-    private String EANNumber ;
+    private String EANNumber;
     @SerializedName("InvoiceQuantity")
-    private String invoiceQuantity ;
+    private String invoiceQuantity;
     @SerializedName("PendingQty")
-    private String pendingQty ;
+    private String pendingQty;
     @SerializedName("ScannedInput")
     private String ScannedInput;
 
 
     @SerializedName("PendingPalletcount")
-    private String PendingPalletcount ;
+    private String PendingPalletcount;
 
     @SerializedName("PutwayType")
     private String PutwayType;
@@ -96,8 +96,6 @@ public class InboundDTO {
 
     @SerializedName("SuggestedLocation")
     private String SuggestedLocation;
-
-
 
 
     @SerializedName("ToLocation")
@@ -114,7 +112,7 @@ public class InboundDTO {
     @SerializedName("IsValidStorefno")
     private Boolean isValidStorefno;
     @SerializedName("PalletType")
-    private String palletType ;
+    private String palletType;
     @SerializedName("MaterialMasterId")
     private String materialMasterId;
     @SerializedName("ReceivedQty")
@@ -156,67 +154,66 @@ public class InboundDTO {
     @SerializedName("Weight")
     private String Weight;
 
+    @SerializedName("BundleRSN")
+    private String BundleRSN;
 
 
-    public  InboundDTO()
-    {
+    public InboundDTO() {
     }
 
 
-    public InboundDTO(Set<? extends Map.Entry<?, ?>> entries)
-    {
-        for(Map.Entry<?, ?> entry : entries) {
+    public InboundDTO(Set<? extends Map.Entry<?, ?>> entries) {
+        for (Map.Entry<?, ?> entry : entries) {
 
             switch (entry.getKey().toString()) {
 
                 case "InboundID":
-                    if(entry.getValue()!=null) {
+                    if (entry.getValue() != null) {
                         this.setInboundID(entry.getValue().toString());
                     }
                     break;
                 case "StoreRefNo":
-                    if(entry.getValue()!=null) {
+                    if (entry.getValue() != null) {
                         this.setStoreRefNo(entry.getValue().toString());
                     }
                     break;
                 case "SKU":
-                    if(entry.getValue()!=null) {
+                    if (entry.getValue() != null) {
                         this.setSKU(entry.getValue().toString());
                     }
                     break;
                 case "SerialNo":
-                    if(entry.getValue()!=null) {
+                    if (entry.getValue() != null) {
                         this.setSerialNo(entry.getValue().toString());
                     }
                     break;
                 case "MfgDate":
-                    if(entry.getValue()!=null) {
+                    if (entry.getValue() != null) {
                         this.setMfgDate(entry.getValue().toString());
                     }
                     break;
                 case "DockLocation":
-                    if(entry.getValue()!=null) {
+                    if (entry.getValue() != null) {
                         this.setDockLocation(entry.getValue().toString());
                     }
                     break;
                 case "PalletNo":
-                    if(entry.getValue()!=null) {
+                    if (entry.getValue() != null) {
                         this.setPalletNo(entry.getValue().toString());
                     }
                     break;
                 case "UserId":
-                    if(entry.getValue()!=null) {
+                    if (entry.getValue() != null) {
                         this.setUserId(entry.getValue().toString());
                     }
                     break;
 
-                case  "SLOC" :
-                    if(entry.getValue()!=null) {
-                        List<LinkedTreeMap<?,?>> SloctreemapList=(List<LinkedTreeMap<?,?>>)entry.getValue();
-                        List<StorageLocationDTO> lstSLOC=new ArrayList<StorageLocationDTO>();
-                        for(int i=0;i<SloctreemapList.size();i++)
-                        {
-                            StorageLocationDTO dto=new StorageLocationDTO(SloctreemapList.get(i).entrySet());
+                case "SLOC":
+                    if (entry.getValue() != null) {
+                        List<LinkedTreeMap<?, ?>> SloctreemapList = (List<LinkedTreeMap<?, ?>>) entry.getValue();
+                        List<StorageLocationDTO> lstSLOC = new ArrayList<StorageLocationDTO>();
+                        for (int i = 0; i < SloctreemapList.size(); i++) {
+                            StorageLocationDTO dto = new StorageLocationDTO(SloctreemapList.get(i).entrySet());
                             lstSLOC.add(dto);
                             //Log.d("Message", core.getEntityObject().toString());
 
@@ -227,38 +224,38 @@ public class InboundDTO {
                     }
                     break;
 
-                case   "ClientID":
-                    if(entry.getValue()!=null) {
+                case "ClientID":
+                    if (entry.getValue() != null) {
                         this.setClientID(entry.getValue().toString());
                     }
                     break;
-                case   "Location":
-                    if(entry.getValue()!=null) {
+                case "Location":
+                    if (entry.getValue() != null) {
                         this.setLocation(entry.getValue().toString());
                     }
                     break;
-                case   "MaterialType":
-                    if(entry.getValue()!=null) {
+                case "MaterialType":
+                    if (entry.getValue() != null) {
                         this.setMaterialType(entry.getValue().toString());
                     }
                     break;
-                case   "IsSiteToSiteInward":
-                    if(entry.getValue()!=null) {
+                case "IsSiteToSiteInward":
+                    if (entry.getValue() != null) {
                         this.setIsSiteToSiteInward(entry.getValue().toString());
                     }
                     break;
-                case   "UniqueRSN":
-                    if(entry.getValue()!=null) {
+                case "UniqueRSN":
+                    if (entry.getValue() != null) {
                         this.setUniqueRSN(entry.getValue().toString());
                     }
                     break;
-                case   "HUNumber":
-                    if(entry.getValue()!=null) {
+                case "HUNumber":
+                    if (entry.getValue() != null) {
                         this.setHUNumber(entry.getValue().toString());
                     }
                     break;
-                case   "BoxSerialNumber":
-                    if(entry.getValue()!=null) {
+                case "BoxSerialNumber":
+                    if (entry.getValue() != null) {
                         this.setBoxSerialNumber(entry.getValue().toString());
                     }
                     break;
@@ -286,79 +283,79 @@ public class InboundDTO {
                         this.setPalletInfoDTO(lstPalletinfo);
                     }
                     break;
-                case   "BatchNo":
-                    if(entry.getValue()!=null) {
+                case "BatchNo":
+                    if (entry.getValue() != null) {
                         this.setBatchNo(entry.getValue().toString());
                     }
                     break;
-                case   "SelectedStorageLocation":
-                    if(entry.getValue()!=null) {
+                case "SelectedStorageLocation":
+                    if (entry.getValue() != null) {
                         this.setSelectedStorageLocation(entry.getValue().toString());
                     }
                     break;
-                case   "MaterialCode":
-                    if(entry.getValue()!=null) {
+                case "MaterialCode":
+                    if (entry.getValue() != null) {
                         this.setMaterialCode(entry.getValue().toString());
                     }
                     break;
-                case   "Mdesc":
-                    if(entry.getValue()!=null) {
+                case "Mdesc":
+                    if (entry.getValue() != null) {
                         this.setmDesc(entry.getValue().toString());
                     }
                     break;
-                case   "PoNumber":
-                    if(entry.getValue()!=null) {
+                case "PoNumber":
+                    if (entry.getValue() != null) {
                         this.setPoNumber(entry.getValue().toString());
                     }
                     break;
-                case   "HUsize":
-                    if(entry.getValue()!=null) {
+                case "HUsize":
+                    if (entry.getValue() != null) {
                         this.setHUsize(entry.getValue().toString());
                     }
-                case   "BoxQuantity":
-                    if(entry.getValue()!=null) {
+                case "BoxQuantity":
+                    if (entry.getValue() != null) {
                         this.setBoxQuantity(entry.getValue().toString());
                     }
                     break;
-                case   "StackCount":
-                    if(entry.getValue()!=null) {
+                case "StackCount":
+                    if (entry.getValue() != null) {
                         this.setStackCount(entry.getValue().toString());
                     }
                     break;
-                case   "PrinyQTy":
-                    if(entry.getValue()!=null) {
+                case "PrinyQTy":
+                    if (entry.getValue() != null) {
                         this.setPrinyQty(entry.getValue().toString());
                     }
-                case   "IpAddress":
-                    if(entry.getValue()!=null) {
+                case "IpAddress":
+                    if (entry.getValue() != null) {
                         this.setIpAddress(entry.getValue().toString());
                     }
                     break;
 
-                case   "StackCountSpecified":
-                    if(entry.getValue()!=null) {
+                case "StackCountSpecified":
+                    if (entry.getValue() != null) {
                         this.setStackCountSpecified(Boolean.parseBoolean(entry.getValue().toString()));
                     }
                     break;
 
-                case   "PrinyQTySpecified":
-                    if(entry.getValue()!=null) {
+                case "PrinyQTySpecified":
+                    if (entry.getValue() != null) {
                         this.setPrinyQtySpecified(Boolean.parseBoolean(entry.getValue().toString()));
                     }
                     break;
-                case   "EANNumber":
-                    if(entry.getValue()!=null) {
+                case "EANNumber":
+                    if (entry.getValue() != null) {
                         this.setEANNumber(entry.getValue().toString());
                     }
                     break;
 
-                case   "InvoiceQuantity":
-                    if(entry.getValue()!=null) {
+                case "InvoiceQuantity":
+                    if (entry.getValue() != null) {
                         this.setInvoiceQuantity(entry.getValue().toString());
                     }
                     break;
-                case   "PendingQty":
-                    if(entry.getValue()!=null) {
+                case "PendingQty":
+                    if (entry.getValue() != null) {
                         this.setPendingQty(entry.getValue().toString());
                     }
                     break;
@@ -413,8 +410,8 @@ public class InboundDTO {
                         this.setValidStorefno(Boolean.parseBoolean(entry.getValue().toString()));
                     }
                     break;
-                case   "PalletType":
-                    if(entry.getValue()!=null) {
+                case "PalletType":
+                    if (entry.getValue() != null) {
                         this.setPalletType(entry.getValue().toString());
                     }
                     break;
@@ -459,38 +456,43 @@ public class InboundDTO {
                     }
                     break;
 
-               case "SkipReason":
+                case "SkipReason":
                     if (entry.getValue() != null) {
                         this.setSkipReason(entry.getValue().toString());
                     }
                     break;
-               case "lenght":
+                case "lenght":
                     if (entry.getValue() != null) {
                         this.setSkipReason(entry.getValue().toString());
                     }
                     break;
-               case "Bredth":
+                case "Bredth":
                     if (entry.getValue() != null) {
                         this.setSkipReason(entry.getValue().toString());
                     }
                     break;
-               case "height":
+                case "height":
                     if (entry.getValue() != null) {
                         this.setSkipReason(entry.getValue().toString());
                     }
                     break;
-               case "Weight":
+                case "Weight":
                     if (entry.getValue() != null) {
                         this.setSkipReason(entry.getValue().toString());
                     }
                     break;
 
-               case "PendingPalletcount":
+                case "PendingPalletcount":
                     if (entry.getValue() != null) {
                         this.setPendingPalletcount(entry.getValue().toString());
                     }
                     break;
 
+                case "BundleRSN ":
+                    if (entry.getValue() != null) {
+                        this.setBundleRSN(entry.getValue().toString());
+                    }
+                    break;
 
 
             }
@@ -966,4 +968,11 @@ public class InboundDTO {
     }
 
 
+    public String getBundleRSN() {
+        return BundleRSN;
+    }
+
+    public void setBundleRSN(String bundleRSN) {
+        BundleRSN = bundleRSN;
+    }
 }

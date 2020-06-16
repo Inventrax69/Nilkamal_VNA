@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.cipherlab.barcode.GeneralString;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -65,11 +66,13 @@ import com.inventrax.nilkamal_vna.util.FragmentUtils;
 import com.inventrax.nilkamal_vna.util.ProgressDialogUtils;
 import com.inventrax.nilkamal_vna.util.ScanValidator;
 import com.inventrax.nilkamal_vna.util.SoundUtils;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -78,13 +81,13 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
     private static final String classCode = "API_FRAG_PICKING_SORTING";
     private View rootView;
-    private CardView cvScanPartNo,cvScanPallet,cvScanDockLocation,cvScanNewRSN;
-    private ImageView ivScanPartNo, ivScanPallet, ivScanDockLocation,ivScanNewRSN;
-    private EditText etPartNo,etDockLocation,etPallet,etNewQty;
-    Button btnClear, btnSkip,btnCloseLoadPallet,btnGo,btnExport,btnCloseExport,btnCloseOne;
+    private CardView cvScanPartNo, cvScanPallet, cvScanDockLocation, cvScanNewRSN;
+    private ImageView ivScanPartNo, ivScanPallet, ivScanDockLocation, ivScanNewRSN;
+    private EditText etPartNo, etDockLocation, etPallet, etNewQty;
+    Button btnClear, btnSkip, btnCloseLoadPallet, btnGo, btnExport, btnCloseExport, btnCloseOne;
     private Common common = null;
     SoundUtils soundUtils = null;
-    String scanner = null,vlpdId = null;
+    String scanner = null, vlpdId = null;
     String getScanner = null;
     IntentFilter filter;
     private ScanValidator scanValidator;
@@ -98,17 +101,17 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     ExceptionLoggerUtils exceptionLoggerUtils;
     private ErrorMessages errorMessages;
     public Bundle bundle;
-    boolean isPalletScanned,isPartNoScanned,isDockLocationScanned,isNewRsn;
-    RelativeLayout rlVLPDSelect,rlSorting,rlExport;
+    boolean isPalletScanned, isPartNoScanned, isDockLocationScanned, isNewRsn;
+    RelativeLayout rlVLPDSelect, rlSorting, rlExport;
     private SearchableSpinner spinnerSelectVLPDNo;
-    String storageVLPDNo="";
-    TextView txtVLPDNumber,txtMcode,txtDockName,txtPendingQty,txtDesc;
-    EditText txtBatchNo,txtHuNo,txtHuSize;
+    String storageVLPDNo = "";
+    TextView txtVLPDNumber, txtMcode, txtDockName, txtPendingQty, txtDesc;
+    EditText txtBatchNo, txtHuNo, txtHuSize;
     public VlpdDto mVlpdDto;
-    public  String sNewUniqueRSN="",sPalletNo="",ipAdress="",sUniqueRSN="",sPendingQty="",sDockName="";
+    public String sNewUniqueRSN = "", sPalletNo = "", ipAdress = "", sUniqueRSN = "", sPendingQty = "", sDockName = "";
     LinearLayout layoutnewRsn;
     Dialog pickingSkipdialog;
-    String VLPDNumber="",Pallet="",ActualLoc="",SuggestedLoc="",Type="";
+    String VLPDNumber = "", Pallet = "", ActualLoc = "", SuggestedLoc = "", Type = "";
     RecyclerView rvPickingSortingList;
     private SearchableSpinner spinnerSelectReason;
     String skipReason;
@@ -121,7 +124,8 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         }
     };
 
-    public PickingSortingtHU() { }
+    public PickingSortingtHU() {
+    }
 
     @Nullable
     @Override
@@ -135,57 +139,57 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     // Form controls
     private void loadFormControls() {
 
-        isPalletScanned=false;
-        isPartNoScanned=false;
-        isDockLocationScanned=false;
-        isNewRsn=false;
+        isPalletScanned = false;
+        isPartNoScanned = false;
+        isDockLocationScanned = false;
+        isNewRsn = false;
 
-        cvScanPallet=(CardView)rootView.findViewById(R.id.cvScanPallet);
-        cvScanPartNo=(CardView)rootView.findViewById(R.id.cvScanPartNo);
-        cvScanDockLocation=(CardView)rootView.findViewById(R.id.cvScanDockLocation);
-        cvScanNewRSN=(CardView)rootView.findViewById(R.id.cvScanNewRSN);
+        cvScanPallet = (CardView) rootView.findViewById(R.id.cvScanPallet);
+        cvScanPartNo = (CardView) rootView.findViewById(R.id.cvScanPartNo);
+        cvScanDockLocation = (CardView) rootView.findViewById(R.id.cvScanDockLocation);
+        cvScanNewRSN = (CardView) rootView.findViewById(R.id.cvScanNewRSN);
 
-        ivScanPallet =(ImageView)rootView.findViewById(R.id.ivScanPallet);
-        ivScanPartNo =(ImageView)rootView.findViewById(R.id.ivScanPartNo);
-        ivScanDockLocation =(ImageView)rootView.findViewById(R.id.ivScanDockLocation);
-        ivScanNewRSN =(ImageView)rootView.findViewById(R.id.ivScanNewRSN);
+        ivScanPallet = (ImageView) rootView.findViewById(R.id.ivScanPallet);
+        ivScanPartNo = (ImageView) rootView.findViewById(R.id.ivScanPartNo);
+        ivScanDockLocation = (ImageView) rootView.findViewById(R.id.ivScanDockLocation);
+        ivScanNewRSN = (ImageView) rootView.findViewById(R.id.ivScanNewRSN);
 
-        etPartNo =(EditText) rootView.findViewById(R.id.etPartNo);
-        etNewQty =(EditText) rootView.findViewById(R.id.etNewQty);
-        etPallet =(EditText) rootView.findViewById(R.id.etPallet);
-        etDockLocation =(EditText) rootView.findViewById(R.id.etDockLocation);
-        txtBatchNo =(EditText) rootView.findViewById(R.id.txtBatchNo);
-        txtHuNo =(EditText) rootView.findViewById(R.id.txtHuNo);
-        txtHuSize =(EditText) rootView.findViewById(R.id.txtHuSize);
+        etPartNo = (EditText) rootView.findViewById(R.id.etPartNo);
+        etNewQty = (EditText) rootView.findViewById(R.id.etNewQty);
+        etPallet = (EditText) rootView.findViewById(R.id.etPallet);
+        etDockLocation = (EditText) rootView.findViewById(R.id.etDockLocation);
+        txtBatchNo = (EditText) rootView.findViewById(R.id.txtBatchNo);
+        txtHuNo = (EditText) rootView.findViewById(R.id.txtHuNo);
+        txtHuSize = (EditText) rootView.findViewById(R.id.txtHuSize);
 
-        txtVLPDNumber =(TextView) rootView.findViewById(R.id.txtVLPDNumber);
-        txtMcode =(TextView) rootView.findViewById(R.id.txtMcode);
-        txtDesc =(TextView) rootView.findViewById(R.id.txtDesc);
-        txtDockName =(TextView) rootView.findViewById(R.id.txtDockName);
-        txtPendingQty =(TextView) rootView.findViewById(R.id.txtPendingQty);
+        txtVLPDNumber = (TextView) rootView.findViewById(R.id.txtVLPDNumber);
+        txtMcode = (TextView) rootView.findViewById(R.id.txtMcode);
+        txtDesc = (TextView) rootView.findViewById(R.id.txtDesc);
+        txtDockName = (TextView) rootView.findViewById(R.id.txtDockName);
+        txtPendingQty = (TextView) rootView.findViewById(R.id.txtPendingQty);
 
-        rlVLPDSelect=(RelativeLayout) rootView.findViewById(R.id.rlVLPDSelect);
-        rlSorting=(RelativeLayout) rootView.findViewById(R.id.rlSorting);
-        rlExport=(RelativeLayout) rootView.findViewById(R.id.rlExport);
+        rlVLPDSelect = (RelativeLayout) rootView.findViewById(R.id.rlVLPDSelect);
+        rlSorting = (RelativeLayout) rootView.findViewById(R.id.rlSorting);
+        rlExport = (RelativeLayout) rootView.findViewById(R.id.rlExport);
 
-        rvPickingSortingList=(RecyclerView) rootView.findViewById(R.id.rvPickingSortingList);
+        rvPickingSortingList = (RecyclerView) rootView.findViewById(R.id.rvPickingSortingList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rvPickingSortingList.setLayoutManager(linearLayoutManager);
         rvPickingSortingList.setHasFixedSize(true);
 
-        layoutnewRsn=(LinearLayout) rootView.findViewById(R.id.layoutnewRsn);
+        layoutnewRsn = (LinearLayout) rootView.findViewById(R.id.layoutnewRsn);
 
         layoutnewRsn.setVisibility(View.INVISIBLE);
 
-        spinnerSelectVLPDNo=(SearchableSpinner) rootView.findViewById(R.id.spinnerSelectVLPDNo);
+        spinnerSelectVLPDNo = (SearchableSpinner) rootView.findViewById(R.id.spinnerSelectVLPDNo);
 
-        btnClear=(Button)rootView.findViewById(R.id.btnClear);
-        btnSkip=(Button)rootView.findViewById(R.id.btnSkip);
-        btnCloseLoadPallet=(Button)rootView.findViewById(R.id.btnCloseLoadPallet);
-        btnGo=(Button)rootView.findViewById(R.id.btnGo);
-        btnExport=(Button)rootView.findViewById(R.id.btnExport);
-        btnCloseExport=(Button)rootView.findViewById(R.id.btnCloseExport);
-        btnCloseOne=(Button)rootView.findViewById(R.id.btnCloseOne);
+        btnClear = (Button) rootView.findViewById(R.id.btnClear);
+        btnSkip = (Button) rootView.findViewById(R.id.btnSkip);
+        btnCloseLoadPallet = (Button) rootView.findViewById(R.id.btnCloseLoadPallet);
+        btnGo = (Button) rootView.findViewById(R.id.btnGo);
+        btnExport = (Button) rootView.findViewById(R.id.btnExport);
+        btnCloseExport = (Button) rootView.findViewById(R.id.btnCloseExport);
+        btnCloseOne = (Button) rootView.findViewById(R.id.btnCloseOne);
 
         btnClear.setOnClickListener(this);
         btnSkip.setOnClickListener(this);
@@ -201,30 +205,29 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         materialType = sp.getString("division", "");
         SharedPreferences spPrinterIP = getActivity().getSharedPreferences("SettingsActivity", Context.MODE_PRIVATE);
 
-        try{
-            if(getArguments().getString("VLPDNumber")!=null){
+        try {
+            if (getArguments().getString("VLPDNumber") != null) {
                 clearAllFileds();
-                VLPDNumber=getArguments().getString("VLPDNumber");
-                Pallet=getArguments().getString("Pallet");
-                ActualLoc=getArguments().getString("ActualLoc");
-                SuggestedLoc=getArguments().getString("SuggestedLoc");
-                Type=getArguments().getString("Type");
+                VLPDNumber = getArguments().getString("VLPDNumber");
+                Pallet = getArguments().getString("Pallet");
+                ActualLoc = getArguments().getString("ActualLoc");
+                SuggestedLoc = getArguments().getString("SuggestedLoc");
+                Type = getArguments().getString("Type");
                 txtVLPDNumber.setText(VLPDNumber);
                 rlVLPDSelect.setVisibility(View.GONE);
                 rlSorting.setVisibility(View.VISIBLE);
                 rlExport.setVisibility(View.GONE);
-               // GetVNAPickingandShortingList(Pallet);
-            }else{
+                // GetVNAPickingandShortingList(Pallet);
+            } else {
                 rlVLPDSelect.setVisibility(View.VISIBLE);
                 rlSorting.setVisibility(View.GONE);
                 rlExport.setVisibility(View.GONE);
             }
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             rlVLPDSelect.setVisibility(View.VISIBLE);
             rlSorting.setVisibility(View.GONE);
             rlExport.setVisibility(View.GONE);
         }
-
 
         common = new Common();
         errorMessages = new ErrorMessages();
@@ -233,7 +236,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         gson = new GsonBuilder().create();
         core = new WMSCoreMessage();
         soundUtils = new SoundUtils();
-        mVlpdDto=new VlpdDto();
+        mVlpdDto = new VlpdDto();
 
         bundle = new Bundle();
 
@@ -266,7 +269,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         clearAllFileds();
     }
 
-    public void clearAllFileds(){
+    public void clearAllFileds() {
         ProgressDialogUtils.closeProgressDialog();
         Common.setIsPopupActive(false);
         etPartNo.setText("");
@@ -280,8 +283,14 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         txtHuNo.setText("");
         txtHuSize.setText("");
         txtPendingQty.setText("");
-        isPalletScanned=false;isPartNoScanned=false;isDockLocationScanned=false;isNewRsn=false;
-        sNewUniqueRSN="";sPalletNo="";ipAdress="";sUniqueRSN="";
+        isPalletScanned = false;
+        isPartNoScanned = false;
+        isDockLocationScanned = false;
+        isNewRsn = false;
+        sNewUniqueRSN = "";
+        sPalletNo = "";
+        ipAdress = "";
+        sUniqueRSN = "";
         cvScanPartNo.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
         ivScanPartNo.setImageResource(R.drawable.fullscreen_img);
         cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.palletColor));
@@ -293,7 +302,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         layoutnewRsn.setVisibility(View.INVISIBLE);
     }
 
-    public void clearAllFileds1(){
+    public void clearAllFileds1() {
         etPartNo.setText("");
         etNewQty.setText("");
         txtMcode.setText("");
@@ -302,10 +311,13 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         txtHuNo.setText("");
         txtHuSize.setText("");
         txtPendingQty.setText("");
-        isPartNoScanned=false;
-        isDockLocationScanned=false;
-        isNewRsn=false;
-        sNewUniqueRSN="";sPalletNo="";ipAdress="";sUniqueRSN="";
+        isPartNoScanned = false;
+        isDockLocationScanned = false;
+        isNewRsn = false;
+        sNewUniqueRSN = "";
+        sPalletNo = "";
+        ipAdress = "";
+        sUniqueRSN = "";
         cvScanPartNo.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
         ivScanPartNo.setImageResource(R.drawable.fullscreen_img);
         cvScanDockLocation.setCardBackgroundColor(getResources().getColor(R.color.locationColor));
@@ -389,7 +401,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                         lstVLPD.add(lstDto.get(i).getVLPDNumber());
                                     }
 
-
                                     ArrayAdapter arrayAdapterStoreRefNo = new ArrayAdapter(getActivity(), R.layout.support_simple_spinner_dropdown_item, lstVLPD);
                                     spinnerSelectVLPDNo.setAdapter(arrayAdapterStoreRefNo);
 
@@ -450,7 +461,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                 clearAllFileds();
                 break;
             case R.id.btnSkip:
-                if(isPalletScanned){
+                if (isPalletScanned) {
                     //TODO SKIP
                     final Dialog pickingSkipdialog = new Dialog(getActivity());
                     pickingSkipdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -476,22 +487,22 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                     final List<String> lstSkipReason = new ArrayList<>();
                     lstSkipReason.add("Damage");
                     lstSkipReason.add("Not Found");
-                    spinnerSelectReason=(SearchableSpinner) pickingSkipdialog.findViewById(R.id.spinnerSelectReason);
+                    spinnerSelectReason = (SearchableSpinner) pickingSkipdialog.findViewById(R.id.spinnerSelectReason);
                     ArrayAdapter arrayAdapterSelectReason = new ArrayAdapter(getActivity(), R.layout.support_simple_spinner_dropdown_item, lstSkipReason);
                     spinnerSelectReason.setAdapter(arrayAdapterSelectReason);
                     spinnerSelectReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            skipReason=spinnerSelectReason.getSelectedItem().toString();
+                            skipReason = spinnerSelectReason.getSelectedItem().toString();
                         }
 
                         @Override
                         public void onNothingSelected(AdapterView<?> adapterView) {
-                            skipReason=lstSkipReason.get(0);
+                            skipReason = lstSkipReason.get(0);
                         }
                     });
                     pickingSkipdialog.show();
-                }else{
+                } else {
                     common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Warning");
                 }
 
@@ -509,12 +520,12 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                 ExportPendingPallet();
                 break;
             case R.id.btnGo:
-                if(!txtVLPDNumber.getText().toString().isEmpty()){
+                if (!txtVLPDNumber.getText().toString().isEmpty()) {
                     txtVLPDNumber.setText(storageVLPDNo);
                     rlVLPDSelect.setVisibility(View.GONE);
                     rlSorting.setVisibility(View.VISIBLE);
                     rlExport.setVisibility(View.GONE);
-                }else{
+                } else {
                     common.showUserDefinedAlertType("Please select VLPD#", getActivity(), getContext(), "Warning");
                 }
                 break;
@@ -534,20 +545,20 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         try {
             WMSCoreMessage message = new WMSCoreMessage();
             message = common.SetAuthentication(EndpointConstants.VLPDDTO, getContext());
-            VlpdDto vlpdDto=new VlpdDto();
+            VlpdDto vlpdDto = new VlpdDto();
             vlpdDto.setvLPDNumber(txtVLPDNumber.getText().toString());
             message.setEntityObject(vlpdDto);
 
             Call<String> call = null;
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
-
+            ProgressDialogUtils.showProgressDialog("Please Wait");
             try {
                 //Checking for Internet Connectivity
                 // if (NetworkUtils.isInternetAvailable()) {
                 // Calling the Interface method
 
                 call = apiService.ExportPendingPallet(message);
-                ProgressDialogUtils.showProgressDialog("Please Wait");
+
                 // } else {
                 // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
                 // return;
@@ -591,10 +602,10 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                 List<LinkedTreeMap<?, ?>> _lVlpd = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lVlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
-                                VlpdDto vlpdDto1=null;
-                                List<VlpdDto> vlpdDtoList=new ArrayList<>();
-                                for(int i=0;i<_lVlpd.size();i++){
-                                    vlpdDto1=new VlpdDto(_lVlpd.get(i).entrySet());
+                                VlpdDto vlpdDto1 = null;
+                                List<VlpdDto> vlpdDtoList = new ArrayList<>();
+                                for (int i = 0; i < _lVlpd.size(); i++) {
+                                    vlpdDto1 = new VlpdDto(_lVlpd.get(i).entrySet());
                                     vlpdDtoList.add(vlpdDto1);
                                 }
 
@@ -644,7 +655,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
             common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
         }
     }
-
 
 
     @Override
@@ -718,7 +728,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
             if (!ProgressDialogUtils.isProgressActive()) {
 
-                if(rlExport.getVisibility()==View.VISIBLE){
+                if (rlExport.getVisibility() == View.VISIBLE) {
                     return;
                 }
 
@@ -728,23 +738,23 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                 }
 
                 if (ScanValidator.IsLocationScanned(scannedData)) {
-                    if(isPalletScanned){
+                    if (isPalletScanned) {
                         PickingandShortingDockValidation(scannedData);
-                    }else{
-                       common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Warning");
+                    } else {
+                        common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Warning");
                     }
                     return;
                 }
 
                 if (ScanValidator.IsRSNScanned(scannedData)) {
-                    if(isPalletScanned && isDockLocationScanned){
-                        if(isNewRsn){
-                            PickandCheck(scannedData);
-                        }else{
-                            PickandCheck(scannedData);
+                    if (isPalletScanned && isDockLocationScanned) {
+                        if (isNewRsn) {
+                            PickandCheck(scannedData, "0");
+                        } else {
+                            PickandCheck(scannedData, "0");
                         }
-                    }else{
-                        if(!isPalletScanned)
+                    } else {
+                        if (!isPalletScanned)
                             common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Warning");
                         else
                             common.showUserDefinedAlertType(errorMessages.EMC_0015, getActivity(), getContext(), "Warning");
@@ -752,13 +762,27 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                     return;
                 }
 
-            }else {
-                if(!Common.isPopupActive())
-                {
-                    common.showUserDefinedAlertType(errorMessages.EMC_081, getActivity(), getContext(), "Error");
-
+                if (ScanValidator.IsBundleScanOnBundling(scannedData)) {
+                    if (isPalletScanned && isDockLocationScanned) {
+                        if (isNewRsn) {
+                            PickandCheck(scannedData, "1");
+                        } else {
+                            PickandCheck(scannedData, "1");
+                        }
+                    } else {
+                        if (!isPalletScanned)
+                            common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Warning");
+                        else
+                            common.showUserDefinedAlertType(errorMessages.EMC_0015, getActivity(), getContext(), "Warning");
+                    }
+                    return;
                 }
-                sound.alertWarning(getActivity(),getContext());
+
+            } else {
+                if (!Common.isPopupActive()) {
+                    common.showUserDefinedAlertType(errorMessages.EMC_081, getActivity(), getContext(), "Error");
+                }
+                sound.alertWarning(getActivity(), getContext());
 
             }
         }
@@ -817,7 +841,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-        storageVLPDNo=spinnerSelectVLPDNo.getSelectedItem().toString();
+        storageVLPDNo = spinnerSelectVLPDNo.getSelectedItem().toString();
         txtVLPDNumber.setText(storageVLPDNo);
     }
 
@@ -959,50 +983,49 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                 core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
                                 ProgressDialogUtils.closeProgressDialog();
                                 List<LinkedTreeMap<?, ?>> _lVlpd = new ArrayList<LinkedTreeMap<?, ?>>();
-                                _lVlpd= (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+                                _lVlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
 
-                                VlpdDto vlpdDto=null;
-                                for(int i=0;i<_lVlpd.size();i++){
-                                    vlpdDto=new VlpdDto(_lVlpd.get(i).entrySet());
+                                VlpdDto vlpdDto = null;
+                                for (int i = 0; i < _lVlpd.size(); i++) {
+                                    vlpdDto = new VlpdDto(_lVlpd.get(i).entrySet());
                                 }
 
-                                mVlpdDto=vlpdDto;
+                                mVlpdDto = vlpdDto;
 
-                                if(vlpdDto.getResult().equals("1") && vlpdDto.getResult()!=null){
-                                    if(!vlpdDto.getPendingQty().equals("0.00")){
+                                if (vlpdDto.getResult().equals("1") && vlpdDto.getResult() != null) {
+                                    if (!vlpdDto.getPendingQty().equals("0.00")) {
                                         txtMcode.setText(vlpdDto.getMcode());
                                         txtBatchNo.setText(vlpdDto.getBatchNo());
                                         txtDockName.setText(vlpdDto.getDockName());
                                         txtHuNo.setText(vlpdDto.getHUNo());
                                         txtHuSize.setText(vlpdDto.getHUSize());
                                         txtDesc.setText(vlpdDto.getDescription());
-                                        txtPendingQty.setText("Qty: "+vlpdDto.getPendingQty());
+                                        txtPendingQty.setText("Qty: " + vlpdDto.getPendingQty());
                                         etPallet.setText(scannedData);
-                                        sPalletNo=scannedData;
+                                        sPalletNo = scannedData;
                                         cvScanPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                         ivScanPallet.setImageResource(R.drawable.check);
-                                        isPalletScanned=true;
-                                        if(!sDockName.equals(vlpdDto.getDockName())){
+                                        isPalletScanned = true;
+                                        if (!sDockName.equals(vlpdDto.getDockName())) {
                                             cvScanDockLocation.setCardBackgroundColor(getResources().getColor(R.color.locationColor));
                                             ivScanDockLocation.setImageResource(R.drawable.fullscreen_img);
                                             etDockLocation.setText("");
-                                            isDockLocationScanned=false;
-                                            sDockName=vlpdDto.getDockName();
+                                            isDockLocationScanned = false;
+                                            sDockName = vlpdDto.getDockName();
                                         }
-                                    }else{
+                                    } else {
                                         clearAllFileds();
                                         common.showUserDefinedAlertType("Qty limit exceeded", getActivity(), getContext(), "Error");
                                     }
-                                }else{
+                                } else {
                                     Common.setIsPopupActive(true);
                                     clearAllFileds();
-                                    sPalletNo=scannedData;
+                                    sPalletNo = scannedData;
                                     soundUtils.alertError(getActivity(), getContext());
                                     DialogUtils.showAlertDialog(getActivity(), "Warning", errorMessages.EMC_093, R.drawable.warning_img, new DialogInterface.OnClickListener() {
                                         @Override
-                                        public void onClick(DialogInterface dialog, int which)
-                                        {
+                                        public void onClick(DialogInterface dialog, int which) {
                                             switch (which) {
                                                 case DialogInterface.BUTTON_POSITIVE:
                                                     Common.setIsPopupActive(false);
@@ -1057,7 +1080,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
         }
     }
 
-    private void PickandCheck(final String scannedData) {
+    private void PickandCheck(final String scannedData, final String rsnType) {
 
         try {
             WMSCoreMessage message = new WMSCoreMessage();
@@ -1075,16 +1098,18 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
             vlpdDto.setHUNumber(mVlpdDto.getHUNo());
             vlpdDto.setDockLocation(etDockLocation.getText().toString());
             vlpdDto.setHUSize(mVlpdDto.getHUSize());
-            if(isNewRsn){
+            if (isNewRsn) {
                 vlpdDto.setUniqueRSN(sUniqueRSN);
                 vlpdDto.setNewUniqueRSN(scannedData);
-            } else{
+            } else {
                 vlpdDto.setUniqueRSN(scannedData);
                 vlpdDto.setNewUniqueRSN(sNewUniqueRSN);
             }
             vlpdDto.setUserId(userId);
             vlpdDto.setPalletNo(sPalletNo);
             vlpdDto.setStorageLocation(mVlpdDto.getStorageLocation());
+            vlpdDto.setRSNType(rsnType);
+
             message.setEntityObject(vlpdDto);
 
             Call<String> call = null;
@@ -1139,56 +1164,86 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                 List<LinkedTreeMap<?, ?>> _lVlpd = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lVlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
-                                VlpdDto vlpdDto1=null;
+                                VlpdDto vlpdDto1 = null;
 
-                                for(int i=0;i<_lVlpd.size();i++){
-                                    vlpdDto1=new VlpdDto(_lVlpd.get(i).entrySet());
+                                for (int i = 0; i < _lVlpd.size(); i++) {
+                                    vlpdDto1 = new VlpdDto(_lVlpd.get(i).entrySet());
                                 }
 
-                                sUniqueRSN=scannedData;
+                                sUniqueRSN = scannedData;
                                 ProgressDialogUtils.closeProgressDialog();
-                                if(vlpdDto1.getMessage()!=null){
-                                    if(vlpdDto1.getMessage().equals("-1")){
-                                        etPartNo.setText(scannedData);
-                                        cvScanPartNo.setCardBackgroundColor(getResources().getColor(R.color.white));
-                                        ivScanPartNo.setImageResource(R.drawable.check);
-                                        isPartNoScanned=true;
-                                        getPrinters();
-                                    }
-                                    if(vlpdDto1.getMessage().equals("-2")){
-                                        common.showUserDefinedAlertType(errorMessages.EMC_0009, getActivity(), getContext(), "Error");
-                                    }
-                                    if(vlpdDto1.getMessage().equals("-3")){
-                                        common.showUserDefinedAlertType(errorMessages.EMC_091, getActivity(), getContext(), "Error");
-                                    }
-                                    if(vlpdDto1.getMessage().equals("-4")){
-                                        common.showUserDefinedAlertType(errorMessages.EMC_092, getActivity(), getContext(), "Error");
-                                    }
-                                    if(vlpdDto1.getMessage().equals("1")){
-                                        if(isNewRsn){
-                                            cvScanNewRSN.setCardBackgroundColor(getResources().getColor(R.color.white));
-                                            ivScanNewRSN.setImageResource(R.drawable.check);
-                                            isNewRsn=true;
-                                        }else{
+                                if (vlpdDto1.getMessage() != null) {
+                                    if (vlpdDto1.getMessage().equals("-1")) {
+                                        if (rsnType.equalsIgnoreCase("0")) {
                                             etPartNo.setText(scannedData);
                                             cvScanPartNo.setCardBackgroundColor(getResources().getColor(R.color.white));
                                             ivScanPartNo.setImageResource(R.drawable.check);
-                                            isPartNoScanned=true;
+                                            isPartNoScanned = true;
+                                            getPrinters();
+                                        } else {
+                                            common.showUserDefinedAlertType("Please do un-bundle for this bundle number" + " " + scannedData, getActivity(), getContext(), "Warning");
                                         }
-                                        isNewRsn=false;
+                                    }
+                                    if (vlpdDto1.getMessage().equals("-2")) {
+                                        common.showUserDefinedAlertType(errorMessages.EMC_0009, getActivity(), getContext(), "Error");
+                                    }
+                                    if (vlpdDto1.getMessage().equals("-3")) {
+                                        common.showUserDefinedAlertType(errorMessages.EMC_091, getActivity(), getContext(), "Error");
+                                    }
+                                    if (vlpdDto1.getMessage().equals("-4")) {
+                                        common.showUserDefinedAlertType(errorMessages.EMC_092, getActivity(), getContext(), "Error");
+                                    }
+                                    if (vlpdDto1.getMessage().equals("1")) {
+                                        if (isNewRsn) {
+                                            cvScanNewRSN.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                            ivScanNewRSN.setImageResource(R.drawable.check);
+                                            isNewRsn = true;
+                                        } else {
+                                            etPartNo.setText(scannedData);
+                                            cvScanPartNo.setCardBackgroundColor(getResources().getColor(R.color.white));
+                                            ivScanPartNo.setImageResource(R.drawable.check);
+                                            isPartNoScanned = true;
+                                        }
+                                        isNewRsn = false;
                                         layoutnewRsn.setVisibility(View.INVISIBLE);
                                         cvScanNewRSN.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
                                         ivScanNewRSN.setImageResource(R.drawable.fullscreen_img);
                                         GetVNAPickingandShortingList(sPalletNo);
                                     }
-                                }else{
+
+                                    //Todo change this after integrating api
+                                    if (vlpdDto1.getMessage().equals("-5")) {
+
+                                        Common.setIsPopupActive(true);
+                                        soundUtils.alertError(getActivity(), getContext());
+                                        DialogUtils.showAlertDialog(getActivity(), "Warning", "Available qty. is greater than the picked qty. Please Un-bundle the bundle", R.drawable.warning_img, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                switch (which) {
+                                                    case DialogInterface.BUTTON_POSITIVE:
+                                                        Common.setIsPopupActive(false);
+
+                                                        Bundle bundle = new Bundle();
+                                                        bundle.putBoolean("isFromPickAndSort", true);
+                                                        bundle.putString("BundleNumber", scannedData);
+
+                                                        UnBundleFragment unBundleFragment = new UnBundleFragment();
+                                                        unBundleFragment.setArguments(bundle);
+                                                        FragmentUtils.addFragmentWithBackStack(getActivity(), R.id.container_body, unBundleFragment);
+
+                                                        break;
+                                                }
+                                            }
+                                        });
+
+                                    }
+                                } else {
 
                                     Common.setIsPopupActive(true);
                                     soundUtils.alertError(getActivity(), getContext());
                                     DialogUtils.showAlertDialog(getActivity(), "Warning", errorMessages.EMC_093, R.drawable.warning_img, new DialogInterface.OnClickListener() {
                                         @Override
-                                        public void onClick(DialogInterface dialog, int which)
-                                        {
+                                        public void onClick(DialogInterface dialog, int which) {
                                             switch (which) {
                                                 case DialogInterface.BUTTON_POSITIVE:
                                                     Common.setIsPopupActive(false);
@@ -1308,23 +1363,23 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                 List<LinkedTreeMap<?, ?>> _lVlpd = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lVlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
-                                VlpdDto vlpdDto1=null;
-                                for(int i=0;i<_lVlpd.size();i++){
-                                    vlpdDto1=new VlpdDto(_lVlpd.get(i).entrySet());
+                                VlpdDto vlpdDto1 = null;
+                                for (int i = 0; i < _lVlpd.size(); i++) {
+                                    vlpdDto1 = new VlpdDto(_lVlpd.get(i).entrySet());
                                 }
 
-                                if(vlpdDto1.getMessage()!=null){
+                                if (vlpdDto1.getMessage() != null) {
 
-                                    if(vlpdDto1.getMessage().equals("1")){
+                                    if (vlpdDto1.getMessage().equals("1")) {
                                         pickingSkipdialog.dismiss();
                                         layoutnewRsn.setVisibility(View.VISIBLE);
-                                        isNewRsn=true;
+                                        isNewRsn = true;
                                         common.showUserDefinedAlertType("Please Scan New RSN", getActivity(), getContext(), "Warning");
-                                    }else{
+                                    } else {
                                         Toast.makeText(getActivity(), "Please try again", Toast.LENGTH_SHORT).show();
                                     }
 
-                                }else{
+                                } else {
                                     pickingSkipdialog.dismiss();
                                     common.showUserDefinedAlertType("Unable to print RSN Check network or printer configuration", getActivity(), getContext(), "Error");
                                 }
@@ -1377,7 +1432,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
 
         try {
             WMSCoreMessage message = new WMSCoreMessage();
-            message = common.SetAuthentication(EndpointConstants.LoginUserDTO,  getContext());
+            message = common.SetAuthentication(EndpointConstants.LoginUserDTO, getContext());
             LoginUserDTO oLoginDTO = new LoginUserDTO();
             oLoginDTO.setMailID("1");
             message.setEntityObject(oLoginDTO);
@@ -1473,17 +1528,18 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                             pickingSkipdialog.dismiss();
                                         }
                                     });
-                                    final SearchableSpinner spinnerSelectPrinter=(SearchableSpinner) pickingSkipdialog.findViewById(R.id.spinnerSelectReason);
+                                    final SearchableSpinner spinnerSelectPrinter = (SearchableSpinner) pickingSkipdialog.findViewById(R.id.spinnerSelectReason);
                                     ArrayAdapter arrayAdapterSelectPrinter = new ArrayAdapter(getActivity(), R.layout.support_simple_spinner_dropdown_item, lstPrinters);
                                     spinnerSelectPrinter.setAdapter(arrayAdapterSelectPrinter);
                                     spinnerSelectPrinter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                         @Override
                                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                                            ipAdress=spinnerSelectPrinter.getSelectedItem().toString();
+                                            ipAdress = spinnerSelectPrinter.getSelectedItem().toString();
                                         }
 
                                         @Override
-                                        public void onNothingSelected(AdapterView<?> adapterView) { }
+                                        public void onNothingSelected(AdapterView<?> adapterView) {
+                                        }
                                     });
                                     pickingSkipdialog.show();
 
@@ -1593,12 +1649,12 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                 List<LinkedTreeMap<?, ?>> _lVlpd = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lVlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
-                                VlpdDto vlpdDto1=null;
-                                for(int i=0;i<_lVlpd.size();i++){
-                                            vlpdDto1=new VlpdDto(_lVlpd.get(i).entrySet());
+                                VlpdDto vlpdDto1 = null;
+                                for (int i = 0; i < _lVlpd.size(); i++) {
+                                    vlpdDto1 = new VlpdDto(_lVlpd.get(i).entrySet());
                                 }
 
-                                if(vlpdDto1.getResult().equals("-1")){
+                                if (vlpdDto1.getResult().equals("-1")) {
 /*                                    Common.setIsPopupActive(true);
                                     soundUtils.alertError(getActivity(), getContext());
                                     DialogUtils.showAlertDialog(getActivity(), "Warning", "pending pallets available for this vlpd# "+txtVLPDNumber.getText().toString(), R.drawable.warning_img, new DialogInterface.OnClickListener() {
@@ -1609,28 +1665,28 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                                 case DialogInterface.BUTTON_POSITIVE:
                                                     Common.setIsPopupActive(false);*/
 
-                                                    soundUtils.alertError(getActivity(), getContext());
-                                                    Common.setIsPopupActive(true);
-                                                    DialogUtils.showConfirmDialog(getActivity(), "Alert", "Do you want to move this pallet to priority bin zone?", "Yes", "No" , new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                                            if(i==-1){
-                                                                GetPalletValidationandSuggestion("1");
-                                                                // Toast.makeText(LoginActivity.this, "Yes", Toast.LENGTH_SHORT).show();
-                                                            }
-                                                            if(i==-2){
-                                                                GetPalletValidationandSuggestion("2");
-                                                                //  Toast.makeText(LoginActivity.this, "No", Toast.LENGTH_SHORT).show();
-                                                            }
-                                                            Common.setIsPopupActive(false);
-                                                        }
-                                                    });
+                                    soundUtils.alertError(getActivity(), getContext());
+                                    Common.setIsPopupActive(true);
+                                    DialogUtils.showConfirmDialog(getActivity(), "Alert", "Do you want to move this pallet to priority bin zone?", "Yes", "No", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            if (i == -1) {
+                                                GetPalletValidationandSuggestion("1");
+                                                // Toast.makeText(LoginActivity.this, "Yes", Toast.LENGTH_SHORT).show();
+                                            }
+                                            if (i == -2) {
+                                                GetPalletValidationandSuggestion("2");
+                                                //  Toast.makeText(LoginActivity.this, "No", Toast.LENGTH_SHORT).show();
+                                            }
+                                            Common.setIsPopupActive(false);
+                                        }
+                                    });
 
 /*                                                    break;
                                             }
                                         }
                                     });*/
-                                }else{
+                                } else {
 /*                                    Common.setIsPopupActive(true);
                                     soundUtils.alertError(getActivity(), getContext());
                                     DialogUtils.showAlertDialog(getActivity(), "Warning", "There is no pending pallets for this vlpd# "+txtVLPDNumber.getText().toString(), R.drawable.warning_img, new DialogInterface.OnClickListener() {
@@ -1640,30 +1696,28 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                             switch (which) {
                                                 case DialogInterface.BUTTON_POSITIVE:
                                                     Common.setIsPopupActive(false);*/
-                                                    Common.setIsPopupActive(true);
-                                                    soundUtils.alertError(getActivity(), getContext());
-                                                    DialogUtils.showConfirmDialog(getActivity(), "Alert", "Do you want to move this pallet to priority bin zone?", "Yes", "No" , new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                                            if(i==-1){
-                                                                GetPalletValidationandSuggestion("1");
-                                                                // Toast.makeText(LoginActivity.this, "Yes", Toast.LENGTH_SHORT).show();
-                                                            }
-                                                            if(i==-2){
-                                                                GetPalletValidationandSuggestion("2");
-                                                                //  Toast.makeText(LoginActivity.this, "No", Toast.LENGTH_SHORT).show();
-                                                            }
-                                                            Common.setIsPopupActive(false);
-                                                        }
-                                                    });
+                                    Common.setIsPopupActive(true);
+                                    soundUtils.alertError(getActivity(), getContext());
+                                    DialogUtils.showConfirmDialog(getActivity(), "Alert", "Do you want to move this pallet to priority bin zone?", "Yes", "No", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            if (i == -1) {
+                                                GetPalletValidationandSuggestion("1");
+                                                // Toast.makeText(LoginActivity.this, "Yes", Toast.LENGTH_SHORT).show();
+                                            }
+                                            if (i == -2) {
+                                                GetPalletValidationandSuggestion("2");
+                                                //  Toast.makeText(LoginActivity.this, "No", Toast.LENGTH_SHORT).show();
+                                            }
+                                            Common.setIsPopupActive(false);
+                                        }
+                                    });
 
 /*                                                     break;
                                            }
                                         }
                                     });*/
                                 }
-
-
 
 
                             }
@@ -1776,25 +1830,25 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                 List<LinkedTreeMap<?, ?>> _lVlpd = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lVlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
-                                VlpdDto vlpdDto1=null;
-                                for(int i=0;i<_lVlpd.size();i++){
-                                    vlpdDto1=new VlpdDto(_lVlpd.get(i).entrySet());
+                                VlpdDto vlpdDto1 = null;
+                                for (int i = 0; i < _lVlpd.size(); i++) {
+                                    vlpdDto1 = new VlpdDto(_lVlpd.get(i).entrySet());
                                 }
 
-                                if(vlpdDto1.getResult().equals("1") || vlpdDto1.getResult().equals("-1") ){
+                                if (vlpdDto1.getResult().equals("1") || vlpdDto1.getResult().equals("-1")) {
 
                                     Bundle bundle = new Bundle();
-                                    bundle.putString("VLPDNumber",txtVLPDNumber.getText().toString());
-                                    bundle.putString("Pallet",sPalletNo);
-                                    bundle.putString("ActualLoc",vlpdDto1.getActvalLocation());
-                                    bundle.putString("SuggestedLoc",vlpdDto1.getSuggestedLoc());
-                                    bundle.putString("Type",Type);
+                                    bundle.putString("VLPDNumber", txtVLPDNumber.getText().toString());
+                                    bundle.putString("Pallet", sPalletNo);
+                                    bundle.putString("ActualLoc", vlpdDto1.getActvalLocation());
+                                    bundle.putString("SuggestedLoc", vlpdDto1.getSuggestedLoc());
+                                    bundle.putString("Type", Type);
 
                                     PriorityBinZoneFragment priorityBinZoneFragment = new PriorityBinZoneFragment();
                                     priorityBinZoneFragment.setArguments(bundle);
                                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, priorityBinZoneFragment);
 
-                                }else{
+                                } else {
                                     common.showUserDefinedAlertType("No items available on this pallet.", getActivity(), getContext(), "Error");
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
@@ -1853,7 +1907,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
             vlpdDto.setDockNumber(txtDockName.getText().toString());
             message.setEntityObject(vlpdDto);
 
-            Log.v("ABCDE",new Gson().toJson(message));
+            Log.v("ABCDE", new Gson().toJson(message));
 
             Call<String> call = null;
             ApiInterface apiService = RestService.getClient().create(ApiInterface.class);
@@ -1908,21 +1962,21 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                 List<LinkedTreeMap<?, ?>> _lOutbound = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lOutbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
-                                VlpdDto outboundDTO=null;
-                                for(int i=0;i<_lOutbound.size();i++){
-                                    outboundDTO=new VlpdDto(_lOutbound.get(i).entrySet());
+                                VlpdDto outboundDTO = null;
+                                for (int i = 0; i < _lOutbound.size(); i++) {
+                                    outboundDTO = new VlpdDto(_lOutbound.get(i).entrySet());
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
-                                if(outboundDTO.getMessage().equals("1")){
+                                if (outboundDTO.getMessage().equals("1")) {
                                     etDockLocation.setText(scannedData);
                                     cvScanDockLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanDockLocation.setImageResource(R.drawable.check);
-                                    isDockLocationScanned=true;
-                                }else{
+                                    isDockLocationScanned = true;
+                                } else {
                                     etDockLocation.setText(scannedData);
                                     cvScanDockLocation.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanDockLocation.setImageResource(R.drawable.warning_img);
-                                    isDockLocationScanned=false;
+                                    isDockLocationScanned = false;
                                     common.showUserDefinedAlertType("Invalid dock location", getActivity(), getContext(), "Warning");
                                 }
                             }
@@ -2034,14 +2088,14 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                 List<LinkedTreeMap<?, ?>> _lvlpd = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lvlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
-                                VlpdDto vlpdDto1=null;
-                                for(int i=0;i<_lvlpd.size();i++){
-                                    vlpdDto1=new VlpdDto(_lvlpd.get(i).entrySet());
+                                VlpdDto vlpdDto1 = null;
+                                for (int i = 0; i < _lvlpd.size(); i++) {
+                                    vlpdDto1 = new VlpdDto(_lvlpd.get(i).entrySet());
                                 }
 
-                                if(vlpdDto1.getMessage().equals("1")){
+                                if (vlpdDto1.getMessage().equals("1")) {
                                     GetVNAPickingandShortingList(sPalletNo);
-                                }else{
+                                } else {
                                     common.showUserDefinedAlertType("Error while skip", getActivity(), getContext(), "Error");
                                 }
 

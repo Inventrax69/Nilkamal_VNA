@@ -24,36 +24,69 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/radioRSN"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/hintRSN"
-                android:visibility="visible"/>
+                android:orientation="vertical">
 
-            <RadioButton
-                android:id="@+id/radioBin"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/bin" />
+                android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/radioPallet"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/pallet"
-                android:visibility="visible"/>
+                <RadioButton
+                    android:id="@+id/radioRSN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/hintRSN"
+                    android:visibility="visible"/>
 
-            <RadioButton
-                android:id="@+id/radioEAN"
-                android:layout_width="wrap_content"
+                <RadioButton
+                    android:id="@+id/radioBin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/bin" />
+
+                <RadioButton
+                    android:id="@+id/radioPallet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/pallet"
+                    android:visibility="visible"/>
+
+                <RadioButton
+                    android:id="@+id/radioEAN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/ean"
+                    android:visibility="visible"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/ean"
-                android:visibility="visible"/>
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radioBundle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Bundle"
+                    android:visibility="visible"/>
+
+            </LinearLayout>
+
+            </LinearLayout>
+
+
+
         </RadioGroup>
 
         <Button
@@ -68,8 +101,8 @@
             android:layout_below="@+id/radioGroup"
             android:layout_marginTop="20dp"
             android:layout_marginRight="10dp" />
-        <Button
 
+        <Button
             android:id="@+id/btnSelect"
             android:layout_width="70dp"
             android:layout_height="30dp"

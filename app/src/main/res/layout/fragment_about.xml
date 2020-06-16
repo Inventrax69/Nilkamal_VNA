@@ -103,7 +103,7 @@
         android:id="@+id/txtHelpLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="  Help Line Number : 9676692934"
+        android:text="  Help Line Number : "
         android:layout_above="@+id/imageView1"
         android:drawableLeft="@drawable/ic_action_phone_call"
         style="@style/textViewStyle"

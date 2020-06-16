@@ -137,7 +137,7 @@ public class VLPDLoadingFragment extends Fragment implements View.OnClickListene
         spinnerSelectVLPDNo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                vlpdRefNo= spinnerSelectVLPDNo.getSelectedItem().toString();
+                vlpdRefNo = spinnerSelectVLPDNo.getSelectedItem().toString();
             }
 
             @Override
@@ -163,7 +163,6 @@ public class VLPDLoadingFragment extends Fragment implements View.OnClickListene
         btnCloseTwo.setOnClickListener(this);
         btnExport.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
-
 
 
         common = new Common();
@@ -197,7 +196,7 @@ public class VLPDLoadingFragment extends Fragment implements View.OnClickListene
             }
         });
 
-        if (getArguments()!=null){
+        if (getArguments() != null) {
 
             rlVLPDSelect.setVisibility(View.GONE);
             rlVLPDLoading.setVisibility(View.VISIBLE);
@@ -212,7 +211,7 @@ public class VLPDLoadingFragment extends Fragment implements View.OnClickListene
             return;
 
 
-        }else {
+        } else {
             GetOpenRefNumberList();
         }
 
@@ -275,7 +274,7 @@ public class VLPDLoadingFragment extends Fragment implements View.OnClickListene
 
                                 List<LinkedTreeMap<?, ?>> _lstvlpd = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lstvlpd = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
-                                List<String> lstvlpdnumbers= new ArrayList<String>();
+                                List<String> lstvlpdnumbers = new ArrayList<String>();
                                 VlpdDto dto = null;
                                 for (int i = 0; i < _lstvlpd.size(); i++) {
                                     dto = new VlpdDto(_lstvlpd.get(i).entrySet());
@@ -340,11 +339,12 @@ public class VLPDLoadingFragment extends Fragment implements View.OnClickListene
                 FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new HomeFragment());
                 break;
             case R.id.btnClear:
-                ClearFields();;
+                ClearFields();
+                ;
                 break;
             case R.id.btnGo:
 
-                if ((vlpdRefNo=="" && vlpdRefNo==null) || vlpdRefNo=="Select") {
+                if ((vlpdRefNo == "" && vlpdRefNo == null) || vlpdRefNo == "Select") {
                     common.showUserDefinedAlertType(errorMessages.EMC_0042, getActivity(), getContext(), "Error");
                     return;
 
@@ -356,16 +356,16 @@ public class VLPDLoadingFragment extends Fragment implements View.OnClickListene
                 break;
 
             case R.id.btnExport:
-                if ((vlpdRefNo=="" && vlpdRefNo==null) || vlpdRefNo=="Select") {
+                if ((vlpdRefNo == "" && vlpdRefNo == null) || vlpdRefNo == "Select") {
                     common.showUserDefinedAlertType(errorMessages.EMC_0042, getActivity(), getContext(), "Error");
 
                     return;
                 } else {
-                    Bundle bundle= new Bundle();
-                    bundle.putString("vlpdRefNo",vlpdRefNo);
-                    bundle.putString("RSN",lblScannedItem.getText().toString());
-                    bundle.putString("count",lblBoxCount.getText().toString());
-                    bundle.putString("qty",etQty.getText().toString());
+                    Bundle bundle = new Bundle();
+                    bundle.putString("vlpdRefNo", vlpdRefNo);
+                    bundle.putString("RSN", lblScannedItem.getText().toString());
+                    bundle.putString("count", lblBoxCount.getText().toString());
+                    bundle.putString("qty", etQty.getText().toString());
                     PendingLoadingListFragment vlpdLoadingFragment = new PendingLoadingListFragment();
                     vlpdLoadingFragment.setArguments(bundle);
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, vlpdLoadingFragment);
@@ -377,10 +377,10 @@ public class VLPDLoadingFragment extends Fragment implements View.OnClickListene
                 rlVLPDSelect.setVisibility(View.GONE);
                 rlVLPDLoading.setVisibility(View.VISIBLE);
 
-                if(!lblScannedItem.getText().toString().isEmpty()){
+                if (!lblScannedItem.getText().toString().isEmpty()) {
                     HandleRSNScan();
-                }else {
-                    common.showUserDefinedAlertType(errorMessages.EMC_0046,getActivity(),getContext(),"Error");
+                } else {
+                    common.showUserDefinedAlertType(errorMessages.EMC_0046, getActivity(), getContext(), "Error");
                 }
 
 
@@ -583,7 +583,7 @@ public class VLPDLoadingFragment extends Fragment implements View.OnClickListene
     public void ProcessScannedinfo(String scannedData) {
         if (scannedData != null && !common.isPopupActive()) {
 
-            if(!ProgressDialogUtils.isProgressActive()) {
+            if (!ProgressDialogUtils.isProgressActive()) {
 
            /* if (rlVLPDLoading.getVisibility() == View.VISIBLE) {
                 lblVLPDNumber.setText(scannedData);
@@ -602,16 +602,18 @@ public class VLPDLoadingFragment extends Fragment implements View.OnClickListene
                 } else if (ScanValidator.IsMatressBundleScanned(scannedData)) {
                     lblScannedItem.setText(scannedData);
                     confirmMatressBunle(scannedData);
+                } else if (ScanValidator.IsBundleScanOnBundling(scannedData)) {
+                    lblScannedItem.setText(scannedData);
+                    HandleRSNScan();
                 } else {
                     common.showUserDefinedAlertType(errorMessages.EMC_0045, getActivity(), getContext(), "Error");
                 }
-            }else {
-                if(!common.isPopupActive())
-                {
+            } else {
+                if (!common.isPopupActive()) {
                     common.showUserDefinedAlertType(errorMessages.EMC_081, getActivity(), getContext(), "Error");
 
                 }
-                sound.alertWarning(getActivity(),getContext());
+                sound.alertWarning(getActivity(), getContext());
 
             }
         }
@@ -683,14 +685,11 @@ public class VLPDLoadingFragment extends Fragment implements View.OnClickListene
                                     dto = new ExecutionResponseDTO(_lresponse.get(i).entrySet());
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
-                                if (dto.getStatus())
-                                {
+                                if (dto.getStatus()) {
                                     lblBoxCount.setText(dto.getMessage());
                                     etQty.setText("1");
                                     return;
-                                }
-                                else
-                                {
+                                } else {
                                     lblScannedItem.setText("");
 
                                     btnSubmit.setEnabled(false);
@@ -783,24 +782,24 @@ public class VLPDLoadingFragment extends Fragment implements View.OnClickListene
                         try {
                             core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
 
-                                if ((core.getType().toString().equals("Exception"))) {
-                                    List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
-                                    _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
-                                    WMSExceptionMessage owmsExceptionMessage = null;
-                                    for (int i = 0; i < _lExceptions.size(); i++) {
-                                        owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
-                                    }
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
 
-                                    lblScannedItem.setText("");
+                                lblScannedItem.setText("");
 
-                                    btnSubmit.setTextColor(getResources().getColor(R.color.black));
-                                    btnSubmit.setBackgroundResource(R.drawable.button_hide);
+                                btnSubmit.setTextColor(getResources().getColor(R.color.black));
+                                btnSubmit.setBackgroundResource(R.drawable.button_hide);
 
-                                    btnSubmit.setEnabled(false);
+                                btnSubmit.setEnabled(false);
 
-                                    ProgressDialogUtils.closeProgressDialog();
-                                    common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+                                ProgressDialogUtils.closeProgressDialog();
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
 
                             } else {
 
