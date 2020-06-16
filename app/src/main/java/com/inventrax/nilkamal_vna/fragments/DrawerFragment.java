@@ -252,9 +252,6 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
         childModel = new MenuModel("Bin to Bin", false, false, "Bin to Bin");
         childModelsList.add(childModel);
 
-        childModel = new MenuModel("Bundle Bin to Bin", false, false, "Bundle Bin to Bin");
-        childModelsList.add(childModel);
-
         childModel = new MenuModel("Pallet to Pallet", false, false, "Pallet to Pallet");
         childModelsList.add(childModel);
 
@@ -502,10 +499,6 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
 
                 case "Bin to Bin":
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new BintoBinFragment());
-                    break;
-
-               case "Bundle Bin to Bin":
-                    FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new BundleBintoBinFragment());
                     break;
 
 

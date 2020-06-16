@@ -1211,32 +1211,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                         GetVNAPickingandShortingList(sPalletNo);
                                     }
 
-                                    //Todo change this after integrating api
-                                    if (vlpdDto1.getMessage().equals("-5")) {
-
-                                        Common.setIsPopupActive(true);
-                                        soundUtils.alertError(getActivity(), getContext());
-                                        DialogUtils.showAlertDialog(getActivity(), "Warning", "Available qty. is greater than the picked qty. Please Un-bundle the bundle", R.drawable.warning_img, new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                switch (which) {
-                                                    case DialogInterface.BUTTON_POSITIVE:
-                                                        Common.setIsPopupActive(false);
-
-                                                        Bundle bundle = new Bundle();
-                                                        bundle.putBoolean("isFromPickAndSort", true);
-                                                        bundle.putString("BundleNumber", scannedData);
-
-                                                        UnBundleFragment unBundleFragment = new UnBundleFragment();
-                                                        unBundleFragment.setArguments(bundle);
-                                                        FragmentUtils.addFragmentWithBackStack(getActivity(), R.id.container_body, unBundleFragment);
-
-                                                        break;
-                                                }
-                                            }
-                                        });
-
-                                    }
                                 } else {
 
                                     Common.setIsPopupActive(true);

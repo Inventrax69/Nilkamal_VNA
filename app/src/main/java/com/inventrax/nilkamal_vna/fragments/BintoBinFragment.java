@@ -860,8 +860,7 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
             if (!ProgressDialogUtils.isProgressActive()) {
 
                 //From Location / FROM PALLET
-                if (etSourceBin.getText().toString().isEmpty())
-                {
+                if (etSourceBin.getText().toString().isEmpty()) {
                     // for handling location
                     if (ScanValidator.IsLocationScanned(scannedData)) {
                         // if user scanned location with L , removing L and consider it as a Location ( 01A01A0L ==> 01A01A0 )
@@ -883,8 +882,7 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
                         IsFromLocationScanned = false;
                         ValidatePalletOrLocation(etSourceBin.getText().toString(), "PALLET");
                         return;
-                    } else
-                        {
+                    } else {
                         common.showUserDefinedAlertType(errorMessages.EMC_0015, getActivity(), getContext(), "Error");
                         return;
                     }
@@ -909,10 +907,8 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
 
                 // FOR SCAN VALIDATION OF ARTICLE BARCODE RSN/EAN
 
-                if (!ScanValidator.IsPalletScanned(scannedData) && !ScanValidator.IsLocationScanned(scannedData))
-                {
-                    if (ScanValidator.IsRSNScanned(scannedData))
-                    {
+                if (!ScanValidator.IsPalletScanned(scannedData) && !ScanValidator.IsLocationScanned(scannedData)) {
+                    if (ScanValidator.IsRSNScanned(scannedData)) {
                         lblScannedSku.setText(scannedData);
                         IsRSNScanned = true;
                         IsEANScanned = false;
@@ -922,8 +918,17 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
                         ConfirmBinTransferToPallet();
 
                         //Handling Set Quantity in EAN Barcode
-                    } else if (scannedData.split("[,]").length == 2)
-                    {
+                    } else if (ScanValidator.IsBundleScanOnBundling(scannedData)) {
+                        lblScannedSku.setText(scannedData);
+                        IsRSNScanned = true;
+                        IsEANScanned = false;
+                        etQty.setText("0");
+                        cvScanRSN.setCardBackgroundColor(getResources().getColor(R.color.white));
+                        ivScanRSN.setImageResource(R.drawable.check);
+                        ConfirmBinTransferToPallet();
+
+                        //Handling Set Quantity in EAN Barcode
+                    } else if (scannedData.split("[,]").length == 2) {
 
 
                         lblScannedSku.setText(scannedData.split("[,]")[0]);
@@ -960,9 +965,7 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
                 }
                 soundUtils.alertWarning(getActivity(), getContext());
             }
-        } else
-
-        {
+        } else {
             soundUtils.alertWarning(getActivity(), getContext());
         }
 
@@ -983,24 +986,19 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
             oInventory.setFromPallet("");
             oInventory.setDestPallet("");
 
-            if (IsFromLocationScanned)
-            {
+            if (IsFromLocationScanned) {
                 oInventory.setFromLocation(etSourceBin.getText().toString());
-
             }
 
-            if (IsFromPalletScanned)
-            {
+            if (IsFromPalletScanned) {
                 oInventory.setFromPallet(etSourceBin.getText().toString());
             }
 
-            if (IsToPalletScanned)
-            {
+            if (IsToPalletScanned) {
                 oInventory.setDestPallet(etPallet.getText().toString());
             }
 
-            if (IsRSNScanned)
-            {
+            if (IsRSNScanned) {
                 oInventory.setRSNBarcode(lblScannedSku.getText().toString());
                 oInventory.setEanBarcode("");
             } else {
@@ -1049,14 +1047,12 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
 
                         try {
                             core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
-                            if ((core.getType().toString().equals("Exception")))
-                            {
+                            if ((core.getType().toString().equals("Exception"))) {
                                 List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
                                 WMSExceptionMessage owmsExceptionMessage = null;
-                                for (int i = 0; i < _lExceptions.size(); i++)
-                                {
+                                for (int i = 0; i < _lExceptions.size(); i++) {
                                     owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
@@ -1092,8 +1088,7 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
                                     ProgressDialogUtils.closeProgressDialog();
 
                                 } else {
-                                    if (dto.getMessage().equals(""))
-                                    {
+                                    if (dto.getMessage().equals("")) {
                                         etQty.setText(dto.getSetQuantity());
                                         _availableSetQty = Double.parseDouble(dto.getSetQuantity());
                                         IsResult = true;
@@ -1161,19 +1156,17 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
 
         if (scannedData != null && !common.isPopupActive()) {
 
-            if (!ProgressDialogUtils.isProgressActive())
-            {
+            if (!ProgressDialogUtils.isProgressActive()) {
 
                 // Checking for Source Pallet
-                if (etSourcePallet.getText().toString().isEmpty())
-                {
+                if (etSourcePallet.getText().toString().isEmpty()) {
                     if (ScanValidator.IsPalletScanned(scannedData)) {
                         etSourcePallet.setText(scannedData);
                         cvScanSourcePallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                         ivScanSourcePallet.setImageResource(R.drawable.check);
                         GetTempPalletItemCount();
                         return;
-                    }else {
+                    } else {
                         common.showUserDefinedAlertType("Please scan source pallet", getActivity(), getContext(), "Error");
                         return;
                     }
@@ -1185,16 +1178,14 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
                         etDestPallet.setText(scannedData);
                         GetPalletCurrentLocation();
                         return;
-                    }else
-                    {
+                    } else {
                         common.showUserDefinedAlertType("Please scan dest. pallet", getActivity(), getContext(), "Error");
                         return;
                     }
                 }
 
                 // Checking for destination palllet to map
-                if (!etDestPallet.getText().toString().isEmpty() && etDestBin.getText().toString().isEmpty())
-                {
+                if (!etDestPallet.getText().toString().isEmpty() && etDestBin.getText().toString().isEmpty()) {
                     if (ScanValidator.IsLocationScanned(scannedData)) {
                         if (scannedData.length() == 8) {
                             etDestBin.setText(scannedData.substring(0, 7));
@@ -1208,8 +1199,7 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
                             return;
                         }
 
-                    }else
-                    {
+                    } else {
                         common.showUserDefinedAlertType(errorMessages.EMC_0015, getActivity(), getContext(), "Error");
                         return;
                     }
@@ -1690,8 +1680,7 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
                                 if (ScannedBarcodetype.equals("LOCATION") || IsPalletScanned) {
                                     cvScanSourceBin.setCardBackgroundColor(getResources().getColor(R.color.white));
                                     ivScanSourceBin.setImageResource(R.drawable.check);
-                                    if (!IsValidLocationorPallet)
-                                    {
+                                    if (!IsValidLocationorPallet) {
                                         common.showUserDefinedAlertType(errorMessages.EMC_0038, getActivity(), getContext(), "Error");
                                         ProgressDialogUtils.closeProgressDialog();
                                         etSourceBin.setText("");
