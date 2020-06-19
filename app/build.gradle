@@ -12,13 +12,25 @@ android {
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 19
-        versionName "3.3"
+        versionName "4.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
+
+    signingConfigs {
+        release {
+            storeFile file('vna.jks')
+            storePassword '123456'
+            keyAlias 'vna'
+            keyPassword '123456'
+        }
+    }
+
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

@@ -943,8 +943,7 @@ public class VLPDLoadingFragment extends Fragment implements View.OnClickListene
                                 e.printStackTrace();
                             }
                             logException();
-
-
+                            
                             ProgressDialogUtils.closeProgressDialog();
                         }
                     }

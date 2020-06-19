@@ -930,7 +930,6 @@ public class BintoBinFragment extends Fragment implements View.OnClickListener, 
                         //Handling Set Quantity in EAN Barcode
                     } else if (scannedData.split("[,]").length == 2) {
 
-
                         lblScannedSku.setText(scannedData.split("[,]")[0]);
                         etQty.setText(scannedData.split("[,]")[1]);
                         btnConfirmLoadPallet.setEnabled(true);
