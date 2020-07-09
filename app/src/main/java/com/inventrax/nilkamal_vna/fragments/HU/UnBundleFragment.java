@@ -237,7 +237,7 @@ public class UnBundleFragment extends Fragment implements View.OnClickListener, 
 
                     lblScannedSku.setText(scannedData);
 
-                    cvScanBarcode.setCardBackgroundColor(getResources().getColor(R.color.skuColor));
+                    cvScanBarcode.setCardBackgroundColor(getResources().getColor(R.color.white));
                     ivScanBarcode.setImageResource(R.drawable.check);
 
                 }
