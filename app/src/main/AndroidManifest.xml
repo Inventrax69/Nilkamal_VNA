@@ -4,7 +4,6 @@
     package="com.inventrax.nilkamal_vna">
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />

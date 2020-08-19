@@ -11,8 +11,8 @@ android {
         applicationId "com.inventrax.nilkamal_vna"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 20
-        versionName "4.01"
+        versionCode 21
+        versionName "4.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true

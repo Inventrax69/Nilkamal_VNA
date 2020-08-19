@@ -746,6 +746,23 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                     return;
                 }
 
+                if (ScanValidator.IsBundleScanOnBundling(scannedData)) {
+                    if (isPalletScanned && isDockLocationScanned) {
+                        if (isNewRsn) {
+                            PickandCheck(scannedData, "1");
+                        } else {
+                            PickandCheck(scannedData, "1");
+                        }
+                    } else {
+                        if (!isPalletScanned)
+                            common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Warning");
+                        else
+                            common.showUserDefinedAlertType(errorMessages.EMC_0015, getActivity(), getContext(), "Warning");
+                    }
+                    return;
+                }
+
+
                 if (ScanValidator.IsRSNScanned(scannedData)) {
                     if (isPalletScanned && isDockLocationScanned) {
                         if (isNewRsn) {
@@ -762,21 +779,6 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                     return;
                 }
 
-                if (ScanValidator.IsBundleScanOnBundling(scannedData)) {
-                    if (isPalletScanned && isDockLocationScanned) {
-                        if (isNewRsn) {
-                            PickandCheck(scannedData, "1");
-                        } else {
-                            PickandCheck(scannedData, "1");
-                        }
-                    } else {
-                        if (!isPalletScanned)
-                            common.showUserDefinedAlertType(errorMessages.EMC_0019, getActivity(), getContext(), "Warning");
-                        else
-                            common.showUserDefinedAlertType(errorMessages.EMC_0015, getActivity(), getContext(), "Warning");
-                    }
-                    return;
-                }
 
             } else {
                 if (!Common.isPopupActive()) {
@@ -1817,6 +1819,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                     bundle.putString("ActualLoc", vlpdDto1.getActvalLocation());
                                     bundle.putString("SuggestedLoc", vlpdDto1.getSuggestedLoc());
                                     bundle.putString("Type", Type);
+                                    bundle.putString("isSLoc", "false");
 
                                     PriorityBinZoneFragment priorityBinZoneFragment = new PriorityBinZoneFragment();
                                     priorityBinZoneFragment.setArguments(bundle);

@@ -133,7 +133,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
             txtReleaseDate = (TextView) findViewById(R.id.txtDate);
             txtVersion = (TextView) findViewById(R.id.txtVersionName);
             txtVersion.setText("Version:" + " " + AndroidUtils.getVersionName().toString());
-            txtReleaseDate.setText("Release Date:" + " " + "09-07-2020");
+            txtReleaseDate.setText("Release Date:" + " " + "14-08-2020");
 
             spinnerSelectDivision = (SearchableSpinner) findViewById(R.id.spinnerSelectDivision);
             spinnerSelectDivision.setOnItemSelectedListener(this);
@@ -406,17 +406,13 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
                                         oProfileDto = new ProfileDTO(_lProfileDto.get(i).entrySet());
                                     }
 
-
                                     if (oProfileDto.getUserID() != null) {
                                         sharedPreferencesUtils.savePreference("RefUserId", oProfileDto.getUserID());
-
                                     }
+
                                     if (oProfileDto.getUserName() != null) {
-
                                         sharedPreferencesUtils.savePreference("UserName", oProfileDto.getUserName());
-
                                     }
-
 
                                 } catch (Exception ex) {
                                     try {
@@ -679,7 +675,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     @Override
@@ -698,4 +693,5 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
 }

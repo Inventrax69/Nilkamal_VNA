@@ -83,7 +83,7 @@ public class PriorityBinZoneFragment extends Fragment implements View.OnClickLis
 
     EditText etSuggestedLoc;
 
-    String VLPDNumber="",Pallet="",ActualLoc="",SuggestedLoc="",Type="";
+    String VLPDNumber="",Pallet="",ActualLoc="",SuggestedLoc="",Type="",isSLoc="";
 
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
         @Override
@@ -131,6 +131,7 @@ public class PriorityBinZoneFragment extends Fragment implements View.OnClickLis
         ActualLoc=getArguments().getString("ActualLoc");
         SuggestedLoc=getArguments().getString("SuggestedLoc");
         Type=getArguments().getString("Type");
+        isSLoc=getArguments().getString("isSLoc");
 
         etSuggestedLoc.setText(SuggestedLoc);
 
@@ -484,10 +485,20 @@ public class PriorityBinZoneFragment extends Fragment implements View.OnClickLis
                                     bundle.putString("ActualLoc",ActualLoc);
                                     bundle.putString("SuggestedLoc",SuggestedLoc);
                                     bundle.putString("Type",Type);
+                                    bundle.putString("isSLoc",isSLoc);
 
-                                    PickingSortingtHU pickingSortingtHU = new PickingSortingtHU();
-                                    pickingSortingtHU.setArguments(bundle);
-                                    FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, pickingSortingtHU);
+
+                                    if(isSLoc.equals("true")){
+                                        VNASLocToSLocFragment vnasLocToSLocFragment = new VNASLocToSLocFragment();
+                                        vnasLocToSLocFragment.setArguments(bundle);
+                                        FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, vnasLocToSLocFragment);
+                                    }else{
+                                        PickingSortingtHU pickingSortingtHU = new PickingSortingtHU();
+                                        pickingSortingtHU.setArguments(bundle);
+                                        FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, pickingSortingtHU);
+                                    }
+
+
 
 
                                 }else{

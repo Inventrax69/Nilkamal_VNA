@@ -593,7 +593,10 @@ public class VLPDLoadingFragment extends Fragment implements View.OnClickListene
                     etQty.setText("0");
                     lblScannedItem.setText(scannedData);
                     HandleRSNScan();
-                } else if (scanValidator.IsRSNScanned(scannedData))
+                }else if (ScanValidator.IsBundleScanOnBundling(scannedData)) {
+                    lblScannedItem.setText(scannedData);
+                    HandleRSNScan();
+                } else if (ScanValidator.IsRSNScanned(scannedData))
                 //else if (scannedData.Length == 17 && scannedData.Substring(0, 1) == "A")
                 {
                     etQty.setText("0");
@@ -602,10 +605,7 @@ public class VLPDLoadingFragment extends Fragment implements View.OnClickListene
                 } else if (ScanValidator.IsMatressBundleScanned(scannedData)) {
                     lblScannedItem.setText(scannedData);
                     confirmMatressBunle(scannedData);
-                } else if (ScanValidator.IsBundleScanOnBundling(scannedData)) {
-                    lblScannedItem.setText(scannedData);
-                    HandleRSNScan();
-                } else {
+                }  else {
                     common.showUserDefinedAlertType(errorMessages.EMC_0045, getActivity(), getContext(), "Error");
                 }
             } else {

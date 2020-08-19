@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,7 +8,6 @@
     android:layout_marginRight="3dp"
     android:background="@color/white"
     android:focusableInTouchMode="true">
-
 
     <RelativeLayout
         android:id="@+id/rlBundle"
@@ -24,9 +24,59 @@
             android:layout_alignParentTop="true"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/lblStoreRefNo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="2dp"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:gravity="end"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/count"
+                        android:padding="2dp"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textColor="@android:color/holo_blue_bright"
+                        android:textSize="12sp"
+                        android:padding="2dp"
+                        android:gravity="center"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
 
             <LinearLayout
-            
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -36,10 +86,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="0.7"
+                    android:layout_weight="0.6"
                     android:text="@string/bundle"
                     android:textColor="@color/black"
-                    android:textSize="17dp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -47,9 +97,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="2.3"
+                    android:layout_weight="2.4"
                     android:textColor="@color/green"
-                    android:textSize="23dp"
+                    android:textSize="14sp"
                     android:gravity="center"
                     android:textStyle="bold" />
 
@@ -73,23 +123,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:weightSum="4">
 
                 <android.support.v7.widget.CardView
                     android:id="@+id/cvScanBarcode"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     app:cardBackgroundColor="@color/locationColor"
-                    app:cardCornerRadius="35dp"
+                    app:cardCornerRadius="25dp"
                     app:cardElevation="0dp">
 
                     <ImageView
                         android:id="@+id/ivScanBarcode"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:layout_gravity="center"
                         android:background="@drawable/fullscreen_img" />
 
@@ -103,7 +153,7 @@
                     android:layout_marginTop="3dp"
                     android:text="RSN"
                     android:textColor="@color/black"
-                    android:textSize="16sp"
+                    android:textSize="12sp"
                     android:textStyle="normal" />
 
                 <TextView
@@ -112,7 +162,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
 
@@ -271,10 +321,7 @@
                     android:textSize="14dp"
                     android:textStyle="bold" />
 
-
             </LinearLayout>
-
-
 
         </LinearLayout>
 
@@ -292,7 +339,6 @@
             android:text="Complete Bundle"
             android:textAllCaps="false"
             android:textColor="@color/white" />
-
 
         <Button
             android:id="@+id/btnClear"

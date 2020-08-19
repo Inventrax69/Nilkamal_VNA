@@ -243,13 +243,12 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
                 break;
             case R.id.btnSelect:
 
-                common.setIsPopupActive(false);
+                Common.setIsPopupActive(false);
 
                 if ((barcodeType.equals("LOCATION") || barcodeType.equals("EAN") || barcodeType.equals("RSN") || barcodeType.equals("BUNDLE")
                         || barcodeType.equals("PALLET")) && (radioPallet.isChecked()
                         || radioRSN.isChecked() || radioBin.isChecked() || radioEAN.isChecked() || radioBundle.isChecked())) {
                     rlRsnTrack.setVisibility(View.VISIBLE);
-
                 } else {
                     common.showUserDefinedAlertType(errorMessages.EMC_0066, getActivity(), getContext(), "Error");
                     return;

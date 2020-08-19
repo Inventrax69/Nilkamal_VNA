@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="confirm_bundle">Confirm Bundle</string>
+    <string name="from_pallet">From Pallet</string>
+    <string name="to_pallet">To Pallet</string>
+    <string name="select_sloc">Select SLoc</string>
+</resources>

@@ -582,7 +582,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                 }
 
                 // Checking For RSN Scan
-                if (ScanValidator.IsRSNScanned(scannedData)) {
+                if (ScanValidator.IsRSNScanned(scannedData) || ScanValidator.IsBundleScanOnBundling(scannedData)) {
 
                     if (btnConfirmLBH.isEnabled()) {
                         common.showUserDefinedAlertType(errorMessages.EMC_0008, getActivity(), getContext(), "Warning");
@@ -604,6 +604,8 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
                     return;
                 }*/
             }
+
+
 
             if(ScanValidator.IsBatchRSN(scannedData)){
                 PrintEcomLabelsForFurniture(scannedData);
@@ -1811,10 +1813,7 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
 
                                 WMSExceptionMessage owmsExceptionMessage = null;
                                 for (int i = 0; i < _lExceptions.size(); i++) {
-
                                     owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
-
-
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
                                 cvScanSku.setCardBackgroundColor(getResources().getColor(R.color.white));

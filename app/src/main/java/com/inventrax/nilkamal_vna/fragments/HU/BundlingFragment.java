@@ -77,7 +77,7 @@ public class BundlingFragment extends Fragment implements View.OnClickListener, 
 
     private RelativeLayout rlBundle, rlPrint;
     private Button btnCloseBundle, btnBack, btnAdd, btnPrint, btnClosePrint;
-    private TextView lblBundle, lblScannedSku, lblCount, lblMCode, lblDesc, lblBatch, lblQty;
+    private TextView lblBundle, lblScannedSku, lblCount, lblMCode, lblDesc, lblBatch, lblQty,lblStoreRefNo,txtCount;
     private CardView cvScanBarcode;
     private ImageView ivScanBarcode;
     private EditText etBundlePrint, etPrinterIP;
@@ -101,7 +101,7 @@ public class BundlingFragment extends Fragment implements View.OnClickListener, 
     String userId = null, materialType = null, vlpdId = null, vlpdTypeId = null, SkipReason = null, vlpdNo = null;
 
     private boolean isPrintWindowRequired = false;
-    private String ipAddress = null, printerIPAddress = null, bundleNo = null;
+    private String ipAddress = null, printerIPAddress = null, bundleNo = null,clientId="",InboundId="";
     private SoundUtils soundUtils;
 
     List<InboundDTO> lstInbound = null;
@@ -137,7 +137,6 @@ public class BundlingFragment extends Fragment implements View.OnClickListener, 
         userId = sp.getString("RefUserId", "");
         materialType = sp.getString("division", "");
 
-
         rlBundle = (RelativeLayout) rootView.findViewById(R.id.rlBundle);
         rlPrint = (RelativeLayout) rootView.findViewById(R.id.rlPrint);
 
@@ -154,9 +153,10 @@ public class BundlingFragment extends Fragment implements View.OnClickListener, 
         lblBatch = (TextView) rootView.findViewById(R.id.lblBatch);
         lblDesc = (TextView) rootView.findViewById(R.id.lblDesc);
         lblMCode = (TextView) rootView.findViewById(R.id.lblMCode);
+        lblStoreRefNo = (TextView) rootView.findViewById(R.id.lblStoreRefNo);
+        txtCount = (TextView) rootView.findViewById(R.id.txtCount);
 
         cvScanBarcode = (CardView) rootView.findViewById(R.id.cvScanBarcode);
-
         ivScanBarcode = (ImageView) rootView.findViewById(R.id.ivScanBarcode);
 
         etBundlePrint = (EditText) rootView.findViewById(R.id.etBundlePrint);
@@ -167,6 +167,12 @@ public class BundlingFragment extends Fragment implements View.OnClickListener, 
         btnPrint.setOnClickListener(this);
         btnClosePrint.setOnClickListener(this);
         btnAdd.setOnClickListener(this);
+
+        if (getArguments() != null) {
+            lblStoreRefNo.setText(getArguments().getString("StoreRefNo"));
+            clientId = getArguments().getString("ClientId");
+            InboundId = getArguments().getString("InboundId");
+        }
 
         common = new Common();
         errorMessages = new ErrorMessages();
@@ -298,6 +304,7 @@ public class BundlingFragment extends Fragment implements View.OnClickListener, 
             message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
             InboundDTO inboundDTO = new InboundDTO();
             inboundDTO.setUserId(userId);
+            inboundDTO.setInboundID(InboundId);
             message.setEntityObject(inboundDTO);
 
 
@@ -508,6 +515,7 @@ public class BundlingFragment extends Fragment implements View.OnClickListener, 
                                         lblDesc.setText(vnaLoadingDTO.getMDescreiption());
                                         lblBatch.setText(vnaLoadingDTO.getBatchNo());
                                         lblQty.setText(vnaLoadingDTO.getQty());
+                                        txtCount.setText(vnaLoadingDTO.getPickRSNCount());
 
                                         cvScanBarcode.setCardBackgroundColor(getResources().getColor(R.color.white));
                                         ivScanBarcode.setImageResource(R.drawable.check);
@@ -662,6 +670,7 @@ public class BundlingFragment extends Fragment implements View.OnClickListener, 
                                     lblBatch.setText("");
                                     lblQty.setText("");
                                     lblScannedSku.setText("");
+                                    txtCount.setText("");
 
                                     lblBundle.setText("");
                                     btnAdd.setVisibility(View.VISIBLE);

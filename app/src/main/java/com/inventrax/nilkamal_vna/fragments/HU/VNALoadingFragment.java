@@ -305,17 +305,19 @@ public class VNALoadingFragment extends Fragment implements View.OnClickListener
                     common.showUserDefinedAlertType("Invalid RSN", getActivity(), getContext(), "Error");
                 }*/
 
+                if(ScanValidator.IsBundleScanOnBundling(scannedData)){
+                    if(!txtOBDNumber.getText().toString().isEmpty())
+                        VNAuniqueRSNLoading(scannedData,"3");
+                    return;
+                }
+
                 if(ScanValidator.IsRSNScanned(scannedData)){
                     if(!txtOBDNumber.getText().toString().isEmpty())
                         VNAuniqueRSNLoading(scannedData,"1");
                     return;
                 }
 
-                if(ScanValidator.IsBundleScanOnBundling(scannedData)){
-                    if(!txtOBDNumber.getText().toString().isEmpty())
-                        VNAuniqueRSNLoading(scannedData,"3");
-                    return;
-                }
+
 
                 if(ScanValidator.IsBundleRSN(scannedData)){
                     if(!txtOBDNumber.getText().toString().isEmpty())

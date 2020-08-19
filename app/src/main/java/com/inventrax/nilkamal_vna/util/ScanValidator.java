@@ -4,8 +4,6 @@ package com.inventrax.nilkamal_vna.util;
 
 public class ScanValidator {
 
-
-
     public static boolean IsRSNScanned(String scannedData)
     {
         if ((scannedData.split("[/]").length==4 && scannedData.split("[/]", 2)[0].length()==10)
@@ -41,7 +39,6 @@ public class ScanValidator {
             return false;
         }
     }
-
 
     public static boolean IsLocationScanned(String scannedData)
     {
@@ -79,8 +76,6 @@ public class ScanValidator {
         }
     }
 
-
-
     public static boolean isNumeric(String ValueToCheck)
     {
         try
@@ -104,7 +99,6 @@ public class ScanValidator {
             return false;
         }
     }
-
 
     public static boolean IsBundleScanOnBundling(String scannedData)
     {

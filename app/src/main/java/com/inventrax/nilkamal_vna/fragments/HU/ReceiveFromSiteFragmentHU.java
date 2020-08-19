@@ -69,9 +69,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ReceiveFromSiteFragmentHU extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener, BarcodeReader.TriggerListener, BarcodeReader.BarcodeListener {
+
     private static final String classCode = "API_FRAG_RECIEVE FROM SITE";
     private View rootView;
-
     private RelativeLayout rlStRefSelect, rlReceiveFromSite, rlExport;
     private TextView lblStoreRefNo, lblInboundQty, lblScannedSku, lblDesc;
     private CardView cvScanPallet, cvScanLocation, cvScanSku;

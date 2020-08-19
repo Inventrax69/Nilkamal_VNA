@@ -16,6 +16,8 @@ public class VNALoadingDTO {
     private String qty;
     @SerializedName("BatchNo")
     private String BatchNo;
+    @SerializedName("PickRSNCount")
+    private String PickRSNCount;
     @SerializedName("MDescreiption")
     private String MDescreiption;
 
@@ -54,6 +56,11 @@ public class VNALoadingDTO {
                 case "MDescreiption":
                     if(entry.getValue()!=null) {
                         this.setMDescreiption(entry.getValue().toString());
+                    }
+                    break;
+                case "PickRSNCount":
+                    if(entry.getValue()!=null) {
+                        this.setPickRSNCount(entry.getValue().toString());
                     }
                     break;
 
@@ -100,4 +107,13 @@ public class VNALoadingDTO {
     public void setMDescreiption(String MDescreiption) {
         this.MDescreiption = MDescreiption;
     }
+
+    public String getPickRSNCount() {
+        return PickRSNCount;
+    }
+
+    public void setPickRSNCount(String pickRSNCount) {
+        PickRSNCount = pickRSNCount;
+    }
+
 }

@@ -300,6 +300,7 @@
     <string name="title_activity_pending_cyclecount">Pending Cycle Count</string>
     <string name="cc_name">CC Name:</string>
     <string name="title_activity_mattress">Mattress Bundle</string>
+    <string name="title_activity_vna_sloc_to_sloc">VNA SLoc to SLoc</string>
     <string name="title_activity_Bundle">Bundling</string>
     <string name="title_activity_UnBundle">Un-Bundling</string>
     <string name="bundle">Bundle#</string>
@@ -315,4 +316,8 @@
     <string name="btnStart">Start</string>
     <string name="with_mrp">With MRP</string>
     <string name="without_mrp">Without MRP</string>
+    <string name="confirm_bundle">Confirm Bundle</string>
+    <string name="from_pallet">From Pallet</string>
+    <string name="to_pallet">To Pallet</string>
+    <string name="select_sloc">Select SLoc</string>
 </resources>

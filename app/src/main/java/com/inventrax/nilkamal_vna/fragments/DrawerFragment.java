@@ -265,6 +265,9 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
         childModel = new MenuModel("Sloc to Sloc", false, false, "Loc to Loc");
         childModelsList.add(childModel);
 
+        childModel = new MenuModel("VNA Sloc to Sloc", false, false, "VNA Sloc to Sloc");
+        childModelsList.add(childModel);
+
         if (menuModel.hasChildren) {
             childList.put(menuModel, childModelsList);
         }
@@ -513,6 +516,11 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
                 case "Loc to Loc":
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new SLocToSLocFragment());
                     break;
+
+                case "VNA Sloc to Sloc":
+                    FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new VNASLocToSLocListFragment());
+                    break;
+
                 case "Cycle Count":
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new CycleCountFragmentHU());
                     break;
@@ -528,7 +536,7 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
                     break;
 
                 case "Bundle":
-                    FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new BundlingFragment());
+                    FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new BundlingStoreRefListFragment());
                     break;
             }
         } else {
@@ -545,7 +553,6 @@ public class DrawerFragment extends Fragment implements View.OnClickListener {
                 case "Stock Check":
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new RsnTrackFragment());
                     break;
-
 
                 case "ECOM Pick":
                     FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, new EcomPickFragment());

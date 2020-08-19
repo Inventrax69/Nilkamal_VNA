@@ -115,6 +115,15 @@ public interface ApiInterface {
     @POST("VLPD/GetVLPDID")
     Call<String> GetVLPDID(@Body WMSCoreMessage oRequest);
 
+    @POST("VLPD/GetSlocVLPDList")
+    Call<String> GetSlocVLPDList(@Body WMSCoreMessage oRequest);
+
+    @POST("VLPD/GetSlocVNAPickingandShortingList")
+    Call<String> GetSlocVNAPickingandShortingList(@Body WMSCoreMessage oRequest);
+
+    @POST("VLPD/SlocPickandCheck")
+    Call<String> SlocPickandCheck(@Body WMSCoreMessage oRequest);
+
     @POST("VLPD/PalletValidationForPtoP")
     Call<String> PalletValidationForPtoP(@Body WMSCoreMessage oRequest);
 
