@@ -27,4 +27,5 @@ public interface OnLoginFinishedListener {
     void onLoginError(String message);
 
     void onSuccess();
+
 }

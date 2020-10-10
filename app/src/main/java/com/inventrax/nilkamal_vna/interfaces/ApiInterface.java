@@ -55,6 +55,9 @@ public interface ApiInterface {
     @POST("Inbound/GetPendingInboundInfo")
     Call<String> GetPendingInboundInfo(@Body WMSCoreMessage oRequest);
 
+    @POST("Inbound/BundleExport")
+    Call<String> BundleExport(@Body WMSCoreMessage oRequest);
+
     @POST("PutAway/CheckInboundRefNumber")
     Call<String> CheckInboundRefNumber(@Body WMSCoreMessage oRequest);
 
@@ -333,16 +336,16 @@ public interface ApiInterface {
 
     // Bundling & Unbundling
 
-    @POST("Inbound/GetBundleNumber ")
+    @POST("Inbound/GetBundleNumber")
     Call<String> GetBundleNumber(@Body WMSCoreMessage oRequest);
 
-    @POST("Inbound/CloseBundle ")
+    @POST("Inbound/CloseBundle")
     Call<String> CloseBundle(@Body WMSCoreMessage oRequest);
 
-    @POST("Inbound/UniqueRSNMappingWithbundle ")
+    @POST("Inbound/UniqueRSNMappingWithbundle")
     Call<String> UniqueRSNMappingWithbundle(@Body WMSCoreMessage oRequest);
 
-    @POST("Inbound/UnbundleProccess ")
+    @POST("Inbound/UnbundleProccess")
     Call<String> UnbundleProccess(@Body WMSCoreMessage oRequest);
 
 

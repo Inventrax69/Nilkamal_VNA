@@ -376,6 +376,7 @@ public class MainActivity extends AppCompatActivity implements DrawerFragment.Fr
 
                                         }
                                     });
+
                                     ipAddressdialog.show();
 
                                 }

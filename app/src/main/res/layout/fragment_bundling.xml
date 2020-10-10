@@ -327,11 +327,25 @@
 
 
         <Button
+            android:id="@+id/btnExport"
+            android:layout_width="130dp"
+            android:layout_height="35dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignTop="@+id/btnClear"
+            android:layout_marginLeft="22dp"
+            android:layout_marginBottom="69dp"
+            android:background="@drawable/button_shape"
+            android:text="Export"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+
+        <Button
             android:id="@+id/btnCloseBundle"
             android:layout_width="130dp"
             android:layout_height="35dp"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
+            android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/btnClear"
             android:layout_marginRight="22dp"
             android:layout_marginBottom="69dp"
@@ -373,6 +387,8 @@
 
 
     </RelativeLayout>
+
+
 
     <RelativeLayout
         android:id="@+id/rlPrint"

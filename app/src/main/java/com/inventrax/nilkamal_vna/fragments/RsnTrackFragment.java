@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -191,17 +192,94 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
         });
 
 
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+        radioBin.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    barcodeType = "LOCATION";
+                    radioBin.setChecked(true);
+                    radioEAN.setChecked(false);
+                    radioBundle.setChecked(false);
+                    radioPallet.setChecked(false);
+                    radioRSN.setChecked(false);
+                }
+            }
+        });
+
+        radioEAN.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    barcodeType = "EAN";
+                    ClearFields();
+                    radioBin.setChecked(false);
+                    radioEAN.setChecked(true);
+                    radioBundle.setChecked(false);
+                    radioPallet.setChecked(false);
+                    radioRSN.setChecked(false);
+                }
+            }
+        });
+
+        radioBundle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    barcodeType = "RSN";
+                    ClearFields();
+                    radioBin.setChecked(false);
+                    radioEAN.setChecked(false);
+                    radioBundle.setChecked(true);
+                    radioPallet.setChecked(false);
+                    radioRSN.setChecked(false);
+                }
+            }
+        });
+
+        radioPallet.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    barcodeType = "PALLET";
+                    ClearFields();
+                    radioBin.setChecked(false);
+                    radioEAN.setChecked(false);
+                    radioBundle.setChecked(false);
+                    radioPallet.setChecked(true);
+                    radioRSN.setChecked(false);
+                }
+            }
+        });
+
+        radioRSN.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    barcodeType = "RSN";
+                    ClearFields();
+                    radioBin.setChecked(false);
+                    radioEAN.setChecked(false);
+                    radioBundle.setChecked(false);
+                    radioPallet.setChecked(false);
+                    radioRSN.setChecked(true);
+                }
+            }
+        });
+
+
+/*        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
 
                     case R.id.radioBin:
                         barcodeType = "LOCATION";
-                        Common.setIsPopupActive(true);
                         ClearFields();
+                        Common.setIsPopupActive(true);
                         break;
 
                     case R.id.radioEAN:
+
                         barcodeType = "EAN";
                         ClearFields();
                         Common.setIsPopupActive(true);
@@ -227,7 +305,7 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
 
                 }
             }
-        });
+        });*/
     }
 
     //button Clicks
@@ -245,9 +323,10 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
 
                 Common.setIsPopupActive(false);
 
-                if ((barcodeType.equals("LOCATION") || barcodeType.equals("EAN") || barcodeType.equals("RSN") || barcodeType.equals("BUNDLE")
-                        || barcodeType.equals("PALLET")) && (radioPallet.isChecked()
-                        || radioRSN.isChecked() || radioBin.isChecked() || radioEAN.isChecked() || radioBundle.isChecked())) {
+                if ((barcodeType.equals("LOCATION") || barcodeType.equals("EAN")
+                        || barcodeType.equals("RSN") || barcodeType.equals("BUNDLE")
+                        || barcodeType.equals("PALLET")) && (radioPallet.isChecked() || radioRSN.isChecked() || radioBin.isChecked() ||
+                        radioEAN.isChecked() || radioBundle.isChecked())) {
                     rlRsnTrack.setVisibility(View.VISIBLE);
                 } else {
                     common.showUserDefinedAlertType(errorMessages.EMC_0066, getActivity(), getContext(), "Error");
@@ -272,7 +351,12 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
     public void goToNormalView() {
 
         ClearFields();
-        radioGroup.clearCheck();
+        radioBin.setChecked(false);
+        radioEAN.setChecked(false);
+        radioBundle.setChecked(false);
+        radioPallet.setChecked(false);
+        radioRSN.setChecked(false);
+        //radioGroup.clearCheck();
     }
 
     public void ClearFields() {
@@ -281,7 +365,6 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
         tvScan.setText("Scan");
         rlRsnTrack.setVisibility(View.GONE);
         rvRsnTracking.setAdapter(null);
-        //radioGroup.clearCheck();
     }
 
 
@@ -360,7 +443,11 @@ public class RsnTrackFragment extends Fragment implements View.OnClickListener, 
             } else if (barcodeType.equalsIgnoreCase("PALLET") && ScanValidator.IsPalletScanned(scannedData)) {
                 tvScan.setText(scannedData);
                 GetStockInformationByRSN(scannedData);
-            } else if (barcodeType.equalsIgnoreCase("EAN") && !ScanValidator.IsPalletScanned(scannedData) && !ScanValidator.IsLocationScanned(scannedData)
+            }
+            else if (barcodeType.equalsIgnoreCase("RSN") && ScanValidator.IsBundleScanOnBundling(scannedData)) {
+                tvScan.setText(scannedData);
+                GetStockInformationByRSN(scannedData);
+            }else if (barcodeType.equalsIgnoreCase("EAN") && !ScanValidator.IsPalletScanned(scannedData) && !ScanValidator.IsLocationScanned(scannedData)
                     && !ScanValidator.IsRSNScanned(scannedData)) {
                 if (scannedData.split("[,]").length == 2) {
                     tvScan.setText(scannedData.split("[,]")[0]);

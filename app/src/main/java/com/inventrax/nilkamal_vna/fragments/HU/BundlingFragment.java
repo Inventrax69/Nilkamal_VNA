@@ -39,8 +39,10 @@ import com.inventrax.nilkamal_vna.activities.MainActivity;
 import com.inventrax.nilkamal_vna.common.Common;
 import com.inventrax.nilkamal_vna.common.constants.EndpointConstants;
 import com.inventrax.nilkamal_vna.common.constants.ErrorMessages;
+import com.inventrax.nilkamal_vna.fragments.BundleSKUListFragment;
 import com.inventrax.nilkamal_vna.fragments.HH.GoodsInFragmentHH;
 import com.inventrax.nilkamal_vna.fragments.HomeFragment;
+import com.inventrax.nilkamal_vna.fragments.PendingInboundListFragment;
 import com.inventrax.nilkamal_vna.interfaces.ApiInterface;
 import com.inventrax.nilkamal_vna.pojos.ExecutionResponseDTO;
 import com.inventrax.nilkamal_vna.pojos.InboundDTO;
@@ -76,7 +78,7 @@ public class BundlingFragment extends Fragment implements View.OnClickListener, 
     private View rootView;
 
     private RelativeLayout rlBundle, rlPrint;
-    private Button btnCloseBundle, btnBack, btnAdd, btnPrint, btnClosePrint;
+    private Button btnCloseBundle, btnBack, btnAdd, btnPrint, btnClosePrint,btnExport;
     private TextView lblBundle, lblScannedSku, lblCount, lblMCode, lblDesc, lblBatch, lblQty,lblStoreRefNo,txtCount;
     private CardView cvScanBarcode;
     private ImageView ivScanBarcode;
@@ -145,6 +147,7 @@ public class BundlingFragment extends Fragment implements View.OnClickListener, 
         btnAdd = (Button) rootView.findViewById(R.id.btnAdd);
         btnPrint = (Button) rootView.findViewById(R.id.btnPrint);
         btnClosePrint = (Button) rootView.findViewById(R.id.btnClosePrint);
+        btnExport = (Button) rootView.findViewById(R.id.btnExport);
 
         lblBundle = (TextView) rootView.findViewById(R.id.lblBundle);
         lblScannedSku = (TextView) rootView.findViewById(R.id.lblScannedSku);
@@ -163,6 +166,7 @@ public class BundlingFragment extends Fragment implements View.OnClickListener, 
         etPrinterIP = (EditText) rootView.findViewById(R.id.etPrinterIP);
 
         btnCloseBundle.setOnClickListener(this);
+        btnExport.setOnClickListener(this);
         btnBack.setOnClickListener(this);
         btnPrint.setOnClickListener(this);
         btnClosePrint.setOnClickListener(this);
@@ -259,19 +263,34 @@ public class BundlingFragment extends Fragment implements View.OnClickListener, 
 
                 break;
 
-
-            case R.id.btnClosePrint:
-
-                rlPrint.setVisibility(View.GONE);
-                rlBundle.setVisibility(View.VISIBLE);
-
+            case R.id.btnExport:
+                goToBundleRSNList();
                 break;
 
+            case R.id.btnClosePrint:
+                rlPrint.setVisibility(View.GONE);
+                rlBundle.setVisibility(View.VISIBLE);
+                break;
 
             default:
                 break;
 
         }
+    }
+
+    public void goToBundleRSNList() {
+
+        Bundle bundle = new Bundle();
+
+        bundle.putString("StoreRefNo", lblStoreRefNo.getText().toString());
+        bundle.putString("ClientId", clientId);
+        bundle.putString("InboundId", InboundId);
+        bundle.putString("BundleNo", lblBundle.getText().toString());
+
+        BundleSKUListFragment bundleSKUListFragment = new BundleSKUListFragment();
+        bundleSKUListFragment.setArguments(bundle);
+        FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, bundleSKUListFragment);
+
     }
 
 
@@ -588,7 +607,6 @@ public class BundlingFragment extends Fragment implements View.OnClickListener, 
 
         try {
 
-
             WMSCoreMessage message = new WMSCoreMessage();
             message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
             InboundDTO inboundDTO = new InboundDTO();
@@ -596,7 +614,6 @@ public class BundlingFragment extends Fragment implements View.OnClickListener, 
             inboundDTO.setBundleRSN(lblBundle.getText().toString());
             inboundDTO.setIpAddress(ipAddress);
             message.setEntityObject(inboundDTO);
-
 
             Call<String> call = null;
             ApiInterface apiService =
@@ -611,7 +628,6 @@ public class BundlingFragment extends Fragment implements View.OnClickListener, 
                 // } else {
                 // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
                 // return;
-
                 // }
 
             } catch (Exception ex) {

@@ -140,6 +140,9 @@ public class VlpdDto {
     @SerializedName("RSNType")
     private String RSNType;
 
+    @SerializedName("PrintType")
+    private String PrintType;
+
 
     public VlpdDto() {
     }
@@ -714,5 +717,13 @@ public class VlpdDto {
 
     public void setRSNType(String RSNType) {
         this.RSNType = RSNType;
+    }
+
+    public String getPrintType() {
+        return PrintType;
+    }
+
+    public void setPrintType(String printType) {
+        PrintType = printType;
     }
 }

@@ -439,10 +439,10 @@ public class RSNGoodsFragmentHU extends Fragment implements View.OnClickListener
         bundle.putBoolean("IsPalletEnabled", etPallet.isEnabled());
         bundle.putBoolean("IsReceivingBin", IsReceivingBin);
 
-
         PendingInboundListFragment pendingInboundListFragment = new PendingInboundListFragment();
         pendingInboundListFragment.setArguments(bundle);
         FragmentUtils.replaceFragmentWithBackStack(getActivity(), R.id.container_body, pendingInboundListFragment);
+
     }
 
 

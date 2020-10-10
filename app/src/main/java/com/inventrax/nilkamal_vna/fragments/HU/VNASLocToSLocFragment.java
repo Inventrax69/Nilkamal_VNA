@@ -21,7 +21,9 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +47,7 @@ import com.inventrax.nilkamal_vna.common.constants.ErrorMessages;
 import com.inventrax.nilkamal_vna.fragments.HomeFragment;
 import com.inventrax.nilkamal_vna.interfaces.ApiInterface;
 import com.inventrax.nilkamal_vna.pojos.ExecutionResponseDTO;
+import com.inventrax.nilkamal_vna.pojos.InboundDTO;
 import com.inventrax.nilkamal_vna.pojos.InternalTransferDTO;
 import com.inventrax.nilkamal_vna.pojos.ItemInfoDTO;
 import com.inventrax.nilkamal_vna.pojos.LoginUserDTO;
@@ -80,13 +83,13 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
     private static final String classCode = "API_FRAG_SLOC_TO_SLOC";
     private View rootView;
     private RelativeLayout rlPick;
-    private TextView  lblSKU, lblDesc, lblBatch,
-            lblPendingQty, lblHUNo, lblHUSize,lblVLPDNumber,lblScannedBarcode;
-    private CardView cvScanFromPallet,cvScanToPallet, cvScanBarcode;
-    private ImageView ivScanFromPallet,ivScanToPallet, ivScanBarcode;
+    private TextView lblSKU, lblDesc, lblBatch,
+            lblPendingQty, lblHUNo, lblHUSize, lblVLPDNumber, lblScannedBarcode;
+    private CardView cvScanFromPallet, cvScanToPallet, cvScanBarcode;
+    private ImageView ivScanFromPallet, ivScanToPallet, ivScanBarcode;
     private TextInputLayout txtInputLayoutPallet, txtInputLayoutQty;
-    private CustomEditText etFromPallet,etToPallet, etQty;
-    private Button  btnPick, btnCloseOne;
+    private CustomEditText etFromPallet, etToPallet, etQty;
+    private Button btnPick, btnCloseOne;
     private Common common = null;
     String scanner = null;
     String getScanner = null;
@@ -102,10 +105,10 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
     SoundUtils sound = null;
     private ExceptionLoggerUtils exceptionLoggerUtils;
     private ErrorMessages errorMessages;
-    String VlpdNumber="",assginedid="",ipAdress="",sUniqueRSN="",sPalletNo="";
+    String VlpdNumber = "", assginedid = "", ipAdress = "", sUniqueRSN = "", sPalletNo = "";
     Dialog pickingSkipdialog;
-    boolean isNewRsn=false;
-
+    boolean isNewRsn = false;
+    RadioButton radioWithOutMRP,radioWithMRP;
 
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
         @Override
@@ -144,9 +147,9 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
         lblVLPDNumber = (TextView) rootView.findViewById(R.id.lblVLPDNumber);
         lblScannedBarcode = (TextView) rootView.findViewById(R.id.lblScannedBarcode);
 
-        if(getArguments()!=null){
+        if (getArguments() != null) {
             lblVLPDNumber.setText(getArguments().getString("SLOCNumber"));
-            if(getArguments().getString("VLPDNumber")!=null){
+            if (getArguments().getString("VLPDNumber") != null) {
                 lblVLPDNumber.setText(getArguments().getString("VLPDNumber"));
             }
         }
@@ -167,11 +170,9 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
         etQty = (CustomEditText) rootView.findViewById(R.id.etQty);
 
         btnCloseOne = (Button) rootView.findViewById(R.id.btnCloseOne);
-
         btnPick = (Button) rootView.findViewById(R.id.btnPick);
 
         etQty.setEnabled(false);
-
 
         sloc = new ArrayList<>();
         common = new Common();
@@ -220,7 +221,6 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
         });
 
 
-
     }
 
     //button Clicks
@@ -240,7 +240,6 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
 
         }
     }
-
 
     @Override
     public void onBarcodeEvent(final BarcodeReadEvent barcodeReadEvent) {
@@ -310,13 +309,12 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
 
         if (scannedData != null && !common.isPopupActive()) {
 
-            if(!ProgressDialogUtils.isProgressActive()) {
+            if (!ProgressDialogUtils.isProgressActive()) {
 
                 if (ScanValidator.IsPalletScanned(scannedData)) {
-                    if(etFromPallet.getText().toString().isEmpty()){
+                    if (etFromPallet.getText().toString().isEmpty()) {
                         GetSlocVNAPickingandShortingList(scannedData);
-                    }
-                    else if(etToPallet.getText().toString().isEmpty()){
+                    } else if (etToPallet.getText().toString().isEmpty()) {
                         etToPallet.setText(scannedData);
                         cvScanToPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                         ivScanToPallet.setImageResource(R.drawable.check);
@@ -325,51 +323,50 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
                 }
 
                 if (ScanValidator.IsRSNScanned(scannedData) || ScanValidator.IsBundleScanOnBundling(scannedData)) {
-                    if(etFromPallet.getText().toString().isEmpty() || etToPallet.getText().toString().isEmpty()){
-                        common.showUserDefinedAlertType("Please select from pallet or to pallet",getActivity(),getContext(),"Error");
-                    }else{
+                    if (etFromPallet.getText().toString().isEmpty() || etToPallet.getText().toString().isEmpty()) {
+                        common.showUserDefinedAlertType("Please select from pallet or to pallet", getActivity(), getContext(), "Error");
+                    } else {
                         SlocPickandCheck(scannedData);
                     }
                     return;
                 }
 
-            }else {
-                if(!common.isPopupActive())
-                {
+            } else {
+                if (!common.isPopupActive()) {
                     common.showUserDefinedAlertType(errorMessages.EMC_081, getActivity(), getContext(), "Error");
                 }
-                sound.alertWarning(getActivity(),getContext());
+                sound.alertWarning(getActivity(), getContext());
             }
 
         }
 
     }
 
-    public void clearAllFileds(){
-            isNewRsn=false;
-            lblSKU.setText("");
-            lblBatch.setText("");
-            lblHUNo.setText("");
-            lblHUSize.setText("");
-            lblPendingQty.setText("");
-            lblDesc.setText("");
+    public void clearAllFileds() {
+        isNewRsn = false;
+        lblSKU.setText("");
+        lblBatch.setText("");
+        lblHUNo.setText("");
+        lblHUSize.setText("");
+        lblPendingQty.setText("");
+        lblDesc.setText("");
 
-            etFromPallet.setText("");
-             etToPallet.setText("");
+        etFromPallet.setText("");
+        etToPallet.setText("");
 
-            cvScanFromPallet.setCardBackgroundColor(getResources().getColor(R.color.palletColor));
-            ivScanFromPallet.setImageResource(R.drawable.fullscreen_img);
+        cvScanFromPallet.setCardBackgroundColor(getResources().getColor(R.color.palletColor));
+        ivScanFromPallet.setImageResource(R.drawable.fullscreen_img);
 
-            cvScanToPallet.setCardBackgroundColor(getResources().getColor(R.color.palletColor));
-            ivScanToPallet.setImageResource(R.drawable.fullscreen_img);
+        cvScanToPallet.setCardBackgroundColor(getResources().getColor(R.color.palletColor));
+        ivScanToPallet.setImageResource(R.drawable.fullscreen_img);
     }
 
-    public  void GetSlocVNAPickingandShortingList(final String scannedData) {
+    public void GetSlocVNAPickingandShortingList(final String scannedData) {
 
         try {
 
             WMSCoreMessage message = new WMSCoreMessage();
-            message= common.SetAuthentication(EndpointConstants.Outbound,getContext());
+            message = common.SetAuthentication(EndpointConstants.Outbound, getContext());
             VlpdDto vlpdDto = new VlpdDto();
             vlpdDto.setUserId(userId);
             vlpdDto.setvLPDNumber(lblVLPDNumber.getText().toString());
@@ -392,13 +389,13 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
 
             } catch (Exception ex) {
                 try {
-                    exceptionLoggerUtils.createExceptionLog(ex.toString(),classCode,"GetOpenInboundList",getActivity());
+                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetOpenInboundList", getActivity());
                     logException();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 ProgressDialogUtils.closeProgressDialog();
-                common.showUserDefinedAlertType(errorMessages.EMC_0002,getActivity(),getContext(),"Error");
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
 
             }
             try {
@@ -422,7 +419,7 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
                                 etFromPallet.setText("");
                                 etToPallet.setText("");
                                 ProgressDialogUtils.closeProgressDialog();
-                                common.showAlertType(owmsExceptionMessage,getActivity(),getContext());
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
 
                             } else {
                                 core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
@@ -440,22 +437,22 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
                                     lstDto.add(dto);
                                 }
                                 ProgressDialogUtils.closeProgressDialog();
-                                if(lstDto.size()>0){
-                                    if(lstDto.get(0).getResult().equals("1")){
+                                if (lstDto.size() > 0) {
+                                    if (lstDto.get(0).getResult().equals("1")) {
                                         lblSKU.setText(lstDto.get(0).getMcode());
                                         lblDesc.setText(lstDto.get(0).getDescription());
                                         lblBatch.setText(lstDto.get(0).getBatchNo());
                                         lblPendingQty.setText(lstDto.get(0).getPendingQty());
                                         lblHUNo.setText(lstDto.get(0).getHUNo());
                                         lblHUSize.setText(lstDto.get(0).getHUSize());
-                                        VlpdNumber=lstDto.get(0).getvLPDNumber();
-                                        assginedid=lstDto.get(0).getAssignedId();
+                                        VlpdNumber = lstDto.get(0).getvLPDNumber();
+                                        assginedid = lstDto.get(0).getAssignedId();
                                         etFromPallet.setText(scannedData);
 
                                         cvScanFromPallet.setCardBackgroundColor(getResources().getColor(R.color.white));
                                         ivScanFromPallet.setImageResource(R.drawable.check);
 
-                                    }else if(lstDto.get(0).getResult().equals("0")){
+                                    } else if (lstDto.get(0).getResult().equals("0")) {
                                         clearAllFileds();
                                         Common.setIsPopupActive(true);
                                         sPalletNo = scannedData;
@@ -472,25 +469,25 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
                                             }
                                         });
 
-                                    }else{
-                                        if(lstDto.get(0).getResult().equals("-1")){
+                                    } else {
+                                        if (lstDto.get(0).getResult().equals("-1")) {
                                             clearAllFileds();
-                                            common.showUserDefinedAlertType("In-Valid Pallet",getActivity(),getContext(),"Error");
+                                            common.showUserDefinedAlertType("In-Valid Pallet", getActivity(), getContext(), "Error");
                                         }
                                     }
 
-                                }else{
+                                } else {
                                     clearAllFileds();
-                                    common.showUserDefinedAlertType("Error while grtting data",getActivity(),getContext(),"Error");
+                                    common.showUserDefinedAlertType("Error while grtting data", getActivity(), getContext(), "Error");
                                 }
 
                             }
 
 
-                        } catch(Exception ex){
+                        } catch (Exception ex) {
                             try {
 
-                                ExceptionLoggerUtils.createExceptionLog(ex.toString(),classCode,"GetOpenInboundList",getActivity());
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetOpenInboundList", getActivity());
                                 logException();
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -507,29 +504,28 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
                         //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
                         ProgressDialogUtils.closeProgressDialog();
 
-                        common.showUserDefinedAlertType(errorMessages.EMC_0001,getActivity(),getContext(),"Error");
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
                     }
                 });
             } catch (Exception ex) {
                 try {
-                    ExceptionLoggerUtils.createExceptionLog(ex.toString(),classCode,"GetOpenInboundList",getActivity());
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetOpenInboundList", getActivity());
                     logException();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 ProgressDialogUtils.closeProgressDialog();
-                common.showUserDefinedAlertType(errorMessages.EMC_0001,getActivity(),getContext(),"Error");
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
             }
-        }catch (Exception ex)
-        {
+        } catch (Exception ex) {
             try {
-                ExceptionLoggerUtils.createExceptionLog(ex.toString(),classCode,"GetOpenInboundList",getActivity());
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetOpenInboundList", getActivity());
                 logException();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             ProgressDialogUtils.closeProgressDialog();
-            common.showUserDefinedAlertType(errorMessages.EMC_0003,getActivity(),getContext(),"Error");
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
         }
     }
 
@@ -710,7 +706,6 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
         }
     }
 
-
     private void GetPalletValidationandSuggestion(final String Type) {
 
         try {
@@ -843,13 +838,12 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
         }
     }
 
-
-    public  void SlocPickandCheck(final String scannedData) {
+    public void SlocPickandCheck(final String scannedData) {
 
         try {
 
             WMSCoreMessage message = new WMSCoreMessage();
-            message= common.SetAuthentication(EndpointConstants.Outbound,getContext());
+            message = common.SetAuthentication(EndpointConstants.Outbound, getContext());
             OutboundDTO outboundDTO = new OutboundDTO();
             outboundDTO.setUserId(userId);
             outboundDTO.setVlpdNumber(lblVLPDNumber.getText().toString());
@@ -863,10 +857,10 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
             outboundDTO.setMfgDate("");
             outboundDTO.setExpDate("");
             outboundDTO.setAssignedId(assginedid);
-            if(isNewRsn){
+            if (isNewRsn) {
                 outboundDTO.setUniqueRSN(sUniqueRSN);
                 outboundDTO.setNewUniqueRSN(scannedData);
-            }else{
+            } else {
                 outboundDTO.setUniqueRSN(scannedData);
                 outboundDTO.setNewUniqueRSN("");
             }
@@ -888,13 +882,13 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
 
             } catch (Exception ex) {
                 try {
-                    exceptionLoggerUtils.createExceptionLog(ex.toString(),classCode,"GetOpenInboundList",getActivity());
+                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetOpenInboundList", getActivity());
                     logException();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 ProgressDialogUtils.closeProgressDialog();
-                common.showUserDefinedAlertType(errorMessages.EMC_0002,getActivity(),getContext(),"Error");
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
 
             }
             try {
@@ -917,7 +911,7 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
                                 }
 
                                 ProgressDialogUtils.closeProgressDialog();
-                                common.showAlertType(owmsExceptionMessage,getActivity(),getContext());
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
 
                             } else {
                                 core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
@@ -925,7 +919,7 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
                                 List<LinkedTreeMap<?, ?>> _lOutbound = new ArrayList<LinkedTreeMap<?, ?>>();
                                 _lOutbound = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
 
-                               lblScannedBarcode.setText(scannedData);
+                                lblScannedBarcode.setText(scannedData);
 
                                 List<VlpdDto> lstDto = new ArrayList<VlpdDto>();
 
@@ -935,15 +929,14 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
                                     lstDto.add(dto);
                                 }
 
-                                if(lstDto.size()>0){
-                                    if(lstDto.get(0).getMessage().equals("1")){
-                                        isNewRsn=false;
+                                if (lstDto.size() > 0) {
+                                    if (lstDto.get(0).getMessage().equals("1")) {
+                                        isNewRsn = false;
                                         common.setIsPopupActive(true);
                                         new SoundUtils().alertSuccess(getActivity(), getActivity());
-                                        DialogUtils.showAlertDialog(getActivity(), "Success", "Success Transfred", R.drawable.success,new DialogInterface.OnClickListener() {
+                                        DialogUtils.showAlertDialog(getActivity(), "Success", "Success Transfred", R.drawable.success, new DialogInterface.OnClickListener() {
                                             @Override
-                                            public void onClick(DialogInterface dialog, int which)
-                                            {
+                                            public void onClick(DialogInterface dialog, int which) {
                                                 switch (which) {
                                                     case DialogInterface.BUTTON_POSITIVE:
                                                         common.setIsPopupActive(false);
@@ -952,35 +945,46 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
                                                 }
                                             }
                                         });
-                                       // common.showUserDefinedAlertType("Success Transfred",getActivity(),getContext(),"Success");
+                                        // common.showUserDefinedAlertType("Success Transfred",getActivity(),getContext(),"Success");
 
-                                    }else if(lstDto.get(0).getMessage().equals("-1")){
-                                        common.showUserDefinedAlertType("Duplicate RSN Generated",getActivity(),getContext(),"Error");
-                                    }else if(lstDto.get(0).getMessage().equals("-2")){
-                                        common.showUserDefinedAlertType("Invalid Pallet",getActivity(),getContext(),"Error");
-                                    }else if(lstDto.get(0).getMessage().equals("-3")){
-                                        common.showUserDefinedAlertType("To-Pallet location or not mapped",getActivity(),getContext(),"Error");
-                                    } else if(lstDto.get(0).getMessage().equals("-4")){
-                                        common.showUserDefinedAlertType("Do Unbundling",getActivity(),getContext(),"Error");
-                                    } else if(lstDto.get(0).getMessage().equals("-5")){
-                                        sUniqueRSN=scannedData;
+                                    } else if (lstDto.get(0).getMessage().equals("-1")) {
+                                        common.showUserDefinedAlertType("Duplicate RSN Generated", getActivity(), getContext(), "Error");
+                                    } else if (lstDto.get(0).getMessage().equals("-2")) {
+                                        common.showUserDefinedAlertType("Invalid Pallet", getActivity(), getContext(), "Error");
+                                    } else if (lstDto.get(0).getMessage().equals("-3")) {
+                                        common.showUserDefinedAlertType("To-Pallet location or not mapped", getActivity(), getContext(), "Error");
+                                    } else if (lstDto.get(0).getMessage().equals("-4")) {
+                                        // common.showUserDefinedAlertType("Do Unbundling",getActivity(),getContext(),"Error");
+                                        new SoundUtils().alertError(getActivity(), getContext());
+                                        Common.setIsPopupActive(true);
+                                        DialogUtils.showConfirmDialog(getActivity(), "Alert", "Do Unbundling", "Yes", "No", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                if (i == -1) {
+                                                    UnbundleProccess(scannedData);
+                                                }
+                                                Common.setIsPopupActive(false);
+                                            }
+                                        });
+                                    } else if (lstDto.get(0).getMessage().equals("-5")) {
+                                        sUniqueRSN = scannedData;
                                         getPrinters();
-                                    }else if(lstDto.get(0).getMessage().equals("-6")){
-                                        common.showUserDefinedAlertType("Please Contact Support team",getActivity(),getContext(),"Error");
-                                    }else{
-                                        common.showUserDefinedAlertType(lstDto.get(0).getMessage(),getActivity(),getContext(),"Error");
+                                    } else if (lstDto.get(0).getMessage().equals("-6")) {
+                                        common.showUserDefinedAlertType("Please Contact Support team", getActivity(), getContext(), "Error");
+                                    } else {
+                                        common.showUserDefinedAlertType(lstDto.get(0).getMessage(), getActivity(), getContext(), "Error");
                                     }
-                                }else{
-                                    common.showUserDefinedAlertType("Error while getting data",getActivity(),getContext(),"Error");
+                                } else {
+                                    common.showUserDefinedAlertType("Error while getting data", getActivity(), getContext(), "Error");
                                 }
 
                             }
 
 
-                        } catch(Exception ex){
+                        } catch (Exception ex) {
                             try {
 
-                                ExceptionLoggerUtils.createExceptionLog(ex.toString(),classCode,"GetOpenInboundList",getActivity());
+                                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetOpenInboundList", getActivity());
                                 logException();
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -997,32 +1001,157 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
                         //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
                         ProgressDialogUtils.closeProgressDialog();
 
-                        common.showUserDefinedAlertType(errorMessages.EMC_0001,getActivity(),getContext(),"Error");
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
                     }
                 });
             } catch (Exception ex) {
                 try {
-                    ExceptionLoggerUtils.createExceptionLog(ex.toString(),classCode,"GetOpenInboundList",getActivity());
+                    ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetOpenInboundList", getActivity());
                     logException();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 ProgressDialogUtils.closeProgressDialog();
-                common.showUserDefinedAlertType(errorMessages.EMC_0001,getActivity(),getContext(),"Error");
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
             }
-        }catch (Exception ex)
-        {
+        } catch (Exception ex) {
             try {
-                ExceptionLoggerUtils.createExceptionLog(ex.toString(),classCode,"GetOpenInboundList",getActivity());
+                ExceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "GetOpenInboundList", getActivity());
                 logException();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             ProgressDialogUtils.closeProgressDialog();
-            common.showUserDefinedAlertType(errorMessages.EMC_0003,getActivity(),getContext(),"Error");
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
         }
     }
 
+    public void UnbundleProccess(String scannedData) {
+
+        try {
+
+            WMSCoreMessage message = new WMSCoreMessage();
+            message = common.SetAuthentication(EndpointConstants.Inbound, getContext());
+            InboundDTO inboundDTO = new InboundDTO();
+            inboundDTO.setUserId(userId);
+            inboundDTO.setBundleRSN(scannedData);
+            message.setEntityObject(inboundDTO);
+
+
+            Call<String> call = null;
+            ApiInterface apiService =
+                    RestService.getClient().create(ApiInterface.class);
+
+            try {
+                //Checking for Internet Connectivity
+                // if (NetworkUtils.isInternetAvailable()) {
+                // Calling the Interface method
+                call = apiService.UnbundleProccess(message);
+                ProgressDialogUtils.showProgressDialog("Please Wait");
+                // } else {
+                // DialogUtils.showAlertDialog(getActivity(), "Please enable internet");
+                // return;
+
+                // }
+
+            } catch (Exception ex) {
+                try {
+                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "PrinteMatressBundle_01", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0002, getActivity(), getContext(), "Error");
+
+            }
+            try {
+                //Getting response from the method
+                call.enqueue(new Callback<String>() {
+
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+
+                        try {
+
+                            core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                            if ((core.getType().toString().equals("Exception"))) {
+                                List<LinkedTreeMap<?, ?>> _lExceptions = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lExceptions = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+                                WMSExceptionMessage owmsExceptionMessage = null;
+                                for (int i = 0; i < _lExceptions.size(); i++) {
+                                    owmsExceptionMessage = new WMSExceptionMessage(_lExceptions.get(i).entrySet());
+                                }
+                                ProgressDialogUtils.closeProgressDialog();
+
+                                common.showAlertType(owmsExceptionMessage, getActivity(), getContext());
+                            } else {
+                                core = gson.fromJson(response.body().toString(), WMSCoreMessage.class);
+
+                                List<LinkedTreeMap<?, ?>> _lCore = new ArrayList<LinkedTreeMap<?, ?>>();
+                                _lCore = (List<LinkedTreeMap<?, ?>>) core.getEntityObject();
+
+
+                                ExecutionResponseDTO oExecutionResponseDto = null;
+                                for (int i = 0; i < _lCore.size(); i++) {
+
+                                    oExecutionResponseDto = new ExecutionResponseDTO(_lCore.get(i).entrySet());
+
+                                }
+                                if (oExecutionResponseDto.getMessage().equalsIgnoreCase("Success")) {
+                                    common.showUserDefinedAlertType("Un-bundled successfully", getActivity(), getActivity(), "Success");
+                                } else {
+                                    common.showUserDefinedAlertType(oExecutionResponseDto.getMessage(), getActivity(), getActivity(), "Error");
+                                }
+
+                                ProgressDialogUtils.closeProgressDialog();
+
+                            }
+
+                        } catch (Exception ex) {
+                            try {
+                                exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "PrinteMatressBundle_02", getActivity());
+                                logException();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            ProgressDialogUtils.closeProgressDialog();
+                        }
+
+
+                    }
+
+                    // response object fails
+                    @Override
+                    public void onFailure(Call<String> call, Throwable throwable) {
+                        //Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_LONG).show();
+                        ProgressDialogUtils.closeProgressDialog();
+                        common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+                    }
+                });
+            } catch (Exception ex) {
+                try {
+                    exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "PrinteMatressBundle_03", getActivity());
+                    logException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ProgressDialogUtils.closeProgressDialog();
+                common.showUserDefinedAlertType(errorMessages.EMC_0001, getActivity(), getContext(), "Error");
+            }
+        } catch (Exception ex) {
+            try {
+                exceptionLoggerUtils.createExceptionLog(ex.toString(), classCode, "PrinteMatressBundle_04", getActivity());
+                logException();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ProgressDialogUtils.closeProgressDialog();
+            common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
+        }
+    }
 
     private void PrintNewRSN() {
 
@@ -1036,6 +1165,11 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
             vlpdDto.setMcode(lblSKU.getText().toString());
             vlpdDto.setAssignedId(assginedid);
             vlpdDto.setPickedQty(lblPendingQty.getText().toString());
+            if(radioWithMRP.isChecked()){
+                vlpdDto.setPrintType("With M.R.P");
+            }else{
+                vlpdDto.setPrintType("Without M.R.P");
+            }
             message.setEntityObject(vlpdDto);
 
             Call<String> call = null;
@@ -1237,13 +1371,36 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
                                     pickingSkipdialog = new Dialog(getActivity());
                                     pickingSkipdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                     pickingSkipdialog.setCancelable(false);
-                                    pickingSkipdialog.setContentView(R.layout.pinter_dialog);
+                                    pickingSkipdialog.setContentView(R.layout.pinter_dialog_wrp);
+
+                                    radioWithOutMRP = (RadioButton) pickingSkipdialog.findViewById(R.id.radioWithOutMRP);
+                                    radioWithMRP = (RadioButton) pickingSkipdialog.findViewById(R.id.radioWithMRP);
 
                                     TextView btnOk = (TextView) pickingSkipdialog.findViewById(R.id.btnOk);
                                     btnOk.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
                                             PrintNewRSN();
+                                        }
+                                    });
+
+                                    radioWithOutMRP.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                        @Override
+                                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                                            if(b){
+                                                radioWithOutMRP.setChecked(true);
+                                                radioWithMRP.setChecked(false);
+                                            }
+                                        }
+                                    });
+
+                                    radioWithMRP.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                        @Override
+                                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                                            if(b){
+                                                radioWithOutMRP.setChecked(false);
+                                                radioWithMRP.setChecked(true);
+                                            }
                                         }
                                     });
 
@@ -1314,7 +1471,6 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
         }
     }
 
-
     // sending exception to the database
     public void logException() {
 
@@ -1378,13 +1534,11 @@ public class VNASLocToSLocFragment extends Fragment implements View.OnClickListe
                 ProgressDialogUtils.closeProgressDialog();
                 common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ProgressDialogUtils.closeProgressDialog();
             common.showUserDefinedAlertType(errorMessages.EMC_0003, getActivity(), getContext(), "Error");
         }
     }
-
 
     @Override
     public void onPause() {

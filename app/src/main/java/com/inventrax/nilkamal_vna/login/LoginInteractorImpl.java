@@ -7,18 +7,12 @@ public class LoginInteractorImpl implements LoginInteractor {
 
     private SharedPreferencesUtils sharedPreferencesUtils;
     private OnLoginFinishedListener listener;
-
     private boolean isRememberEnabled;
     String userName="",password="";
 
-
-
     public LoginInteractorImpl(){
 
-
         sharedPreferencesUtils = new SharedPreferencesUtils("LoginActivity", AbstractApplication.get());
-
-
 
     }
 

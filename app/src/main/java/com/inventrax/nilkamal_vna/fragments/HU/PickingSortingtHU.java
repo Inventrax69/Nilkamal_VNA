@@ -22,9 +22,11 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -115,6 +117,7 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
     RecyclerView rvPickingSortingList;
     private SearchableSpinner spinnerSelectReason;
     String skipReason;
+    RadioButton radioWithOutMRP,radioWithMRP;
 
     private final BroadcastReceiver myDataReceiver = new BroadcastReceiver() {
         @Override
@@ -1285,6 +1288,11 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
             vlpdDto.setMcode(mVlpdDto.getMcode());
             vlpdDto.setAssignedId(mVlpdDto.getAssignedId());
             vlpdDto.setPickedQty(mVlpdDto.getPendingQty());
+            if(radioWithMRP.isChecked()){
+                vlpdDto.setPrintType("With M.R.P");
+            }else{
+                vlpdDto.setPrintType("Without M.R.P");
+            }
             message.setEntityObject(vlpdDto);
 
             Call<String> call = null;
@@ -1487,15 +1495,41 @@ public class PickingSortingtHU extends Fragment implements View.OnClickListener,
                                     pickingSkipdialog = new Dialog(getActivity());
                                     pickingSkipdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                     pickingSkipdialog.setCancelable(false);
-                                    pickingSkipdialog.setContentView(R.layout.pinter_dialog);
+                                    pickingSkipdialog.setContentView(R.layout.pinter_dialog_wrp);
 
                                     TextView btnOk = (TextView) pickingSkipdialog.findViewById(R.id.btnOk);
+
+                                    radioWithOutMRP = (RadioButton) pickingSkipdialog.findViewById(R.id.radioWithOutMRP);
+                                    radioWithMRP = (RadioButton) pickingSkipdialog.findViewById(R.id.radioWithMRP);
+
                                     btnOk.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
                                             PrintNewRSN();
                                         }
                                     });
+
+                                    radioWithOutMRP.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                        @Override
+                                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                                            if(b){
+                                                radioWithOutMRP.setChecked(true);
+                                                radioWithMRP.setChecked(false);
+                                            }
+                                        }
+                                    });
+
+                                    radioWithMRP.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                        @Override
+                                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                                            if(b){
+                                                radioWithOutMRP.setChecked(false);
+                                                radioWithMRP.setChecked(true);
+                                            }
+                                        }
+                                    });
+
+
 
                                     TextView btnCancel = (TextView) pickingSkipdialog.findViewById(R.id.btnCancel);
                                     btnCancel.setOnClickListener(new View.OnClickListener() {

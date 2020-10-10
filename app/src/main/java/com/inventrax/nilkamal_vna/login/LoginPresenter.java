@@ -23,4 +23,5 @@ public interface LoginPresenter {
     void validateCredentials(String username, String password, boolean isRememberEnabled);
 
     void onDestroy();
+
 }

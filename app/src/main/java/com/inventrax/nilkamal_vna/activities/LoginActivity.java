@@ -1,16 +1,22 @@
 package com.inventrax.nilkamal_vna.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -32,6 +38,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 import com.inventrax.nilkamal_vna.R;
 import com.inventrax.nilkamal_vna.application.AbstractApplication;
+import com.inventrax.nilkamal_vna.appupdate.GetUpdateJsonResponse;
+import com.inventrax.nilkamal_vna.appupdate.PermissionUtils;
+import com.inventrax.nilkamal_vna.appupdate.UpdateApp;
 import com.inventrax.nilkamal_vna.common.Common;
 import com.inventrax.nilkamal_vna.common.constants.EndpointConstants;
 import com.inventrax.nilkamal_vna.common.constants.ErrorMessages;
@@ -56,6 +65,9 @@ import com.inventrax.nilkamal_vna.util.ProgressDialogUtils;
 import com.inventrax.nilkamal_vna.util.SharedPreferencesUtils;
 import com.inventrax.nilkamal_vna.util.SoundUtils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +76,9 @@ import java.util.Map;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 /**
  * Created by Prasanna ch on 05/07/2018.
@@ -100,6 +115,99 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
     String serviceUrlString = null;
     ServiceURL serviceURL;
 
+
+    String versionName = "";
+    int versionCode=0;
+    private String APK_URL = "";
+    private static final String JSON_VERSION_CODE = "versionCode";
+    private static final String JSON_UPDATE_URL = "updateURL";
+    private static final int PERMISSION_REQUEST_CODE = 769;
+    AlertDialog.Builder builder;
+    TextView txtVersionName;
+
+
+    @SuppressLint("StaticFieldLeak")
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+            versionName = pInfo.versionName;
+            versionCode = pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        SharedPreferences sp = this.getSharedPreferences("SettingsActivity", Context.MODE_PRIVATE);
+        serviceUrlString = sp.getString("url", "");
+
+        if(!serviceUrlString.isEmpty()){
+            new AsyncTask<String, String, String>() {
+                @Override
+                protected String doInBackground(String... strings) {
+
+                    String json_string = new GetUpdateJsonResponse().getContents(serviceUrlString+"/update.json");
+
+                    try{
+
+                        final JSONObject json = new JSONObject(json_string);
+                        int result = json.getInt(JSON_VERSION_CODE);
+                        if(versionCode < result){
+                            LoginActivity.this.runOnUiThread(new Runnable() {
+                                public void run() {
+                                    builder = new AlertDialog.Builder(LoginActivity.this);
+                                    //Uncomment the below code to Set the message and title from the strings.xml file
+                                    builder.setMessage("") .setTitle("App Update");
+
+                                    //Setting message manually and performing action on button click
+                                    builder.setMessage("Update Available! Please update to newer version")
+                                            .setCancelable(false)
+                                            .setPositiveButton("Install", new DialogInterface.OnClickListener() {
+                                                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    try{
+                                                        APK_URL = json.getString(JSON_UPDATE_URL);
+                                                        checkForUpdate();
+                                                    }catch (JSONException e){
+
+                                                    }
+                                                }
+                                            });
+                                    //Creating dialog box
+                                    AlertDialog alert = builder.create();
+                                    //Setting the title manually
+                                    alert.setTitle("App Update");
+                                    alert.show();
+                                }
+                            });
+
+                        }else{
+                            return "App is update to date";
+                        }
+                    }catch (Exception e){
+                        return  "Error : " + e.toString();
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(String s) {
+                    super.onPostExecute(s);
+/*                    if(s!=null){
+                        if(!s.equalsIgnoreCase("App is update to date")){
+                            Toast.makeText(LoginActivity.this, ""+s, Toast.LENGTH_SHORT).show();
+                        }
+                    }*/
+                }
+            }.execute();
+        }
+
+
+    }
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,6 +221,15 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
     private void loadFormControls() {
 
         try {
+
+            try {
+                PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
+                versionName = pInfo.versionName;
+                versionCode = pInfo.versionCode;
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+
             sharedPreferencesUtils = new SharedPreferencesUtils("LoginActivity", getApplicationContext());
             inputUserId = (EditText) findViewById(R.id.etUsername);
             inputPassword = (EditText) findViewById(R.id.etPass);
@@ -133,7 +250,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
             txtReleaseDate = (TextView) findViewById(R.id.txtDate);
             txtVersion = (TextView) findViewById(R.id.txtVersionName);
             txtVersion.setText("Version:" + " " + AndroidUtils.getVersionName().toString());
-            txtReleaseDate.setText("Release Date:" + " " + "14-08-2020");
+            txtReleaseDate.setText("Release Date:" + " " + "10-10-2020");
 
             spinnerSelectDivision = (SearchableSpinner) findViewById(R.id.spinnerSelectDivision);
             spinnerSelectDivision.setOnItemSelectedListener(this);
@@ -651,31 +768,28 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
     }
 
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case MULTIPLE_PERMISSIONS: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    loadFormControls();
-                    // permissions granted.
-                } else {
-                    String permission = "";
-                    for (String per : permissions) {
-                        permission += "\n" + per;
-
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0) {
+                boolean writeSAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                boolean readSAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                if (writeSAccepted && readSAccepted) {
+                    if(!APK_URL.isEmpty()){
+                        UpdateApp updateApp = new UpdateApp();
+                        updateApp.setContext(LoginActivity.this);
+                        updateApp.execute(APK_URL);
                     }
-                    // permissions list of don't granted permission
+                }else{
+                    finish();
                 }
-                return;
             }
         }
     }
 
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
+
 
     @Override
     protected void onPause() {
@@ -693,5 +807,62 @@ public class LoginActivity extends AppCompatActivity implements LoginView, Adapt
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    public void checkForUpdate(){
+        if (checkPermission()) {
+            if(!APK_URL.isEmpty()){
+                UpdateApp updateApp = new UpdateApp();
+                updateApp.setContext(LoginActivity.this);
+                updateApp.execute(APK_URL);
+            }
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (PermissionUtils.neverAskAgainSelected(LoginActivity.this, WRITE_EXTERNAL_STORAGE) && PermissionUtils.neverAskAgainSelected(LoginActivity.this, READ_EXTERNAL_STORAGE)) {
+                    displayNeverAskAgainDialog();
+                } else {
+                    requestPermission();
+                }
+            }
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
+        int result1 = ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
+        return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED;
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+    }
+
+    private void displayNeverAskAgainDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("We need to send Storage for performing necessary task. Please permit the permission through "
+                + "Settings screen.\n\nSelect Permissions -> Enable permission");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Permit Manually", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Intent intent = new Intent();
+                intent.setAction(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                intent.setData(uri);
+                startActivity(intent);
+            }
+        });
+        // builder.setNegativeButton("Cancel", null);
+        builder.show();
+
+    }
+
 
 }
